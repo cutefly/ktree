@@ -1,3 +1,9 @@
 spring:
   application:
     name: Ktree
+
+  datasource:
+    url: jdbc:postgresql://k3s.club012.com:5432/kpc_backoffice
+    username: kpc_backoffice
+    password: back0417!
+    driver-class-name: org.postgresql.Driver
