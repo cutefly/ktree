@@ -1,12 +1,47 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-    <div th:fragment="leftmenu">
-        <ul>
-            <li>Menu 1</li>
-            <li>Menu 2</li>
-            <li>Menu 3</li>
-        </ul>
+    <div th:fragment="leftmenu" class="navbar-default sidebar" role="navigation">
+        <div class="sidebar-nav navbar-collapse">
+            <ul class="nav" id="side-menu">
+                <li>
+                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>평가<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li th:if="${session.employeId != 'kpc_admin'}">
+                            <a th:href="@{/projectList}">프로젝트</a>
+                        </li>
+                        <!--/* 인사평가 정책 변경에 따른 메뉴 표시 제거
+                        <li th:if="${session.employeId != 'kpc_admin'}">
+                            <a th:href="@{/performanceList}">성과/가치</a>
+                        </li>
+                        */-->
+                        <li th:if="${session.employeId == 'kpc_admin'}">
+                            <a th:href="@{/projectListAdmin}">프로젝트</a>
+                        </li>
+                        <li th:if="${session.employeId == 'kpc_admin'}">
+                            <a th:href="@{/performanceListAdmin}">성과/가치</a>
+                        </li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+                <!--
+                <li>
+                    <a th:href="@{/statstics}"><i class="fa fa-edit fa-fw"></i>통계</a>
+                </li>
+                -->
+                <li>
+                    <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>설정<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a th:href="@{/password}">비밀번호 변경</a>
+                        </li>
+                    </ul>
+                    <!-- /.nav-second-level -->
+                </li>
+            </ul>
+        </div>
+        <!-- /.sidebar-collapse -->
     </div>
+    <!-- /.navbar-static-side -->
 </body>
 </html>

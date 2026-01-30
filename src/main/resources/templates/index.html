@@ -1,13 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/header :: header}"></head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+
 <body>
-    <div th:replace="~{fragments/topmenu :: topmenu}"></div>
-    <div style="display: flex;">
-        <div th:replace="~{fragments/leftmenu :: leftmenu}"></div>
-        <div>
-            <h1>hello world</h1>
-        </div>
+    <div layout:fragment="content">
+        <h1>hello world</h1>
     </div>
 </body>
 </html>

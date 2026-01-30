@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+    <title>Ktree Admin</title>
+</head>
+<body>
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div th:replace="~{fragments/topmenu :: topmenu}"></div>
+        <div th:replace="~{fragments/leftmenu :: leftmenu}"></div>
+    </nav>
+    <div id="page-wrapper">
+        <div layout:fragment="content">
+        <!-- Content of specific pages will go here -->
+        </div>
+    </div>
+    </div>
+</body>
+</html>
