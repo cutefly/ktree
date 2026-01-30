@@ -2,7 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
     <div th:fragment="topmenu" style="display: flex; justify-content: space-between; align-items: center; background-color: #f8f9fa; padding: 10px 20px;">
-        <h1>Top Menu</h1>
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse"
                 sec:authorize="isAuthenticated()">
