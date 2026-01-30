@@ -7,3 +7,6 @@ spring:
     username: kpc_backoffice
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
+
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
