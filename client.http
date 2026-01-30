@@ -4,3 +4,9 @@ GET http://localhost:8080/api/employees
 ###
 GET http://localhost:8080/api/employee
 
+###
+GET http://localhost:8080/css/common.css
+
+###
+GET http://localhost:8080/js/login.js
+
