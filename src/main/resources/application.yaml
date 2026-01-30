@@ -5,5 +5,5 @@ spring:
   datasource:
     url: jdbc:postgresql://k3s.club012.com:5432/kpc_backoffice
     username: kpc_backoffice
-    password: back0417!
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
