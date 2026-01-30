@@ -4,7 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+// import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console; // Not used anymore
 
 @Configuration
 @EnableWebSecurity
@@ -13,10 +16,30 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/**").permitAll()
-                .anyRequest().authenticated()
-            );
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/", "/login", "/css/**", "/js/**").permitAll() // Permit access to home, login page, static resources
+                        .requestMatchers("/api/**").authenticated() // Require authentication for /api/**
+                        .anyRequest().authenticated() // All other requests require authentication
+                )
+                .formLogin(formLogin -> formLogin
+                        .loginPage("/login") // Custom login page
+                        .loginProcessingUrl("/login-proc") // URL to submit username and password
+                        .defaultSuccessUrl("/", true) // Redirect to home page after successful login
+                        .failureUrl("/login?error") // Redirect to login page with error on failed login
+                        .permitAll() // Allow everyone to access login related URLs
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout") // URL for logout
+                        .logoutSuccessUrl("/login") // Redirect to login page after logout
+                        .invalidateHttpSession(true) // Invalidate HTTP session
+                        .deleteCookies("JSESSIONID") // Delete cookies
+                        .permitAll() // Allow everyone to access logout related URLs
+                );
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

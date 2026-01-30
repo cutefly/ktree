@@ -18,4 +18,8 @@ public class EmployeeService {
     public List<Employee> getAllEmployees() {
         return employeeDao.findAllEmployees();
     }
+
+    public Employee getEmployeeByEmployeId(String employeId) {
+        return employeeDao.findByEmployeId(employeId).orElse(null);
+    }
 }

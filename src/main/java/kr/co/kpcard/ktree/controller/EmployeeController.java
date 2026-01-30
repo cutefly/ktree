@@ -3,6 +3,8 @@ package kr.co.kpcard.ktree.controller;
 import kr.co.kpcard.ktree.domain.Employee;
 import kr.co.kpcard.ktree.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,5 +21,14 @@ public class EmployeeController {
     @GetMapping("/employees")
     public List<Employee> getEmployees() {
         return employeeService.getAllEmployees();
+    }
+
+    @GetMapping("/employee")
+    public Employee getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            String employeId = userDetails.getUsername();
+            return employeeService.getEmployeeByEmployeId(employeId);
+        }
+        return null;
     }
 }
