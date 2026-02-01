@@ -8,7 +8,7 @@
  */
 ;(function($, window, document, undefined) {
 
-    var pluginName = metisMenu,
+    var pluginName = "metisMenu",
         defaults = {
             toggle: true,
             doubleTapToGo: false
@@ -30,36 +30,36 @@
                 obj = this;
 
             if (this.isIE() <= 9) {
-                $this.find(li.active).has(ul).children(ul).collapse(show);
-                $this.find(li).not(.active).has(ul).children(ul).collapse(hide);
+                $this.find("li.active").has("ul").children("ul").collapse("show");
+                $this.find("li").not(".active").has("ul").children("ul").collapse("hide");
             } else {
-                $this.find(li.active).has(ul).children(ul).addClass(collapse in);
-                $this.find(li).not(.active).has(ul).children(ul).addClass(collapse);
+                $this.find("li.active").has("ul").children("ul").addClass("collapse in");
+                $this.find("li").not(".active").has("ul").children("ul").addClass("collapse");
             }
 
-            //add the doubleTapToGo class to active items if needed
+            //add the "doubleTapToGo" class to active items if needed
             if (obj.settings.doubleTapToGo) {
-                $this.find(li.active).has(ul).children(a).addClass(doubleTapToGo);
+                $this.find("li.active").has("ul").children("a").addClass("doubleTapToGo");
             }
 
-            $this.find(li).has(ul).children(a).on(click + . + pluginName, function(e) {
+            $this.find("li").has("ul").children("a").on("click" + "." + pluginName, function(e) {
                 e.preventDefault();
 
                 //Do we need to enable the double tap
                 if (obj.settings.doubleTapToGo) {
 
                     //if we hit a second time on the link and the href is valid, navigate to that url
-                    if (obj.doubleTapToGo($(this)) && $(this).attr(href) !== # && $(this).attr(href) !== ) {
+                    if (obj.doubleTapToGo($(this)) && $(this).attr("href") !== "#" && $(this).attr("href") !== "") {
                         e.stopPropagation();
-                        document.location = $(this).attr(href);
+                        document.location = $(this).attr("href");
                         return;
                     }
                 }
 
-                $(this).parent(li).toggleClass(active).children(ul).collapse(toggle);
+                $(this).parent("li").toggleClass("active").children("ul").collapse("toggle");
 
                 if ($toggle) {
-                    $(this).parent(li).siblings().removeClass(active).children(ul.in).collapse(hide);
+                    $(this).parent("li").siblings().removeClass("active").children("ul.in").collapse("hide");
                 }
 
             });
@@ -68,11 +68,11 @@
         isIE: function() { //https://gist.github.com/padolsey/527683
             var undef,
                 v = 3,
-                div = document.createElement(div),
-                all = div.getElementsByTagName(i);
+                div = document.createElement("div"),
+                all = div.getElementsByTagName("i");
 
             while (
-                div.innerHTML = <!--[if gt IE  + (++v) + ]><i></i><![endif]-->,
+                div.innerHTML = "<!--[if gt IE " + (++v) + "]><i></i><![endif]-->",
                 all[0]
             ) {
                 return v > 4 ? v : undef;
@@ -83,24 +83,24 @@
         doubleTapToGo: function(elem) {
             var $this = this.element;
 
-            //if the class doubleTapToGo exists, remove it and return
-            if (elem.hasClass(doubleTapToGo)) {
-                elem.removeClass(doubleTapToGo);
+            //if the class "doubleTapToGo" exists, remove it and return
+            if (elem.hasClass("doubleTapToGo")) {
+                elem.removeClass("doubleTapToGo");
                 return true;
             }
 
             //does not exists, add a new class and return false
-            if (elem.parent().children(ul).length) {
+            if (elem.parent().children("ul").length) {
                  //first remove all other class
-                $this.find(.doubleTapToGo).removeClass(doubleTapToGo);
+                $this.find(".doubleTapToGo").removeClass("doubleTapToGo");
                 //add the class on the current element
-                elem.addClass(doubleTapToGo);
+                elem.addClass("doubleTapToGo");
                 return false;
             }
         },
 
         remove: function() {
-            this.element.off(. + pluginName);
+            this.element.off("." + pluginName);
             this.element.removeData(pluginName);
         }
 

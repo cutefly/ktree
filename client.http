@@ -10,3 +10,6 @@ GET http://localhost:8080/css/common.css
 ###
 GET http://localhost:8080/js/login.js
 
+###
+GET http://localhost:8080/js/metisMenu.js
+

@@ -9,9 +9,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 // import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console; // Not used anymore
 
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final AuthenticationSuccessHandler authenticationSuccessHandler;
+
+    public SecurityConfig(AuthenticationSuccessHandler authenticationSuccessHandler) {
+        this.authenticationSuccessHandler = authenticationSuccessHandler;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -24,7 +32,7 @@ public class SecurityConfig {
                 .formLogin(formLogin -> formLogin
                         .loginPage("/login") // Custom login page
                         .loginProcessingUrl("/login-proc") // URL to submit username and password
-                        .defaultSuccessUrl("/", true) // Redirect to home page after successful login
+                        .successHandler(authenticationSuccessHandler) // Redirect to home page after successful login
                         .failureUrl("/login?error") // Redirect to login page with error on failed login
                         .permitAll() // Allow everyone to access login related URLs
                 )
