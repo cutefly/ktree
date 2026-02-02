@@ -1,6 +1,6 @@
 package kr.co.kpcard.ktree.controller;
 
-import kr.co.kpcard.ktree.service.EmployeeService;
+import kr.co.kpcard.ktree.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,14 +11,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Slf4j
 @Controller
 @RequiredArgsConstructor
 public class PasswordController {
 
-    private final EmployeeService employeeService;
+    private final UserInfoService userInfoService;
 
     @GetMapping("/password")
     public String showPasswordChangePage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
@@ -49,7 +48,7 @@ public class PasswordController {
         }
 
         // 새로운 비밀번호
-        boolean success = employeeService.changePassword(employeId, oldPassword, newPassword);
+        boolean success = userInfoService.changePassword(employeId, oldPassword, newPassword);
 
         if (success) {
             model.addAttribute("success", "비밀번호가 정상적으로 변경이 되었습니다.");

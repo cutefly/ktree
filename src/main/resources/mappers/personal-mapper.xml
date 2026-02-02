@@ -1,50 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="Personal">
-    <select id="findAllEmployees" resultType="kr.co.kpcard.ktree.domain.Employee">
-        SELECT seq,
-               employe_id,
-               name,
-               pwd,
-               authority_code,
-               create_date,
-               use_yn,
-               team_code,
-               division_code,
-               position,
-               confirm1,
-               confirm2
-        FROM kpc_employe
-    </select>
+    <select id="findAllEmployees" resultType="kr.co.kpcard.ktree.domain.Employee"> SELECT seq,
+        employe_id, name, pwd, authority_code, create_date, use_yn, team_code, division_code,
+        position, confirm1, confirm2 FROM kpc_employe </select>
 
-    <select id="findByEmployeId" resultType="kr.co.kpcard.ktree.domain.Employee">
-        SELECT seq,
-               employe_id,
-               name,
-               pwd,
-               authority_code,
-               create_date,
-               use_yn,
-               team_code,
-               division_code,
-               position,
-               confirm1,
-               confirm2
-        FROM kpc_employe
-        WHERE employe_id = #{employeId}
-    </select>
-
-    <select id="findAuthorityLevelByEmployeId" resultType="java.lang.Integer">
-        SELECT authority_level
-        FROM kpc_personal_authority
-        WHERE employe_id = #{employeId}
-    </select>
-
-    <update id="updatePassword" parameterType="map">
-        UPDATE kpc_employe
-        SET pwd = #{newPassword}
-        WHERE employe_id = #{employeId}
-    </update>
+    <select id="findByEmployeId" resultType="kr.co.kpcard.ktree.domain.Employee"> SELECT seq,
+        employe_id, name, pwd, authority_code, create_date, use_yn, team_code, division_code,
+        position, confirm1, confirm2 FROM kpc_employe WHERE employe_id = #{employeId} </select>
 </mapper>

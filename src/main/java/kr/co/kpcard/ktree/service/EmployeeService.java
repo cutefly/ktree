@@ -22,15 +22,4 @@ public class EmployeeService {
     public Employee getEmployeeByEmployeId(String employeId) {
         return employeeDao.findByEmployeId(employeId).orElse(null);
     }
-
-    @Transactional
-    public boolean changePassword(String employeId, String currentPassword, String newPassword) {
-        Employee employee = getEmployeeByEmployeId(employeId);
-        if (employee != null && currentPassword.equals(employee.pwd())) {
-            // String encodedNewPassword = passwordEncoder.encode(newPassword);
-            employeeDao.updatePassword(employeId, newPassword);
-            return true;
-        }
-        return false;
-    }
 }

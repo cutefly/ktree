@@ -12,27 +12,27 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import kr.co.kpcard.ktree.domain.Employee;
-import kr.co.kpcard.ktree.service.EmployeeService;
+import kr.co.kpcard.ktree.domain.UserInfo;
+import kr.co.kpcard.ktree.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final EmployeeService employeeService;
+    private final UserInfoService userInfoService;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
             Authentication authentication) throws IOException, ServletException {
 
         String username = authentication.getName();
-        Employee employee = employeeService.getEmployeeByEmployeId(username);
+        UserInfo userInfo = userInfoService.getUserByUserId(username);
 
-        if (employee != null) {
+        if (userInfo != null) {
             HttpSession session = request.getSession();
-            session.setAttribute("employeId", employee.employeId());
-            session.setAttribute("employeName", employee.name());
+            session.setAttribute("employeId", userInfo.employeId());
+            session.setAttribute("employeName", userInfo.name());
 
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
             if (!authorities.isEmpty()) {

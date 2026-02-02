@@ -1,7 +1,7 @@
 package kr.co.kpcard.ktree.service;
 
-import kr.co.kpcard.ktree.dao.EmployeeDao;
-import kr.co.kpcard.ktree.domain.Employee;
+import kr.co.kpcard.ktree.dao.UserInfoDao;
+import kr.co.kpcard.ktree.domain.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,22 +20,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    private final EmployeeDao employeeDao;
+    private final UserInfoDao userInfoDao;
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String employeId) throws UsernameNotFoundException {
-        Optional<Employee> employeeOptional = employeeDao.findByEmployeId(employeId);
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+        Optional<UserInfo> userInfoOptional = userInfoDao.findByUserId(userId);
 
-        Employee employee = employeeOptional
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with employeeId: " + employeId));
+        UserInfo userInfo = userInfoOptional
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with userId: " + userId));
 
         // Corrected accessor methods for record
-        String username = employee.employeId();
-        String password = employee.pwd();
+        String username = userInfo.employeId();
+        String password = userInfo.pwd();
 
         // Fetch authority_level
-        Optional<Integer> authorityLevelOptional = employeeDao.findAuthorityLevelByEmployeId(username);
+        Optional<Integer> authorityLevelOptional = userInfoDao.findAuthorityLevelByUserId(username);
         Integer authorityLevel = authorityLevelOptional.orElse(0); // Default to 0 if not found
 
         List<GrantedAuthority> authorities = new ArrayList<>();
