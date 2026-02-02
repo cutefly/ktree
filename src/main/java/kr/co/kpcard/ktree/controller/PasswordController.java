@@ -29,16 +29,34 @@ public class PasswordController {
     }
 
     @PostMapping("/change-password")
-    @ResponseBody
-    public String changePassword(@AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam("oldPassword") String currentPassword,
-            @RequestParam("newPassword") String newPassword) {
-        log.debug("Password change request for user: {}", userDetails.getUsername());
-        if (userDetails == null) {
-            return "F";
+    public String changePassword(@RequestParam("employeId") String employeId,
+            @RequestParam("oldPassword") String oldPassword,
+            @RequestParam("newPassword") String newPassword,
+            @RequestParam("confirmNewPassword") String confirmNewPassword,
+            Model model) {
+
+        log.debug("현재 비밀번호 : {}, 새로운 비밀번호 : {}", oldPassword, newPassword);
+        if (!newPassword.equals(confirmNewPassword)) {
+            model.addAttribute("error", "새로운 비밀번호가 일치하지 않습니다.");
+            model.addAttribute("employeId", employeId);
+            return "password";
         }
-        log.debug("Current Password: {}, New Password: {}", currentPassword, newPassword);
-        boolean success = employeeService.changePassword(userDetails.getUsername(), currentPassword, newPassword);
-        return success ? "S" : "F";
+
+        if (newPassword.equals(oldPassword)) {
+            model.addAttribute("error", "현재 비밀번호와 새로운 비밀번호가 동일합니다.");
+            model.addAttribute("employeId", employeId);
+            return "password";
+        }
+
+        // 새로운 비밀번호
+        boolean success = employeeService.changePassword(employeId, oldPassword, newPassword);
+
+        if (success) {
+            model.addAttribute("success", "비밀번호가 정상적으로 변경이 되었습니다.");
+        } else {
+            model.addAttribute("error", "비밀번호 변경 오류가 있습니다. 현재 비밀번호를 확인해 주세요.");
+        }
+        model.addAttribute("employeId", employeId);
+        return "password";
     }
 }
