@@ -47,8 +47,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return User.builder()
                 .username(username)
-                // Password from DB is assumed to be plain text here, so encode it.
-                // In a real application, passwords in DB should be stored as encoded strings.
                 .password(passwordEncoder.encode(password))
                 .authorities(authorities)
                 .build();
