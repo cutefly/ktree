@@ -3,29 +3,29 @@
 $(function() {
 
     var data = [{
-        label: POP,
+        label: "POP",
         data: 16655
     }, {
-        label: Egg Money,
+        label: "Egg Money",
         data: 316
     }, {
-        label: Happy Money,
+        label: "Happy Money",
         data: 1042
     }, {
-        label: Others,
+        label: "Others",
         data: 1759
     }, {
-        label: Googel Physical,
+        label: "Googel Physical",
         data: 6629
     }, {
-        label: Google Digital,
+        label: "Google Digital",
         data: 379
     }, {
-        label: Local,
+        label: "Local",
         data: 239
     }];
 
-    var plotObj = $.plot($(#flot-pie-chart), data, {
+    var plotObj = $.plot($("#flot-pie-chart"), data, {
         series: {
             pie: {
                 show: true
@@ -36,7 +36,7 @@ $(function() {
         },
         tooltip: true,
         tooltipOpts: {
-            content: %p.0%, %s, // show percentages, rounding to 2 decimal places
+            content: "%p.0%, %s", // show percentages, rounding to 2 decimal places
             shifts: {
                 x: 20,
                 y: 0
@@ -99,27 +99,27 @@ $(function() {
     }
 
     function doPlot(position) {
-        $.plot($(#flot-line-chart-multi), [{
+        $.plot($("#flot-line-chart-multi"), [{
             data: POP,
-            label: POP
+            label: "POP"
         }, {
             data: EggMoney,
-            label: EggMoney
+            label: "EggMoney"
         }, {
             data: HappyMoney,
-            label: HappyMoney
+            label: "HappyMoney"
         }, {
             data: Others,
-            label: Others
+            label: "Others"
         }, {
             data: GoogelPhysical,
-            label: GoogelPhysical
+            label: "GoogelPhysical"
         }, {
             data: GoogleDigital,
-            label: GoogleDigital
+            label: "GoogleDigital"
         }, {
             data: Local,
-            label: Local
+            label: "Local"
         }], {
             xaxes: [{
                 mode: 'time'
@@ -128,7 +128,7 @@ $(function() {
                 min: 0
             }, {
                 // align if we are to the right
-                alignTicksWithAxis: position == right ? 1 : null,
+                alignTicksWithAxis: position == "right" ? 1 : null,
                 position: position,
                 tickFormatter: euroFormatter
             }],
@@ -140,8 +140,8 @@ $(function() {
             },
             tooltip: true,
             tooltipOpts: {
-                content: %s for %x was %y,
-                xDateFormat: %y-%m-%d,
+                content: "%s for %x was %y",
+                xDateFormat: "%y-%m-%d",
 
                 onHover: function(flotItem, $tooltipEl) {
                     // console.log(flotItem, $tooltipEl);
@@ -151,9 +151,9 @@ $(function() {
         });
     }
 
-    doPlot(right);
+    doPlot("right");
 
-    $(button).click(function() {
+    $("button").click(function() {
         doPlot($(this).text());
     });
 });
@@ -170,9 +170,9 @@ $(function() {
             }
         },
         xaxis: {
-            mode: time,
-            timeformat: %m/%d,
-            minTickSize: [4, day]
+            mode: "time",
+            timeformat: "%m/%d",
+            minTickSize: [4, "day"]
         },
         grid: {
             hoverable: true
@@ -182,11 +182,11 @@ $(function() {
         },
         tooltip: true,
         tooltipOpts: {
-            content: x: %x, y: %y
+            content: "x: %x, y: %y"
         }
     };
     var barData = {
-        label: bar,
+        label: "bar",
         data: [
             [1467331200000, 10373363162],
             [1468195200000, 7331907123],
@@ -194,6 +194,6 @@ $(function() {
             [1469404800000, 7305152338]
         ]
     };
-    $.plot($(#flot-bar-chart), [barData], barOptions);
+    $.plot($("#flot-bar-chart"), [barData], barOptions);
 
 });

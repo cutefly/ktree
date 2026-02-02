@@ -1,9 +1,9 @@
 //로그인  처리
 var login = function(){
-	if($('#employeId').val() == ""){
+	if($("#employeId").val()==""){
 		alert("아이디를 입력해주세요.");
 		return;
-	}else if($('#employePw').val() == ""){
+	}else if($("#employePw").val()==""){
 		alert("비밀번호를 입력해주세요.");
 		return;
 	}
@@ -11,11 +11,11 @@ var login = function(){
 		url : 'loginProc',
 		type : 'post',
 		dataType : 'text',
-		data : {employeId : $("#employeId").val(), employePw:$("#employePw").val()},
+		data : {"employeId" : $("#employeId").val(), "employePw":$("#employePw").val()},
 		success:function(data){
 			var dataJson = JSON.parse(data);
 			if ( dataJson.result == "S") {
-				alert(dataJson.message+'님 로그인 되었습니다.');
+				alert("'"+dataJson.message+"'님 로그인 되었습니다.");
 				document.location.href='main';
 			} else {
 				alert(dataJson.message);
@@ -30,7 +30,7 @@ var login = function(){
 
 //Enter Submit
 $(function(){
-	$('input[type=text], input[type=password]').keydown(function(e){
+	$("text").keydown(function(e){
 		if(e.keyCode == 13){
 			login();
 			return false;
