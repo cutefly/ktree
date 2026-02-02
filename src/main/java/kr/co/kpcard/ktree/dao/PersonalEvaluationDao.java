@@ -13,20 +13,20 @@ import kr.co.kpcard.ktree.domain.ResultPerformanceScore;
 import kr.co.kpcard.ktree.domain.ResultValueScore;
 import kr.co.kpcard.ktree.domain.TeamInfo;
 import kr.co.kpcard.ktree.domain.ValueScore;
+import lombok.RequiredArgsConstructor;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
 public class PersonalEvaluationDao {
 
 	private final Logger logger = LoggerFactory.getLogger(PersonalEvaluationDao.class);
 
-	@Autowired
 	SqlSessionTemplate sqlSession;
 
 	@Resource(name = "transactionManager")

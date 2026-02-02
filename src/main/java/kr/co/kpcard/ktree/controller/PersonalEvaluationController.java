@@ -13,11 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,30 +24,25 @@ import kr.co.kpcard.ktree.app.GlobalException;
 import kr.co.kpcard.ktree.domain.DivisionInfo;
 import kr.co.kpcard.ktree.domain.Employe;
 import kr.co.kpcard.ktree.domain.PerformanceScore;
+import kr.co.kpcard.ktree.domain.PerformanceValue;
 import kr.co.kpcard.ktree.domain.ProjectScore;
 import kr.co.kpcard.ktree.domain.ResultPerformanceScore;
 import kr.co.kpcard.ktree.domain.ResultProjectScore;
 import kr.co.kpcard.ktree.domain.TeamInfo;
-import kr.co.kpcard.ktree.service.PerformanceValue;
 import kr.co.kpcard.ktree.service.PersonalEvaluationService;
 import kr.co.kpcard.ktree.utility.DateUtil;
+import lombok.RequiredArgsConstructor;
 
-@Controller("PersonalEvalation")
+@Controller("PersonalEvaluation")
+@RequiredArgsConstructor
 @SessionAttributes("Member")
 public class PersonalEvaluationController {
 	protected final Logger logger = LoggerFactory.getLogger(PersonalEvaluationController.class);
 
-	@Autowired
-	private PersonalEvaluationService personalEvalationService;
+	private PersonalEvaluationService personalEvaluationService;
 
-	@Value("${api.host}")
-	private String API_HOST;
-
-	@Value("${api.login.path}")
-	private String API_LOGIN_PATH;
-
-	@Value("${valid.work.date}")
-	private Integer validWorkDate; // 영업일
+	// @Value("${valid.work.date}")
+	private Integer validWorkDate = 20260101; // 영업일
 
 	/**
 	 * 메인화면
@@ -70,7 +62,7 @@ public class PersonalEvaluationController {
 	 */
 	@RequestMapping(value = "/password")
 	public String password(HttpServletRequest request) {
-		Employe employeInfo = personalEvalationService
+		Employe employeInfo = personalEvaluationService
 				.getEmploye((String) (request.getSession().getAttribute("employeId")));
 		request.setAttribute("employeInfo", employeInfo);
 		return "/sub/setting/password";
@@ -90,7 +82,7 @@ public class PersonalEvaluationController {
 			HttpServletRequest request) {
 		logger.info("savePassword | IN | Param: password={}", password);
 		String msg = "";
-		boolean result = personalEvalationService
+		boolean result = personalEvaluationService
 				.updatePassword((String) (request.getSession().getAttribute("employeId")), password);
 
 		if (result) {
@@ -137,8 +129,8 @@ public class PersonalEvaluationController {
 		logger.info("currentDate : " + sdf.format(today) + ", limitDate : " + sdf.format(limitDayOfMonth)
 				+ ", isAvaliable : " + request.getAttribute("isAvailable"));
 
-		List<DivisionInfo> divisionList = personalEvalationService.getDivisionList();
-		List<TeamInfo> teamList = personalEvalationService.getTeamList(1);
+		List<DivisionInfo> divisionList = personalEvaluationService.getDivisionList();
+		List<TeamInfo> teamList = personalEvaluationService.getTeamList(1);
 		request.setAttribute("divisionList", divisionList); // 부서리스트
 		request.setAttribute("teamList", teamList); // 팀리스트
 
@@ -164,8 +156,8 @@ public class PersonalEvaluationController {
 
 		// Admin이 아닌 경우 접근 불가
 		if (request.getSession().getAttribute("employeId").equals("kpc_admin")) {
-			List<DivisionInfo> divisionList = personalEvalationService.getDivisionList();
-			List<TeamInfo> teamList = personalEvalationService.getTeamList(1);
+			List<DivisionInfo> divisionList = personalEvaluationService.getDivisionList();
+			List<TeamInfo> teamList = personalEvaluationService.getTeamList(1);
 			request.setAttribute("divisionList", divisionList); // 부서리스트
 			request.setAttribute("teamList", teamList); // 팀리스트
 
@@ -201,14 +193,14 @@ public class PersonalEvaluationController {
 			if (Integer.parseInt(DateUtil.getCurrentDate("yyyyMM")) > Integer.parseInt(yyyyMM)) {
 				if (searchOption.equals("all")) {
 					if (divisionCode > 0) {
-						result = personalEvalationService.getProjectScoreDivision(
+						result = personalEvaluationService.getProjectScoreDivision(
 								(String) request.getSession().getAttribute("employeId"), yyyyMM, divisionCode);
 					} else {
-						result = personalEvalationService
+						result = personalEvaluationService
 								.getProjectScoreAll((String) request.getSession().getAttribute("employeId"), yyyyMM);
 					}
 				} else {
-					result = personalEvalationService
+					result = personalEvaluationService
 							.getProjectScore((String) request.getSession().getAttribute("employeId"), yyyyMM);
 				}
 
@@ -257,14 +249,14 @@ public class PersonalEvaluationController {
 			if (Integer.parseInt(DateUtil.getCurrentDate("yyyyMM")) > Integer.parseInt(yyyyMM)) {
 				if (searchOption.equals("all")) {
 					if (divisionCode > 0) {
-						result = personalEvalationService.getProjectScoreDivision(
+						result = personalEvaluationService.getProjectScoreDivision(
 								(String) request.getSession().getAttribute("employeId"), yyyyMM, divisionCode);
 					} else {
-						result = personalEvalationService
+						result = personalEvaluationService
 								.getProjectScoreAll((String) request.getSession().getAttribute("employeId"), yyyyMM);
 					}
 				} else {
-					result = personalEvalationService
+					result = personalEvaluationService
 							.getProjectScore((String) request.getSession().getAttribute("employeId"), yyyyMM);
 				}
 				request.setAttribute("projectScoreList", result.get("resultProjectScore"));
@@ -346,9 +338,9 @@ public class PersonalEvaluationController {
 			}
 
 			if (request.getSession().getAttribute("employeId").equals("kpc_admin")) {
-				isSuccessed = personalEvalationService.saveProjectScoreAdmin(projectScoreList);
+				isSuccessed = personalEvaluationService.saveProjectScoreAdmin(projectScoreList);
 			} else {
-				isSuccessed = personalEvalationService.saveProjectScore(projectScoreList);
+				isSuccessed = personalEvaluationService.saveProjectScore(projectScoreList);
 			}
 
 			if (isSuccessed) {
@@ -376,7 +368,7 @@ public class PersonalEvaluationController {
 			@RequestParam(value = "yyyyMM") String yyyyMM,
 			HttpServletRequest request) {
 		HashMap<String, Object> result = new HashMap<String, Object>();
-		result = personalEvalationService.getProjectScore(employeId, yyyyMM);
+		result = personalEvaluationService.getProjectScore(employeId, yyyyMM);
 		for (ResultProjectScore projectScore : (List<ResultProjectScore>) result.get("resultProjectScore")) {
 			request.setAttribute("employeId", employeId);
 			request.setAttribute("yyyyMM", yyyyMM);
@@ -437,7 +429,7 @@ public class PersonalEvaluationController {
 		projectScore.setStatus(status);
 		projectScore.setConfirmNumber(1);
 
-		if (personalEvalationService.saveProjectDissent(projectScore)) {
+		if (personalEvaluationService.saveProjectDissent(projectScore)) {
 			res = "S";
 		} else {
 			res = "F";
@@ -515,7 +507,7 @@ public class PersonalEvaluationController {
 			if (Integer.parseInt(DateUtil.getCurrentDate("yyyyMM")) > Integer.parseInt(yyyyMM)) {
 				List<PerformanceValue> performanceValueList = new ArrayList<PerformanceValue>();
 
-				performanceValueList = personalEvalationService.getTotalScoreList(
+				performanceValueList = personalEvaluationService.getTotalScoreList(
 						(String) request.getSession().getAttribute("employeId"),
 						(Integer) request.getSession().getAttribute("authLevel"),
 						yyyyMM);
@@ -553,7 +545,7 @@ public class PersonalEvaluationController {
 
 		List<PerformanceValue> performanceValueList = new ArrayList<PerformanceValue>();
 
-		performanceValueList = personalEvalationService.getTotalScoreList(
+		performanceValueList = personalEvaluationService.getTotalScoreList(
 				(String) request.getSession().getAttribute("employeId"),
 				(Integer) request.getSession().getAttribute("authLevel"),
 				yyyyMM);
@@ -583,7 +575,7 @@ public class PersonalEvaluationController {
 			Model model) {
 		PerformanceValue performanceValue = new PerformanceValue();
 
-		performanceValue = personalEvalationService.getTotalScore(employeId,
+		performanceValue = personalEvaluationService.getTotalScore(employeId,
 				authLevel,
 				yyyyMM);
 
@@ -610,7 +602,7 @@ public class PersonalEvaluationController {
 			Model model) {
 		PerformanceValue performanceValue = new PerformanceValue();
 
-		performanceValue = personalEvalationService.getTotalScore(employeId,
+		performanceValue = personalEvaluationService.getTotalScore(employeId,
 				authLevel,
 				yyyyMM);
 
@@ -635,7 +627,7 @@ public class PersonalEvaluationController {
 			Model model) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
-		resultMap = personalEvalationService.getTotalScoreMap(employeId,
+		resultMap = personalEvaluationService.getTotalScoreMap(employeId,
 				(Integer) request.getSession().getAttribute("authLevel"),
 				yyyyMM);
 		ResultPerformanceScore resPerfom = (ResultPerformanceScore) resultMap.get("performanceScore");
@@ -672,7 +664,7 @@ public class PersonalEvaluationController {
 			Model model) {
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
-		resultMap = personalEvalationService.getTotalScoreMap(employeId,
+		resultMap = personalEvaluationService.getTotalScoreMap(employeId,
 				(Integer) request.getSession().getAttribute("authLevel"),
 				yyyyMM);
 		ResultPerformanceScore resPerfom = (ResultPerformanceScore) resultMap.get("performanceScore");
@@ -747,9 +739,9 @@ public class PersonalEvaluationController {
 		}
 
 		if (employeId.equals("990101")) {
-			result = personalEvalationService.saveTotalScoreCEO(performanceValue);
+			result = personalEvaluationService.saveTotalScoreCEO(performanceValue);
 		} else {
-			result = personalEvalationService.saveTotalScore(performanceValue, confirmNumber);
+			result = personalEvaluationService.saveTotalScore(performanceValue, confirmNumber);
 		}
 
 		if (result) {
@@ -815,7 +807,7 @@ public class PersonalEvaluationController {
 				performanceValue.setDissentComments2(dissentComments.get(index));
 			}
 
-			result = personalEvalationService.saveTotalScore(performanceValue, confirmNumber);
+			result = personalEvaluationService.saveTotalScore(performanceValue, confirmNumber);
 
 			if (result) {
 				res = "S";
@@ -853,7 +845,7 @@ public class PersonalEvaluationController {
 		performanceScore.setDissent(dissent);
 		performanceScore.setConfirmNumber(authLevel);
 
-		if (personalEvalationService.savePerformDissent(performanceScore)) {
+		if (personalEvaluationService.savePerformDissent(performanceScore)) {
 			res = "S";
 		} else {
 			res = "F";

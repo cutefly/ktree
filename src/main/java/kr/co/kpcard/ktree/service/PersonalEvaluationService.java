@@ -6,13 +6,12 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import kr.co.kpcard.ktree.domain.DivisionInfo;
 import kr.co.kpcard.ktree.domain.Employe;
 import kr.co.kpcard.ktree.domain.PerformanceScore;
+import kr.co.kpcard.ktree.domain.PerformanceValue;
 import kr.co.kpcard.ktree.dao.PersonalEvaluationDao;
 import kr.co.kpcard.ktree.domain.ProjectScore;
 import kr.co.kpcard.ktree.domain.ResultPerformanceScore;
@@ -20,8 +19,10 @@ import kr.co.kpcard.ktree.domain.ResultProjectScore;
 import kr.co.kpcard.ktree.domain.ResultValueScore;
 import kr.co.kpcard.ktree.domain.TeamInfo;
 import kr.co.kpcard.ktree.domain.ValueScore;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class PersonalEvaluationService {
 
 	protected final Logger logger = LoggerFactory.getLogger(PersonalEvaluationService.class);
@@ -34,8 +35,7 @@ public class PersonalEvaluationService {
 	static final List<Integer> developTeam = new ArrayList<Integer>(); // 기술개발연구소
 	static final List<Integer> financeTeam = new ArrayList<Integer>(); // 재무본부
 
-	@Autowired
-	private PersonalEvaluationDao personalEvalationDao;
+	private PersonalEvaluationDao personalEvaluationDao;
 
 	public HashMap<String, Object> getProjectScore(String employeId, String yyyyMM) {
 		logger.info("getProjectScoreList | IN |");
@@ -43,9 +43,9 @@ public class PersonalEvaluationService {
 		List<ResultProjectScore> resultList = new ArrayList<ResultProjectScore>();
 		List<ProjectScore> resultHistoryList = new ArrayList<ProjectScore>();
 		ResultProjectScore resultProjectScore = new ResultProjectScore();
-		ProjectScore projectScore = personalEvalationDao.getProjectScore(employeId, yyyyMM);
-		ProjectScore projectScoreHistory = personalEvalationDao.getProjectScoreHistory(employeId, yyyyMM);
-		Employe employe = personalEvalationDao.getEmploye(employeId);
+		ProjectScore projectScore = personalEvaluationDao.getProjectScore(employeId, yyyyMM);
+		ProjectScore projectScoreHistory = personalEvaluationDao.getProjectScoreHistory(employeId, yyyyMM);
+		Employe employe = personalEvaluationDao.getEmploye(employeId);
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
 		setRatio();
@@ -121,9 +121,9 @@ public class PersonalEvaluationService {
 		logger.info("getProjectScoreListALL | IN |");
 
 		List<ResultProjectScore> resultList = new ArrayList<ResultProjectScore>();
-		List<ProjectScore> projectScoreList = personalEvalationDao.getProjectScoreAll(employeId, yyyyMM);
-		List<ProjectScore> projectScoreHistoryList = personalEvalationDao.getProjectScoreAllHistory(employeId, yyyyMM);
-		List<Employe> employeList = personalEvalationDao.getEmployeList();
+		List<ProjectScore> projectScoreList = personalEvaluationDao.getProjectScoreAll(employeId, yyyyMM);
+		List<ProjectScore> projectScoreHistoryList = personalEvaluationDao.getProjectScoreAllHistory(employeId, yyyyMM);
+		List<Employe> employeList = personalEvaluationDao.getEmployeList();
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
 		setRatio();
@@ -212,9 +212,9 @@ public class PersonalEvaluationService {
 		logger.info("getProjectScoreListDivision | IN |");
 
 		List<ResultProjectScore> resultList = new ArrayList<ResultProjectScore>();
-		List<ProjectScore> projectScoreList = personalEvalationDao.getProjectScoreAll(employeId, yyyyMM);
-		List<ProjectScore> projectScoreHistoryList = personalEvalationDao.getProjectScoreAllHistory(employeId, yyyyMM);
-		List<Employe> employeList = personalEvalationDao.getEmployeList();
+		List<ProjectScore> projectScoreList = personalEvaluationDao.getProjectScoreAll(employeId, yyyyMM);
+		List<ProjectScore> projectScoreHistoryList = personalEvaluationDao.getProjectScoreAllHistory(employeId, yyyyMM);
+		List<Employe> employeList = personalEvaluationDao.getEmployeList();
 
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
@@ -301,7 +301,7 @@ public class PersonalEvaluationService {
 	public boolean insertProjectScore(ProjectScore projectScore) {
 		logger.info("insertProjectScoreList | IN |");
 		boolean state = false;
-		state = personalEvalationDao.insertProjectScore(projectScore);
+		state = personalEvaluationDao.insertProjectScore(projectScore);
 		logger.info("insertProjectScoreList | OUT |");
 		return state;
 	}
@@ -313,7 +313,7 @@ public class PersonalEvaluationService {
 		boolean state = false;
 
 		seqMap.put("seqList", seqList);
-		state = personalEvalationDao.deleteProjectScore(seqMap);
+		state = personalEvaluationDao.deleteProjectScore(seqMap);
 		logger.info("deleteProjectScoreList | OUT |");
 		return state;
 	}
@@ -323,7 +323,7 @@ public class PersonalEvaluationService {
 
 		boolean state = false;
 
-		state = personalEvalationDao.updateProjectScore(projectScore);
+		state = personalEvaluationDao.updateProjectScore(projectScore);
 		logger.info("updateProjectScoreList | OUT |");
 		return state;
 	}
@@ -331,7 +331,7 @@ public class PersonalEvaluationService {
 	public ResultPerformanceScore getPerformanceScore(String employeId, int authLevel, String yyyyMM) {
 		logger.info("getPerformanceScoreList | IN |");
 
-		ResultPerformanceScore performanceScore = personalEvalationDao.getPerformanceScore(employeId, authLevel,
+		ResultPerformanceScore performanceScore = personalEvaluationDao.getPerformanceScore(employeId, authLevel,
 				yyyyMM);
 		logger.debug("getPerformanceScoreList=> {}", performanceScore);
 		logger.info("getPerformanceScoreList | OUT |");
@@ -341,7 +341,7 @@ public class PersonalEvaluationService {
 	public List<ResultPerformanceScore> getPerformanceScoreList(String employeId, int authLevel, String yyyyMM) {
 		logger.info("getPerformanceScoreListAll | IN |");
 
-		List<ResultPerformanceScore> performanceScoreList = personalEvalationDao.getPerformanceScoreList(employeId,
+		List<ResultPerformanceScore> performanceScoreList = personalEvaluationDao.getPerformanceScoreList(employeId,
 				authLevel, yyyyMM);
 		List<ResultPerformanceScore> performanceScoreResult = new ArrayList<ResultPerformanceScore>();
 		Employe employeInfo = getEmploye(employeId);
@@ -377,7 +377,7 @@ public class PersonalEvaluationService {
 	public boolean insertPerformanceScore(PerformanceScore performanceScore) {
 		logger.info("insertPerformanceScoreList | IN |");
 		boolean state = false;
-		state = personalEvalationDao.insertPerformanceScore(performanceScore);
+		state = personalEvaluationDao.insertPerformanceScore(performanceScore);
 		logger.info("insertPerformanceScoreList | OUT |");
 		return state;
 	}
@@ -389,7 +389,7 @@ public class PersonalEvaluationService {
 		boolean state = false;
 
 		seqMap.put("seqList", seqList);
-		state = personalEvalationDao.deletePerformanceScore(seqMap);
+		state = personalEvaluationDao.deletePerformanceScore(seqMap);
 		logger.info("deletePerformanceScoreList | OUT |");
 		return state;
 	}
@@ -398,7 +398,7 @@ public class PersonalEvaluationService {
 		logger.info("updatePerformanceScoreList | IN |");
 
 		boolean state = false;
-		state = personalEvalationDao.updatePerformanceScore(performanceScore);
+		state = personalEvaluationDao.updatePerformanceScore(performanceScore);
 
 		logger.info("updatePerformanceScoreList | OUT |");
 		return state;
@@ -407,7 +407,7 @@ public class PersonalEvaluationService {
 	public List<ResultValueScore> getValueScore(String searchId, int authLevel, String yyyyMM) {
 		logger.info("getValueScoreList | IN |");
 
-		List<ResultValueScore> valueScoreList = personalEvalationDao.getValueScore(searchId, authLevel, yyyyMM);
+		List<ResultValueScore> valueScoreList = personalEvaluationDao.getValueScore(searchId, authLevel, yyyyMM);
 		logger.info("getValueScoreList | OUT |");
 		return valueScoreList;
 	}
@@ -415,7 +415,7 @@ public class PersonalEvaluationService {
 	public List<ResultValueScore> getValueScoreAll(String employeId, int authLevel, String yyyyMM) {
 		logger.info("getValueScoreListAll | IN |");
 
-		List<ResultValueScore> valueScoreList = personalEvalationDao.getValueScoreAll(employeId, authLevel, yyyyMM);
+		List<ResultValueScore> valueScoreList = personalEvaluationDao.getValueScoreAll(employeId, authLevel, yyyyMM);
 		logger.info("getValueScoreListAll | OUT |");
 
 		return valueScoreList;
@@ -425,7 +425,7 @@ public class PersonalEvaluationService {
 		logger.info("insertValueScoreList | IN |");
 
 		boolean state = false;
-		state = personalEvalationDao.insertValueScore(valueScore);
+		state = personalEvaluationDao.insertValueScore(valueScore);
 
 		logger.info("insertValueScoreList | OUT |");
 
@@ -440,7 +440,7 @@ public class PersonalEvaluationService {
 		boolean state = false;
 
 		seqMap.put("seqList", seqList);
-		state = personalEvalationDao.deleteValueScore(seqMap);
+		state = personalEvaluationDao.deleteValueScore(seqMap);
 		logger.info("deleteValueScoreList | OUT |");
 		return state;
 	}
@@ -450,7 +450,7 @@ public class PersonalEvaluationService {
 
 		boolean state = false;
 
-		state = personalEvalationDao.updateValueScore(valueceScore);
+		state = personalEvaluationDao.updateValueScore(valueceScore);
 		logger.info("updateValueScoreList | OUT |");
 		return state;
 	}
@@ -484,20 +484,21 @@ public class PersonalEvaluationService {
 
 				logger.debug("seq=> {}, status => {}", projectScore.getSeq(), projectScore.getStatus());
 
-				count = personalEvalationDao.getProjectScoreCount(projectScore.getEmployeId(), projectScore.getMonth());
+				count = personalEvaluationDao.getProjectScoreCount(projectScore.getEmployeId(),
+						projectScore.getMonth());
 				if (logger.isDebugEnabled())
 					logger.debug(String.format("empId=> %s, month => %s, count => %d", projectScore.getEmployeId(),
 							projectScore.getMonth(), count));
 
 				if (projectScore.getSeq() > 0) {
-					state = personalEvalationDao.updateProjectScore(projectScore);
+					state = personalEvaluationDao.updateProjectScore(projectScore);
 					if (projectScore.getStatus() == 1) {
-						personalEvalationDao.updateProjectScoreHistory(projectScore);
+						personalEvaluationDao.updateProjectScoreHistory(projectScore);
 					}
 				} else {
-					state = personalEvalationDao.insertProjectScore(projectScore);
+					state = personalEvaluationDao.insertProjectScore(projectScore);
 					if (projectScore.getStatus() == 1) {
-						personalEvalationDao.insertProjectScoreHistory(projectScore);
+						personalEvaluationDao.insertProjectScoreHistory(projectScore);
 					}
 				}
 				if (!state) {
@@ -524,17 +525,18 @@ public class PersonalEvaluationService {
 				logger.debug("state" + projectScore.getStatus() + "saveStatus" + projectScore.getStatus() + "seq=>"
 						+ projectScore.getSeq());
 
-				count = personalEvalationDao.getProjectScoreCount(projectScore.getEmployeId(), projectScore.getMonth());
+				count = personalEvaluationDao.getProjectScoreCount(projectScore.getEmployeId(),
+						projectScore.getMonth());
 
 				if (projectScore.getSeq() > 0) {
-					state = personalEvalationDao.updateProjectScore(projectScore);
+					state = personalEvaluationDao.updateProjectScore(projectScore);
 					if (projectScore.getStatus() == 1) {
-						personalEvalationDao.updateProjectScoreHistory(projectScore);
+						personalEvaluationDao.updateProjectScoreHistory(projectScore);
 					}
 				} else {
-					state = personalEvalationDao.insertProjectScore(projectScore);
+					state = personalEvaluationDao.insertProjectScore(projectScore);
 					if (projectScore.getStatus() == 1) {
-						personalEvalationDao.insertProjectScoreHistory(projectScore);
+						personalEvaluationDao.insertProjectScoreHistory(projectScore);
 					}
 				}
 				if (!state) {
@@ -614,9 +616,9 @@ public class PersonalEvaluationService {
 		ResultPerformanceScore performanceScore = getPerformanceScore(employeId, 0, yyyyMM);
 		List<ResultValueScore> valueScoreList = getValueScoreAll(employeId, 0, yyyyMM);
 
-		ResultPerformanceScore performanceScoreHistory = personalEvalationDao.getPerformanceScoreHistory(employeId, 0,
+		ResultPerformanceScore performanceScoreHistory = personalEvaluationDao.getPerformanceScoreHistory(employeId, 0,
 				yyyyMM);
-		List<ResultValueScore> valueScoreHistoryList = personalEvalationDao.getValueScoreHistoryAll(employeId, 0,
+		List<ResultValueScore> valueScoreHistoryList = personalEvaluationDao.getValueScoreHistoryAll(employeId, 0,
 				yyyyMM);
 
 		/* 가치평가Data */
@@ -791,34 +793,34 @@ public class PersonalEvaluationService {
 			valueScore.setScore8(valueInt.get(7));
 			valueScore.setConfirmNumber(confirmNumber);
 
-			if (personalEvalationDao.getPerformanceScoreCount(performanceValue.getEmployeId(),
+			if (personalEvaluationDao.getPerformanceScoreCount(performanceValue.getEmployeId(),
 					confirmNumber,
 					performanceValue.getMonth()) > 0) {
-				isSucceeded = personalEvalationDao.updatePerformanceScore(performanceScore);
+				isSucceeded = personalEvaluationDao.updatePerformanceScore(performanceScore);
 				if (performanceScore.getDissentComments().equals("") && isSucceeded) {
-					personalEvalationDao.updatePerformanceScoreHistory(performanceScore);
+					personalEvaluationDao.updatePerformanceScoreHistory(performanceScore);
 				}
 			} else {
 
 				logger.debug("performanceScore.getDissentComments() => {} ", performanceScore.getDissentComments());
 
-				isSucceeded = personalEvalationDao.insertPerformanceScore(performanceScore);
+				isSucceeded = personalEvaluationDao.insertPerformanceScore(performanceScore);
 				if (performanceScore.getDissentComments().equals("") && isSucceeded) {
-					personalEvalationDao.insertPerformanceScoreHistory(performanceScore);
+					personalEvaluationDao.insertPerformanceScoreHistory(performanceScore);
 				}
 			}
 
-			if (personalEvalationDao.getValueScoreCount(performanceValue.getEmployeId(),
+			if (personalEvaluationDao.getValueScoreCount(performanceValue.getEmployeId(),
 					confirmNumber,
 					performanceValue.getMonth()) > 0) {
-				isSucceeded = personalEvalationDao.updateValueScore(valueScore);
+				isSucceeded = personalEvaluationDao.updateValueScore(valueScore);
 				if (performanceScore.getDissentComments().equals("") && isSucceeded) {
-					personalEvalationDao.updateValueScoreHistory(valueScore);
+					personalEvaluationDao.updateValueScoreHistory(valueScore);
 				}
 			} else {
-				isSucceeded = personalEvalationDao.insertValueScore(valueScore);
+				isSucceeded = personalEvaluationDao.insertValueScore(valueScore);
 				if (performanceScore.getDissentComments().equals("") && isSucceeded) {
-					personalEvalationDao.insertValueScoreHistory(valueScore);
+					personalEvaluationDao.insertValueScoreHistory(valueScore);
 				}
 			}
 		} catch (Exception e) {
@@ -878,34 +880,34 @@ public class PersonalEvaluationService {
 				valueScore.setScore8(valueInt.get(7));
 				valueScore.setConfirmNumber(confirmNumber);
 
-				if (personalEvalationDao.getPerformanceScoreCount(performanceValue.getEmployeId(),
+				if (personalEvaluationDao.getPerformanceScoreCount(performanceValue.getEmployeId(),
 						confirmNumber,
 						performanceValue.getMonth()) > 0) {
-					isSucceeded = personalEvalationDao.updatePerformanceScore(performanceScore);
+					isSucceeded = personalEvaluationDao.updatePerformanceScore(performanceScore);
 					if (performanceScore.getDissentComments().equals("") && isSucceeded) {
-						personalEvalationDao.updatePerformanceScoreHistory(performanceScore);
+						personalEvaluationDao.updatePerformanceScoreHistory(performanceScore);
 					}
 				} else {
 
 					logger.debug("performanceScore.getDissentComments() => ", performanceScore.getDissentComments());
 
-					isSucceeded = personalEvalationDao.insertPerformanceScore(performanceScore);
+					isSucceeded = personalEvaluationDao.insertPerformanceScore(performanceScore);
 					if (performanceScore.getDissentComments().equals("") && isSucceeded) {
-						personalEvalationDao.insertPerformanceScoreHistory(performanceScore);
+						personalEvaluationDao.insertPerformanceScoreHistory(performanceScore);
 					}
 				}
 
-				if (personalEvalationDao.getValueScoreCount(performanceValue.getEmployeId(),
+				if (personalEvaluationDao.getValueScoreCount(performanceValue.getEmployeId(),
 						confirmNumber,
 						performanceValue.getMonth()) > 0) {
-					isSucceeded = personalEvalationDao.updateValueScore(valueScore);
+					isSucceeded = personalEvaluationDao.updateValueScore(valueScore);
 					if (performanceScore.getDissentComments().equals("") && isSucceeded) {
-						personalEvalationDao.updateValueScoreHistory(valueScore);
+						personalEvaluationDao.updateValueScoreHistory(valueScore);
 					}
 				} else {
-					isSucceeded = personalEvalationDao.insertValueScore(valueScore);
+					isSucceeded = personalEvaluationDao.insertValueScore(valueScore);
 					if (performanceScore.getDissentComments().equals("") && isSucceeded) {
-						personalEvalationDao.insertValueScoreHistory(valueScore);
+						personalEvaluationDao.insertValueScoreHistory(valueScore);
 					}
 				}
 			}
@@ -968,7 +970,7 @@ public class PersonalEvaluationService {
 		boolean state = false;
 
 		try {
-			state = personalEvalationDao.updateProjectComments(projectScore);
+			state = personalEvaluationDao.updateProjectComments(projectScore);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -983,7 +985,7 @@ public class PersonalEvaluationService {
 		boolean state = false;
 
 		try {
-			state = personalEvalationDao.updatePerformanceDissent(performanceScore);
+			state = personalEvaluationDao.updatePerformanceDissent(performanceScore);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
@@ -993,7 +995,7 @@ public class PersonalEvaluationService {
 	}
 
 	public Employe getEmploye(String employeId) {
-		Employe employe = personalEvalationDao.getEmploye(employeId);
+		Employe employe = personalEvaluationDao.getEmploye(employeId);
 		return employe;
 	}
 
@@ -1001,18 +1003,18 @@ public class PersonalEvaluationService {
 		Employe employe = new Employe();
 		employe.setEmployeId(employeId);
 		employe.setPassword(password);
-		boolean result = personalEvalationDao.updateEmploye(employe);
+		boolean result = personalEvaluationDao.updateEmploye(employe);
 		return result;
 	}
 
 	public List<DivisionInfo> getDivisionList() {
-		List<DivisionInfo> result = personalEvalationDao.getDivisionList();
+		List<DivisionInfo> result = personalEvaluationDao.getDivisionList();
 
 		return result;
 	}
 
 	public List<TeamInfo> getTeamList(int divisionCode) {
-		List<TeamInfo> result = personalEvalationDao.getTeamList(divisionCode);
+		List<TeamInfo> result = personalEvaluationDao.getTeamList(divisionCode);
 
 		return result;
 	}

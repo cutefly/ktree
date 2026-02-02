@@ -1,4 +1,4 @@
-package kr.co.kpcard.ktree.service;
+package kr.co.kpcard.ktree.domain;
 
 import java.util.List;
 

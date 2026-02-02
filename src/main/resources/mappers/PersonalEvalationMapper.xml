@@ -1,36 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="Personal">
-	<select id="getEmploye" parameterType="HashMap" resultType="Employe"> SELECT E.EMPLOYE_ID AS
-		employeId, E.NAME AS employeName, E.PWD AS password, E.USE_YN AS useYn, E.TEAM_CODE AS
-		teamCode, T.TEAM_NAME AS teamName, E.DIVISION_CODE AS divisionCode, D.DIVISION_NAME AS
-		divisionName, A.AUTHORITY_LEVEL AS authLevel, E.POSITION AS position FROM KPC_EMPLOYE E,
-		KPC_DIVISION_INFO D, KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY A WHERE
+	<select id="getEmploye" parameterType="HashMap" resultType="kr.co.kpcard.ktree.domain.Employe">
+		SELECT E.EMPLOYE_ID AS employeId, E.NAME AS employeName, E.PWD AS password, E.USE_YN AS
+		useYn, E.TEAM_CODE AS teamCode, T.TEAM_NAME AS teamName, E.DIVISION_CODE AS divisionCode,
+		D.DIVISION_NAME AS divisionName, A.AUTHORITY_LEVEL AS authLevel, E.POSITION AS position FROM
+		KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY A WHERE
 		E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE = T.TEAM_CODE(+) AND E.DIVISION_CODE =
 		D.DIVISION_CODE(+) AND E.USE_YN = 'Y' <if test='employeId != "kpc_admin"'>AND
 		A.AUTHORITY_LEVEL &lt; 4</if>
 			<if test='employeId != null'> AND E.EMPLOYE_ID=#{employeId}</if>
 		ORDER BY E.NAME </select>
 
-	<select id="getDivision" parameterType="HashMap" resultType="Division"> SELECT D.DIVISION_CODE
-		AS code, D.DIVISION_NAME AS name FROM KPC_DIVISION_INFO D WHERE <if test='code != null'>
-		D.DIVISION_CODE=#{code} </if>
-			<if test='code == null'> D.DIVISION_CODE &gt; 0 </if> ORDER BY
-		D.DIVISION_CODE </select>
+	<select id="getDivision" parameterType="HashMap"
+		resultType="kr.co.kpcard.ktree.domain.DivisionInfo"> SELECT D.DIVISION_CODE AS code,
+		D.DIVISION_NAME AS name FROM KPC_DIVISION_INFO D WHERE <if
+			test='code != null'> D.DIVISION_CODE=#{code} </if>
+			<if test='code == null'>
+		D.DIVISION_CODE &gt; 0 </if> ORDER BY D.DIVISION_CODE </select>
 
-	<select id="getTeam" parameterType="HashMap" resultType="Team"> SELECT T.TEAM_CODE AS code,
-		T.TEAM_NAME AS name, D.DIVISION_CODE AS divisionCode, D.DIVISION_NAME AS divisionName FROM
-		KPC_TEAM_INFO T, KPC_DIVISION_INFO D WHERE T.DIVISION_CODE = D.DIVISION_CODE <if
+	<select id="getTeam" parameterType="HashMap" resultType="kr.co.kpcard.ktree.domain.TeamInfo">
+		SELECT T.TEAM_CODE AS code, T.TEAM_NAME AS name, D.DIVISION_CODE AS divisionCode,
+		D.DIVISION_NAME AS divisionName FROM KPC_TEAM_INFO T, KPC_DIVISION_INFO D WHERE
+		T.DIVISION_CODE = D.DIVISION_CODE <if
 			test='code != null'> AND T.TEAM_CODE=#{code} </if>
 			<if test='divisionCode != null'> AND
 		D.DIVISION_CODE=#{divisionCode} </if> ORDER BY T.TEAM_CODE </select>
 
-	<update id="updateEmploye" parameterType="Employe"> UPDATE KPC_EMPLOYE <set>
+	<update id="updateEmploye" parameterType="kr.co.kpcard.ktree.domain.Employe"> UPDATE KPC_EMPLOYE <set>
 			<if test="password != null">PWD = #{password}</if>
 		</set> WHERE EMPLOYE_ID =
 		#{employeId} </update>
 
-	<select id="getProjectScore" parameterType="HashMap" resultType="ProjectScore">
+	<select id="getProjectScore" parameterType="HashMap"
+		resultType="kr.co.kpcard.ktree.domain.ProjectScore">
 	<![CDATA[
 		SELECT
 		   PS.SEQ AS seq,
@@ -63,7 +66,8 @@
 	</select>
 
 	<!-- 사용하지 않음(Reference query에 오류가 있음) -->
-	<select id="getProjectScoreById" parameterType="HashMap" resultType="ProjectScore">
+	<select id="getProjectScoreById" parameterType="HashMap"
+		resultType="kr.co.kpcard.ktree.domain.ProjectScore">
 	<![CDATA[
 		SELECT * FROM(
 			<include refid="getProjectScore"/>
@@ -86,7 +90,7 @@
 	]]>
 	</select>
 
-	<insert id="insertProjectScore" parameterType="ProjectScore">
+	<insert id="insertProjectScore" parameterType="kr.co.kpcard.ktree.domain.ProjectScore">
 	<![CDATA[
 		INSERT INTO KPC_PERSONAL_PROJECT_SCORE
 		(
@@ -114,7 +118,8 @@
 	]]>
 	</insert>
 
-	<update id="updateProjectScore" parameterType="ProjectScore"> UPDATE KPC_PERSONAL_PROJECT_SCORE <set>
+	<update id="updateProjectScore" parameterType="kr.co.kpcard.ktree.domain.ProjectScore"> UPDATE
+		KPC_PERSONAL_PROJECT_SCORE <set>
 			<if test="score1 != null">SCORE1 = #{score1},</if>
 		<if test="score2 != null">SCORE2 =
 		#{score2},</if>
@@ -140,8 +145,8 @@
 		</where>
 	</update>
 
-	<update id="updateProjectScoreComments" parameterType="ProjectScore"> UPDATE
-		KPC_PERSONAL_PROJECT_SCORE <set>
+	<update id="updateProjectScoreComments" parameterType="kr.co.kpcard.ktree.domain.ProjectScore">
+		UPDATE KPC_PERSONAL_PROJECT_SCORE <set>
 			<if test="dissent != null">DISSENT = #{dissent},</if>
 		<if test="comments1 != null">COMMENTS1
 		= #{comments1},</if>
@@ -160,52 +165,53 @@
 
 	</delete>
 
-	<select id="getPerformanceScore" parameterType="HashMap" resultType="ResultPerformanceScore">
-		SELECT * FROM ( SELECT DISTINCT E.EMPLOYE_ID AS employeId, PS.MONTH AS month, E.NAME AS
-		employeName, A.AUTHORITY_LEVEL AS authLevel, D.DIVISION_NAME AS divisionName,
-		E.DIVISION_CODE AS divisionCode, E.TEAM_CODE AS teamCode, T.TEAM_NAME AS teamName,
-		NVL((SELECT SCORE FROM KPC_PERSONAL_PERFORMANCE_SCORE WHERE CONFIRM_NUMBER=1 AND
-		EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}),0) AS score1, NVL((SELECT SCORE FROM
-		KPC_PERSONAL_PERFORMANCE_SCORE WHERE CONFIRM_NUMBER=2 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND
-		MONTH(+) = #{month}),0) AS score2, DISSENT AS dissent, (SELECT DISSENT_COMMENTS FROM
+	<select id="getPerformanceScore" parameterType="HashMap"
+		resultType="kr.co.kpcard.ktree.domain.ResultPerformanceScore"> SELECT * FROM ( SELECT
+		DISTINCT E.EMPLOYE_ID AS employeId, PS.MONTH AS month, E.NAME AS employeName,
+		A.AUTHORITY_LEVEL AS authLevel, D.DIVISION_NAME AS divisionName, E.DIVISION_CODE AS
+		divisionCode, E.TEAM_CODE AS teamCode, T.TEAM_NAME AS teamName, NVL((SELECT SCORE FROM
 		KPC_PERSONAL_PERFORMANCE_SCORE WHERE CONFIRM_NUMBER=1 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND
-		MONTH(+) = #{month}) AS dissentComments1, (SELECT DISSENT_COMMENTS FROM
-		KPC_PERSONAL_PERFORMANCE_SCORE WHERE CONFIRM_NUMBER=2 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND
-		MONTH(+) = #{month}) AS dissentComments2, NVL(E.CONFIRM1, 0) AS confirm1, NVL(E.CONFIRM2, 0)
-		AS confirm2 FROM KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY
-		A, KPC_PERSONAL_PERFORMANCE_SCORE PS WHERE E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE =
-		T.TEAM_CODE(+) AND E.DIVISION_CODE = D.DIVISION_CODE(+) AND E.EMPLOYE_ID = PS.EMPLOYE_ID(+)
-		AND A.AUTHORITY_LEVEL &lt; 4 AND E.USE_YN='Y' AND PS.MONTH(+) = #{month} ORDER BY E.NAME ) </select>
-
-	<select id="getPerformanceScoreById" parameterType="HashMap" resultType="ResultPerformanceScore">
-		SELECT * FROM ( SELECT DISTINCT E.EMPLOYE_ID AS employeId, PS.MONTH AS month, E.NAME AS
-		employeName, A.AUTHORITY_LEVEL AS authLevel, D.DIVISION_NAME AS divisionName,
-		E.DIVISION_CODE AS divisionCode, E.TEAM_CODE AS teamCode, T.TEAM_NAME AS teamName, (SELECT
-		SCORE FROM KPC_PERSONAL_PERFORMANCE_SCORE WHERE CONFIRM_NUMBER=1 AND EMPLOYE_ID(+) =
-		E.EMPLOYE_ID AND MONTH(+) = #{month}) AS score1, (SELECT SCORE FROM
-		KPC_PERSONAL_PERFORMANCE_SCORE WHERE CONFIRM_NUMBER=2 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND
-		MONTH(+) = #{month}) AS score2, DISSENT AS dissent, (SELECT COMMENTS FROM
-		KPC_PERSONAL_PERFORMANCE_SCORE WHERE CONFIRM_NUMBER=1 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND
-		MONTH(+) = #{month}) AS comments1, (SELECT COMMENTS FROM KPC_PERSONAL_PERFORMANCE_SCORE
-		WHERE CONFIRM_NUMBER=2 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}) AS
-		comments2, (SELECT DISSENT_COMMENTS FROM KPC_PERSONAL_PERFORMANCE_SCORE WHERE
-		CONFIRM_NUMBER=1 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}) AS
+		MONTH(+) = #{month}),0) AS score1, NVL((SELECT SCORE FROM KPC_PERSONAL_PERFORMANCE_SCORE
+		WHERE CONFIRM_NUMBER=2 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}),0) AS
+		score2, DISSENT AS dissent, (SELECT DISSENT_COMMENTS FROM KPC_PERSONAL_PERFORMANCE_SCORE
+		WHERE CONFIRM_NUMBER=1 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}) AS
 		dissentComments1, (SELECT DISSENT_COMMENTS FROM KPC_PERSONAL_PERFORMANCE_SCORE WHERE
 		CONFIRM_NUMBER=2 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}) AS
 		dissentComments2, NVL(E.CONFIRM1, 0) AS confirm1, NVL(E.CONFIRM2, 0) AS confirm2 FROM
 		KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY A,
 		KPC_PERSONAL_PERFORMANCE_SCORE PS WHERE E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE =
+		T.TEAM_CODE(+) AND E.DIVISION_CODE = D.DIVISION_CODE(+) AND E.EMPLOYE_ID = PS.EMPLOYE_ID(+)
+		AND A.AUTHORITY_LEVEL &lt; 4 AND E.USE_YN='Y' AND PS.MONTH(+) = #{month} ORDER BY E.NAME ) </select>
+
+	<select id="getPerformanceScoreById" parameterType="HashMap"
+		resultType="kr.co.kpcard.ktree.domain.ResultPerformanceScore"> SELECT * FROM ( SELECT
+		DISTINCT E.EMPLOYE_ID AS employeId, PS.MONTH AS month, E.NAME AS employeName,
+		A.AUTHORITY_LEVEL AS authLevel, D.DIVISION_NAME AS divisionName, E.DIVISION_CODE AS
+		divisionCode, E.TEAM_CODE AS teamCode, T.TEAM_NAME AS teamName, (SELECT SCORE FROM
+		KPC_PERSONAL_PERFORMANCE_SCORE WHERE CONFIRM_NUMBER=1 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND
+		MONTH(+) = #{month}) AS score1, (SELECT SCORE FROM KPC_PERSONAL_PERFORMANCE_SCORE WHERE
+		CONFIRM_NUMBER=2 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}) AS score2,
+		DISSENT AS dissent, (SELECT COMMENTS FROM KPC_PERSONAL_PERFORMANCE_SCORE WHERE
+		CONFIRM_NUMBER=1 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}) AS comments1,
+		(SELECT COMMENTS FROM KPC_PERSONAL_PERFORMANCE_SCORE WHERE CONFIRM_NUMBER=2 AND
+		EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}) AS comments2, (SELECT DISSENT_COMMENTS
+		FROM KPC_PERSONAL_PERFORMANCE_SCORE WHERE CONFIRM_NUMBER=1 AND EMPLOYE_ID(+) = E.EMPLOYE_ID
+		AND MONTH(+) = #{month}) AS dissentComments1, (SELECT DISSENT_COMMENTS FROM
+		KPC_PERSONAL_PERFORMANCE_SCORE WHERE CONFIRM_NUMBER=2 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND
+		MONTH(+) = #{month}) AS dissentComments2, NVL(E.CONFIRM1, 0) AS confirm1, NVL(E.CONFIRM2, 0)
+		AS confirm2 FROM KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY
+		A, KPC_PERSONAL_PERFORMANCE_SCORE PS WHERE E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE =
 		T.TEAM_CODE(+) AND E.DIVISION_CODE = D.DIVISION_CODE(+) AND E.EMPLOYE_ID = PS.EMPLOYE_ID(+) <![CDATA[AND A.AUTHORITY_LEVEL < 4]]>
 		AND E.USE_YN='Y' AND PS.MONTH(+) = #{month} AND E.EMPLOYE_ID = #{employeId} ORDER BY E.NAME
 		) </select>
 
-	<insert id="insertPerformanceScore" parameterType="PerformanceScore"> INSERT INTO
-		KPC_PERSONAL_PERFORMANCE_SCORE ( SEQ, MONTH, EMPLOYE_ID, SCORE, DISSENT, COMMENTS,
-		CONFIRM_NUMBER, INSERT_DATE ) VALUES ( KPC_ADMIN_SEQ.NEXTVAL, #{month}, #{employeId},
-		#{score}, #{dissent}, #{comments}, #{confirmNumber}, SYSDATE ) </insert>
+	<insert id="insertPerformanceScore" parameterType="kr.co.kpcard.ktree.domain.PerformanceScore">
+		INSERT INTO KPC_PERSONAL_PERFORMANCE_SCORE ( SEQ, MONTH, EMPLOYE_ID, SCORE, DISSENT,
+		COMMENTS, CONFIRM_NUMBER, INSERT_DATE ) VALUES ( KPC_ADMIN_SEQ.NEXTVAL, #{month},
+		#{employeId}, #{score}, #{dissent}, #{comments}, #{confirmNumber}, SYSDATE ) </insert>
 
-	<update id="updatePerformanceScore" parameterType="PerformanceScore"> UPDATE
-		KPC_PERSONAL_PERFORMANCE_SCORE <set>
+	<update id="updatePerformanceScore" parameterType="kr.co.kpcard.ktree.domain.PerformanceScore">
+		UPDATE KPC_PERSONAL_PERFORMANCE_SCORE <set>
 			<if test="score != null">SCORE = #{score},</if>
 				<if test="dissentComments != null">DISSENT_COMMENTS
 		= #{dissentComments},</if>
@@ -214,10 +220,11 @@
 		, INSERT_DATE = SYSDATE WHERE EMPLOYE_ID = #{employeId} AND MONTH = #{month} AND
 		CONFIRM_NUMBER = #{confirmNumber} </update>
 
-	<update id="updatePerformanceDissent" parameterType="PerformanceScore"> UPDATE
-		KPC_PERSONAL_PERFORMANCE_SCORE SET DISSENT = #{dissent} <if test="dissentComments != null">DISSENT_COMMENTS
-		= #{dissentComments},</if> , INSERT_DATE = SYSDATE <where> EMPLOYE_ID = #{employeId} AND
-		MONTH = #{month} <if test="confirmNumber > 0">AND CONFIRM_NUMBER = #{confirmNumber}</if>
+	<update id="updatePerformanceDissent" parameterType="kr.co.kpcard.ktree.domain.PerformanceScore">
+		UPDATE KPC_PERSONAL_PERFORMANCE_SCORE SET DISSENT = #{dissent} <if
+			test="dissentComments != null">DISSENT_COMMENTS = #{dissentComments},</if> , INSERT_DATE
+		= SYSDATE <where> EMPLOYE_ID = #{employeId} AND MONTH = #{month} <if
+				test="confirmNumber > 0">AND CONFIRM_NUMBER = #{confirmNumber}</if>
 		</where>
 	</update>
 
@@ -226,26 +233,27 @@
 		CONFIRM_NUMBER = #{confirmNumber} </delete>
 
 
-	<select id="getValueScoreAll" parameterType="HashMap" resultType="ResultValueScore"> SELECT *
-		FROM ( SELECT VS.SEQ AS seq, VS.MONTH AS month, E.EMPLOYE_ID AS employeId, E.NAME AS
+	<select id="getValueScoreAll" parameterType="HashMap"
+		resultType="kr.co.kpcard.ktree.domain.ResultValueScore"> SELECT * FROM ( SELECT VS.SEQ AS
+		seq, VS.MONTH AS month, E.EMPLOYE_ID AS employeId, E.NAME AS employeName , D.DIVISION_NAME
+		AS divisionName, E.DIVISION_CODE AS divisionCode, A.AUTHORITY_LEVEL AS authLevel,
+		T.TEAM_NAME AS teamName, NVL(VS.SCORE1,0) AS score1, NVL(VS.SCORE2,0) AS score2,
+		NVL(VS.SCORE3,0) AS score3, NVL(VS.SCORE4,0) AS score4, NVL(VS.SCORE5,0) AS score5,
+		NVL(VS.SCORE6,0) AS score6, NVL(VS.SCORE7,0) AS score7, NVL(VS.SCORE8,0) AS score8,
+		NVL(VS.STATUS,0) AS status, VS.COMMENTS AS comments, NVL(VS.CONFIRM_NUMBER,1) AS
+		confirmNumber FROM KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T,
+		KPC_PERSONAL_AUTHORITY A, KPC_PERSONAL_VALUE_SCORE VS WHERE E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND
+		E.TEAM_CODE = T.TEAM_CODE(+) AND E.DIVISION_CODE = D.DIVISION_CODE(+) AND E.EMPLOYE_ID =
+		VS.EMPLOYE_ID(+) AND E.USE_YN='Y' <![CDATA[AND A.AUTHORITY_LEVEL < 4]]> AND VS.CONFIRM_NUMBER(+) = 1 AND VS.MONTH(+) = #{month}
+		UNION SELECT VS.SEQ AS seq, VS.MONTH AS month, E.EMPLOYE_ID AS employeId, E.NAME AS
 		employeName , D.DIVISION_NAME AS divisionName, E.DIVISION_CODE AS divisionCode,
 		A.AUTHORITY_LEVEL AS authLevel, T.TEAM_NAME AS teamName, NVL(VS.SCORE1,0) AS score1,
 		NVL(VS.SCORE2,0) AS score2, NVL(VS.SCORE3,0) AS score3, NVL(VS.SCORE4,0) AS score4,
 		NVL(VS.SCORE5,0) AS score5, NVL(VS.SCORE6,0) AS score6, NVL(VS.SCORE7,0) AS score7,
 		NVL(VS.SCORE8,0) AS score8, NVL(VS.STATUS,0) AS status, VS.COMMENTS AS comments,
-		NVL(VS.CONFIRM_NUMBER,1) AS confirmNumber FROM KPC_EMPLOYE E, KPC_DIVISION_INFO D,
+		NVL(VS.CONFIRM_NUMBER,2) AS confirmNumber FROM KPC_EMPLOYE E, KPC_DIVISION_INFO D,
 		KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY A, KPC_PERSONAL_VALUE_SCORE VS WHERE
 		E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE = T.TEAM_CODE(+) AND E.DIVISION_CODE =
-		D.DIVISION_CODE(+) AND E.EMPLOYE_ID = VS.EMPLOYE_ID(+) AND E.USE_YN='Y' <![CDATA[AND A.AUTHORITY_LEVEL < 4]]> AND
-		VS.CONFIRM_NUMBER(+) = 1 AND VS.MONTH(+) = #{month} UNION SELECT VS.SEQ AS seq, VS.MONTH AS
-		month, E.EMPLOYE_ID AS employeId, E.NAME AS employeName , D.DIVISION_NAME AS divisionName,
-		E.DIVISION_CODE AS divisionCode, A.AUTHORITY_LEVEL AS authLevel, T.TEAM_NAME AS teamName,
-		NVL(VS.SCORE1,0) AS score1, NVL(VS.SCORE2,0) AS score2, NVL(VS.SCORE3,0) AS score3,
-		NVL(VS.SCORE4,0) AS score4, NVL(VS.SCORE5,0) AS score5, NVL(VS.SCORE6,0) AS score6,
-		NVL(VS.SCORE7,0) AS score7, NVL(VS.SCORE8,0) AS score8, NVL(VS.STATUS,0) AS status,
-		VS.COMMENTS AS comments, NVL(VS.CONFIRM_NUMBER,2) AS confirmNumber FROM KPC_EMPLOYE E,
-		KPC_DIVISION_INFO D, KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY A, KPC_PERSONAL_VALUE_SCORE VS
-		WHERE E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE = T.TEAM_CODE(+) AND E.DIVISION_CODE =
 		D.DIVISION_CODE(+) AND E.EMPLOYE_ID = VS.EMPLOYE_ID(+) AND E.USE_YN='Y' <![CDATA[AND A.AUTHORITY_LEVEL < 4]]> AND
 		VS.CONFIRM_NUMBER(+) = 2 AND VS.MONTH(+) = #{month} ) <where>
 			<if test="authLevel==0"> employeId = #{employeId} </if>
@@ -254,20 +262,21 @@
 		</where>
 		ORDER BY employeName </select>
 
-	<select id="getValueScoreById" parameterType="HashMap" resultType="ResultValueScore"> SELECT
-		VS.SEQ AS seq, VS.MONTH AS month, E.EMPLOYE_ID AS employeId, E.NAME AS employeName ,
-		D.DIVISION_NAME AS divisionName, E.DIVISION_CODE AS divisionCode, A.AUTHORITY_LEVEL AS
-		authLevel, T.TEAM_NAME AS teamName, NVL(VS.SCORE1,0) AS score1, NVL(VS.SCORE2,0) AS score2,
-		NVL(VS.SCORE3,0) AS score3, NVL(VS.SCORE4,0) AS score4, NVL(VS.SCORE5,0) AS score5,
-		NVL(VS.SCORE6,0) AS score6, NVL(VS.SCORE7,0) AS score7, NVL(VS.SCORE8,0) AS score8,
-		NVL(VS.STATUS,0) AS status, VS.COMMENTS AS comments, NVL(VS.CONFIRM_NUMBER,#{confirmNumber})
-		AS confirmNumber FROM KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T,
-		KPC_PERSONAL_AUTHORITY A, KPC_PERSONAL_VALUE_SCORE VS WHERE E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND
-		E.TEAM_CODE = T.TEAM_CODE(+) AND E.DIVISION_CODE = D.DIVISION_CODE(+) AND E.EMPLOYE_ID =
-		VS.EMPLOYE_ID(+) AND E.USE_YN='Y' <![CDATA[AND A.AUTHORITY_LEVEL < 4]]> AND VS.CONFIRM_NUMBER(+) = #{confirmNumber} AND
-		VS.MONTH(+) = #{month} AND E.EMPLOYE_ID = #{employeId} </select>
+	<select id="getValueScoreById" parameterType="HashMap"
+		resultType="kr.co.kpcard.ktree.domain.ResultValueScore"> SELECT VS.SEQ AS seq, VS.MONTH AS
+		month, E.EMPLOYE_ID AS employeId, E.NAME AS employeName , D.DIVISION_NAME AS divisionName,
+		E.DIVISION_CODE AS divisionCode, A.AUTHORITY_LEVEL AS authLevel, T.TEAM_NAME AS teamName,
+		NVL(VS.SCORE1,0) AS score1, NVL(VS.SCORE2,0) AS score2, NVL(VS.SCORE3,0) AS score3,
+		NVL(VS.SCORE4,0) AS score4, NVL(VS.SCORE5,0) AS score5, NVL(VS.SCORE6,0) AS score6,
+		NVL(VS.SCORE7,0) AS score7, NVL(VS.SCORE8,0) AS score8, NVL(VS.STATUS,0) AS status,
+		VS.COMMENTS AS comments, NVL(VS.CONFIRM_NUMBER,#{confirmNumber}) AS confirmNumber FROM
+		KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY A,
+		KPC_PERSONAL_VALUE_SCORE VS WHERE E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE =
+		T.TEAM_CODE(+) AND E.DIVISION_CODE = D.DIVISION_CODE(+) AND E.EMPLOYE_ID = VS.EMPLOYE_ID(+)
+		AND E.USE_YN='Y' <![CDATA[AND A.AUTHORITY_LEVEL < 4]]> AND VS.CONFIRM_NUMBER(+) = #{confirmNumber} AND VS.MONTH(+) = #{month} AND
+		E.EMPLOYE_ID = #{employeId} </select>
 
-	<insert id="insertValueScore" parameterType="ValueScore">
+	<insert id="insertValueScore" parameterType="kr.co.kpcard.ktree.domain.ValueScore">
 		<![CDATA[
 		INSERT INTO KPC_PERSONAL_VALUE_SCORE
 		(
@@ -294,7 +303,8 @@
 	]]>
 	</insert>
 
-	<update id="updateValueScore" parameterType="ValueScore"> UPDATE KPC_PERSONAL_VALUE_SCORE <set>
+	<update id="updateValueScore" parameterType="kr.co.kpcard.ktree.domain.ValueScore"> UPDATE
+		KPC_PERSONAL_VALUE_SCORE <set>
 			<if test="score1 != null">SCORE1 = #{score1},</if>
 		<if test="score2 != null">SCORE2 =
 		#{score2},</if>
@@ -324,20 +334,21 @@
 		CONFIRM_NUMBER = #{confirmNumber} </select>
 
 
-	<select id="getProjectScoreHistory" parameterType="HashMap" resultType="ProjectScore"> SELECT
-		PS.SEQ AS seq, E.EMPLOYE_ID AS employeId, E.NAME AS employeName , D.DIVISION_NAME AS
-		divisionName, T.TEAM_NAME AS teamName, PS.SCORE1 AS score1, PS.SCORE2 AS score2, PS.SCORE3
-		AS score3, PS.SCORE4 AS score4, PS.SCORE5 AS score5, PS.SCORE6 AS score6, PS.SCORE7 AS
-		score7, PS.STATUS AS status FROM KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T,
-		KPC_PERSONAL_AUTHORITY A, KPC_PERSONAL_PROJECT_SCORE_HST PS WHERE
-		E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE = T.TEAM_CODE(+) AND E.DIVISION_CODE =
-		D.DIVISION_CODE(+) AND E.EMPLOYE_ID = PS.EMPLOYE_ID(+) AND PS.MONTH(+) = #{month} AND
-		E.USE_YN='Y' <![CDATA[AND A.AUTHORITY_LEVEL < 4]]>
-			<if test='searchOption != "all"'>AND E.EMPLOYE_ID = #{employeId}</if> ORDER BY
-		E.NAME </select>
+	<select id="getProjectScoreHistory" parameterType="HashMap"
+		resultType="kr.co.kpcard.ktree.domain.ProjectScore"> SELECT PS.SEQ AS seq, E.EMPLOYE_ID AS
+		employeId, E.NAME AS employeName , D.DIVISION_NAME AS divisionName, T.TEAM_NAME AS teamName,
+		PS.SCORE1 AS score1, PS.SCORE2 AS score2, PS.SCORE3 AS score3, PS.SCORE4 AS score4,
+		PS.SCORE5 AS score5, PS.SCORE6 AS score6, PS.SCORE7 AS score7, PS.STATUS AS status FROM
+		KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY A,
+		KPC_PERSONAL_PROJECT_SCORE_HST PS WHERE E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE =
+		T.TEAM_CODE(+) AND E.DIVISION_CODE = D.DIVISION_CODE(+) AND E.EMPLOYE_ID = PS.EMPLOYE_ID(+)
+		AND PS.MONTH(+) = #{month} AND E.USE_YN='Y' <![CDATA[AND A.AUTHORITY_LEVEL < 4]]>
+			<if test='searchOption != "all"'>AND
+		E.EMPLOYE_ID = #{employeId}</if> ORDER BY E.NAME </select>
 
 	<!-- 사용하지 않음(Reference query에 오류가 있음) -->
-	<select id="getProjectScoreByIdHistory" parameterType="HashMap" resultType="ResultProjectScore">
+	<select id="getProjectScoreByIdHistory" parameterType="HashMap"
+		resultType="kr.co.kpcard.ktree.domain.ResultProjectScore">
 	<![CDATA[
 		SELECT * FROM(
 			<include refid="getProjectScore"/>
@@ -347,7 +358,7 @@
 	]]>
 	</select>
 
-	<insert id="insertProjectScoreHistory" parameterType="ProjectScore">
+	<insert id="insertProjectScoreHistory" parameterType="kr.co.kpcard.ktree.domain.ProjectScore">
 	<![CDATA[
 		INSERT INTO KPC_PERSONAL_PROJECT_SCORE_HST
 		(
@@ -375,8 +386,8 @@
 	]]>
 	</insert>
 
-	<update id="updateProjectScoreHistory" parameterType="ProjectScore"> UPDATE
-		KPC_PERSONAL_PROJECT_SCORE_HST <set>
+	<update id="updateProjectScoreHistory" parameterType="kr.co.kpcard.ktree.domain.ProjectScore">
+		UPDATE KPC_PERSONAL_PROJECT_SCORE_HST <set>
 			<if test="score1 != null">SCORE1 = #{score1},</if>
 		<if test="score2 != null">SCORE2 =
 		#{score2},</if>
@@ -407,12 +418,14 @@
 	</update>
 
 
-	<insert id="insertPerformanceScoreHistory" parameterType="PerformanceScore"> INSERT INTO
+	<insert id="insertPerformanceScoreHistory"
+		parameterType="kr.co.kpcard.ktree.domain.PerformanceScore"> INSERT INTO
 		KPC_PERSONAL_PERFORMANCE_HST ( SEQ, MONTH, EMPLOYE_ID, SCORE, DISSENT, COMMENTS,
 		CONFIRM_NUMBER, INSERT_DATE ) VALUES ( KPC_ADMIN_SEQ.NEXTVAL, #{month}, #{employeId},
 		#{score}, #{dissent}, #{comments}, #{confirmNumber}, SYSDATE ) </insert>
 
-	<update id="updatePerformanceScoreHistory" parameterType="PerformanceScore"> UPDATE
+	<update id="updatePerformanceScoreHistory"
+		parameterType="kr.co.kpcard.ktree.domain.PerformanceScore"> UPDATE
 		KPC_PERSONAL_PERFORMANCE_HST <set>
 			<if test="score != null">SCORE = #{score},</if>
 				<if test="dissentComments != null">DISSENT_COMMENTS
@@ -423,7 +436,7 @@
 		CONFIRM_NUMBER = #{confirmNumber} </update>
 
 
-	<insert id="insertValueScoreHistory" parameterType="ValueScore">
+	<insert id="insertValueScoreHistory" parameterType="kr.co.kpcard.ktree.domain.ValueScore">
 		<![CDATA[
 		INSERT INTO KPC_PERSONAL_VALUE_SCORE_HST
 		(
@@ -450,8 +463,8 @@
 	]]>
 	</insert>
 
-	<update id="updateValueScoreHistory" parameterType="ValueScore"> UPDATE
-		KPC_PERSONAL_VALUE_SCORE_HST <set>
+	<update id="updateValueScoreHistory" parameterType="kr.co.kpcard.ktree.domain.ValueScore">
+		UPDATE KPC_PERSONAL_VALUE_SCORE_HST <set>
 			<if test="score1 != null">SCORE1 = #{score1},</if>
 		<if test="score2 != null">SCORE2 =
 		#{score2},</if>
@@ -470,13 +483,13 @@
 		CONFIRM_NUMBER = #{confirmNumber} </update>
 
 	<select id="getPerformanceScoreByIdHistory" parameterType="HashMap"
-		resultType="ResultPerformanceScore"> SELECT * FROM ( SELECT DISTINCT E.EMPLOYE_ID AS
-		employeId, PS.MONTH AS month, E.NAME AS employeName, A.AUTHORITY_LEVEL AS authLevel,
-		D.DIVISION_NAME AS divisionName, E.DIVISION_CODE AS divisionCode, T.TEAM_NAME AS teamName,
-		(SELECT SCORE FROM KPC_PERSONAL_PERFORMANCE_HST WHERE CONFIRM_NUMBER=1 AND EMPLOYE_ID(+) =
-		E.EMPLOYE_ID AND MONTH(+) = #{month}) AS score1, (SELECT SCORE FROM
-		KPC_PERSONAL_PERFORMANCE_HST WHERE CONFIRM_NUMBER=2 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND
-		MONTH(+) = #{month}) AS score2, DISSENT AS dissent, (SELECT COMMENTS FROM
+		resultType="kr.co.kpcard.ktree.domain.ResultPerformanceScore"> SELECT * FROM ( SELECT
+		DISTINCT E.EMPLOYE_ID AS employeId, PS.MONTH AS month, E.NAME AS employeName,
+		A.AUTHORITY_LEVEL AS authLevel, D.DIVISION_NAME AS divisionName, E.DIVISION_CODE AS
+		divisionCode, T.TEAM_NAME AS teamName, (SELECT SCORE FROM KPC_PERSONAL_PERFORMANCE_HST WHERE
+		CONFIRM_NUMBER=1 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}) AS score1,
+		(SELECT SCORE FROM KPC_PERSONAL_PERFORMANCE_HST WHERE CONFIRM_NUMBER=2 AND EMPLOYE_ID(+) =
+		E.EMPLOYE_ID AND MONTH(+) = #{month}) AS score2, DISSENT AS dissent, (SELECT COMMENTS FROM
 		KPC_PERSONAL_PERFORMANCE_HST WHERE CONFIRM_NUMBER=1 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND
 		MONTH(+) = #{month}) AS comments1, (SELECT COMMENTS FROM KPC_PERSONAL_PERFORMANCE_HST WHERE
 		CONFIRM_NUMBER=2 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}) AS comments2,
@@ -491,20 +504,21 @@
 
 
 	<select id="getPerformanceScoreHistory" parameterType="HashMap"
-		resultType="ResultPerformanceScore"> SELECT * FROM ( SELECT DISTINCT E.EMPLOYE_ID AS
-		employeId, PS.MONTH AS month, E.NAME AS employeName, A.AUTHORITY_LEVEL AS authLevel,
-		D.DIVISION_NAME AS divisionName, E.DIVISION_CODE AS divisionCode, E.TEAM_CODE AS teamCode,
-		T.TEAM_NAME AS teamName, (SELECT SCORE FROM KPC_PERSONAL_PERFORMANCE_HST WHERE
-		CONFIRM_NUMBER=1 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}) AS score1,
-		(SELECT SCORE FROM KPC_PERSONAL_PERFORMANCE_HST WHERE CONFIRM_NUMBER=2 AND EMPLOYE_ID(+) =
-		E.EMPLOYE_ID AND MONTH(+) = #{month}) AS score2, DISSENT AS dissent, (SELECT COMMENTS FROM
+		resultType="kr.co.kpcard.ktree.domain.ResultPerformanceScore"> SELECT * FROM ( SELECT
+		DISTINCT E.EMPLOYE_ID AS employeId, PS.MONTH AS month, E.NAME AS employeName,
+		A.AUTHORITY_LEVEL AS authLevel, D.DIVISION_NAME AS divisionName, E.DIVISION_CODE AS
+		divisionCode, E.TEAM_CODE AS teamCode, T.TEAM_NAME AS teamName, (SELECT SCORE FROM
 		KPC_PERSONAL_PERFORMANCE_HST WHERE CONFIRM_NUMBER=1 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND
-		MONTH(+) = #{month}) AS comments1, (SELECT COMMENTS FROM KPC_PERSONAL_PERFORMANCE_HST WHERE
-		CONFIRM_NUMBER=2 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}) AS comments2 FROM
-		KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY A,
-		KPC_PERSONAL_PERFORMANCE_HST PS WHERE E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE =
-		T.TEAM_CODE(+) AND E.DIVISION_CODE = D.DIVISION_CODE(+) AND E.EMPLOYE_ID = PS.EMPLOYE_ID(+)
-		AND A.AUTHORITY_LEVEL &lt; 4 AND E.USE_YN='Y' AND PS.MONTH(+) = #{month} ORDER BY E.NAME ) <where>
+		MONTH(+) = #{month}) AS score1, (SELECT SCORE FROM KPC_PERSONAL_PERFORMANCE_HST WHERE
+		CONFIRM_NUMBER=2 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}) AS score2,
+		DISSENT AS dissent, (SELECT COMMENTS FROM KPC_PERSONAL_PERFORMANCE_HST WHERE
+		CONFIRM_NUMBER=1 AND EMPLOYE_ID(+) = E.EMPLOYE_ID AND MONTH(+) = #{month}) AS comments1,
+		(SELECT COMMENTS FROM KPC_PERSONAL_PERFORMANCE_HST WHERE CONFIRM_NUMBER=2 AND EMPLOYE_ID(+)
+		= E.EMPLOYE_ID AND MONTH(+) = #{month}) AS comments2 FROM KPC_EMPLOYE E, KPC_DIVISION_INFO
+		D, KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY A, KPC_PERSONAL_PERFORMANCE_HST PS WHERE
+		E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE = T.TEAM_CODE(+) AND E.DIVISION_CODE =
+		D.DIVISION_CODE(+) AND E.EMPLOYE_ID = PS.EMPLOYE_ID(+) AND A.AUTHORITY_LEVEL &lt; 4 AND
+		E.USE_YN='Y' AND PS.MONTH(+) = #{month} ORDER BY E.NAME ) <where>
 			<if test="authLevel==0"> employeId = #{employeId} </if>
 			<if
 				test="authLevel==1 and teamCode>0"> teamCode = #{teamCode} </if>
@@ -513,26 +527,27 @@
 		</where>
 	</select>
 
-	<select id="getValueScoreHistoryAll" parameterType="HashMap" resultType="ResultValueScore">
-		SELECT * FROM ( SELECT VS.SEQ AS seq, VS.MONTH AS month, E.EMPLOYE_ID AS employeId, E.NAME
-		AS employeName , D.DIVISION_NAME AS divisionName, E.DIVISION_CODE AS divisionCode,
+	<select id="getValueScoreHistoryAll" parameterType="HashMap"
+		resultType="kr.co.kpcard.ktree.domain.ResultValueScore"> SELECT * FROM ( SELECT VS.SEQ AS
+		seq, VS.MONTH AS month, E.EMPLOYE_ID AS employeId, E.NAME AS employeName , D.DIVISION_NAME
+		AS divisionName, E.DIVISION_CODE AS divisionCode, A.AUTHORITY_LEVEL AS authLevel,
+		T.TEAM_NAME AS teamName, NVL(VS.SCORE1,0) AS score1, NVL(VS.SCORE2,0) AS score2,
+		NVL(VS.SCORE3,0) AS score3, NVL(VS.SCORE4,0) AS score4, NVL(VS.SCORE5,0) AS score5,
+		NVL(VS.SCORE6,0) AS score6, NVL(VS.SCORE7,0) AS score7, NVL(VS.SCORE8,0) AS score8,
+		NVL(VS.STATUS,0) AS status, VS.COMMENTS AS comments, NVL(VS.CONFIRM_NUMBER,1) AS
+		confirmNumber FROM KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T,
+		KPC_PERSONAL_AUTHORITY A, KPC_PERSONAL_VALUE_SCORE_HST VS WHERE E.EMPLOYE_ID=A.EMPLOYE_ID(+)
+		AND E.TEAM_CODE = T.TEAM_CODE(+) AND E.DIVISION_CODE = D.DIVISION_CODE(+) AND E.EMPLOYE_ID =
+		VS.EMPLOYE_ID(+) AND E.USE_YN='Y' <![CDATA[AND A.AUTHORITY_LEVEL < 4]]> AND VS.CONFIRM_NUMBER(+) = 1 AND VS.MONTH(+) = #{month}
+		UNION SELECT VS.SEQ AS seq, VS.MONTH AS month, E.EMPLOYE_ID AS employeId, E.NAME AS
+		employeName , D.DIVISION_NAME AS divisionName, E.DIVISION_CODE AS divisionCode,
 		A.AUTHORITY_LEVEL AS authLevel, T.TEAM_NAME AS teamName, NVL(VS.SCORE1,0) AS score1,
 		NVL(VS.SCORE2,0) AS score2, NVL(VS.SCORE3,0) AS score3, NVL(VS.SCORE4,0) AS score4,
 		NVL(VS.SCORE5,0) AS score5, NVL(VS.SCORE6,0) AS score6, NVL(VS.SCORE7,0) AS score7,
 		NVL(VS.SCORE8,0) AS score8, NVL(VS.STATUS,0) AS status, VS.COMMENTS AS comments,
-		NVL(VS.CONFIRM_NUMBER,1) AS confirmNumber FROM KPC_EMPLOYE E, KPC_DIVISION_INFO D,
+		NVL(VS.CONFIRM_NUMBER,2) AS confirmNumber FROM KPC_EMPLOYE E, KPC_DIVISION_INFO D,
 		KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY A, KPC_PERSONAL_VALUE_SCORE_HST VS WHERE
 		E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE = T.TEAM_CODE(+) AND E.DIVISION_CODE =
-		D.DIVISION_CODE(+) AND E.EMPLOYE_ID = VS.EMPLOYE_ID(+) AND E.USE_YN='Y' <![CDATA[AND A.AUTHORITY_LEVEL < 4]]> AND
-		VS.CONFIRM_NUMBER(+) = 1 AND VS.MONTH(+) = #{month} UNION SELECT VS.SEQ AS seq, VS.MONTH AS
-		month, E.EMPLOYE_ID AS employeId, E.NAME AS employeName , D.DIVISION_NAME AS divisionName,
-		E.DIVISION_CODE AS divisionCode, A.AUTHORITY_LEVEL AS authLevel, T.TEAM_NAME AS teamName,
-		NVL(VS.SCORE1,0) AS score1, NVL(VS.SCORE2,0) AS score2, NVL(VS.SCORE3,0) AS score3,
-		NVL(VS.SCORE4,0) AS score4, NVL(VS.SCORE5,0) AS score5, NVL(VS.SCORE6,0) AS score6,
-		NVL(VS.SCORE7,0) AS score7, NVL(VS.SCORE8,0) AS score8, NVL(VS.STATUS,0) AS status,
-		VS.COMMENTS AS comments, NVL(VS.CONFIRM_NUMBER,2) AS confirmNumber FROM KPC_EMPLOYE E,
-		KPC_DIVISION_INFO D, KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY A, KPC_PERSONAL_VALUE_SCORE_HST
-		VS WHERE E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE = T.TEAM_CODE(+) AND E.DIVISION_CODE =
 		D.DIVISION_CODE(+) AND E.EMPLOYE_ID = VS.EMPLOYE_ID(+) AND E.USE_YN='Y' <![CDATA[AND A.AUTHORITY_LEVEL < 4]]> AND
 		VS.CONFIRM_NUMBER(+) = 2 AND VS.MONTH(+) = #{month} ) <where>
 			<if test="authLevel==0"> employeId = #{employeId} </if>
@@ -541,16 +556,17 @@
 		</where>
 		ORDER BY employeName </select>
 
-	<select id="getValueScoreByIdHistory" parameterType="HashMap" resultType="ResultValueScore">
-		SELECT VS.SEQ AS seq, VS.MONTH AS month, E.EMPLOYE_ID AS employeId, E.NAME AS employeName ,
-		D.DIVISION_NAME AS divisionName, E.DIVISION_CODE AS divisionCode, A.AUTHORITY_LEVEL AS
-		authLevel, T.TEAM_NAME AS teamName, NVL(VS.SCORE1,0) AS score1, NVL(VS.SCORE2,0) AS score2,
-		NVL(VS.SCORE3,0) AS score3, NVL(VS.SCORE4,0) AS score4, NVL(VS.SCORE5,0) AS score5,
-		NVL(VS.SCORE6,0) AS score6, NVL(VS.SCORE7,0) AS score7, NVL(VS.SCORE8,0) AS score8,
-		NVL(VS.STATUS,0) AS status, VS.COMMENTS AS comments, NVL(VS.CONFIRM_NUMBER,#{confirmNumber})
-		AS confirmNumber FROM KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T,
-		KPC_PERSONAL_AUTHORITY A, KPC_PERSONAL_VALUE_SCORE_HST VS WHERE E.EMPLOYE_ID=A.EMPLOYE_ID(+)
-		AND E.TEAM_CODE = T.TEAM_CODE(+) AND E.DIVISION_CODE = D.DIVISION_CODE(+) AND E.EMPLOYE_ID =
-		VS.EMPLOYE_ID(+) AND E.USE_YN='Y' <![CDATA[AND A.AUTHORITY_LEVEL < 4]]> AND VS.CONFIRM_NUMBER(+) = #{confirmNumber} AND
-		VS.MONTH(+) = #{month} AND E.EMPLOYE_ID = #{employeId} </select>
+	<select id="getValueScoreByIdHistory" parameterType="HashMap"
+		resultType="kr.co.kpcard.ktree.domain.ResultValueScore"> SELECT VS.SEQ AS seq, VS.MONTH AS
+		month, E.EMPLOYE_ID AS employeId, E.NAME AS employeName , D.DIVISION_NAME AS divisionName,
+		E.DIVISION_CODE AS divisionCode, A.AUTHORITY_LEVEL AS authLevel, T.TEAM_NAME AS teamName,
+		NVL(VS.SCORE1,0) AS score1, NVL(VS.SCORE2,0) AS score2, NVL(VS.SCORE3,0) AS score3,
+		NVL(VS.SCORE4,0) AS score4, NVL(VS.SCORE5,0) AS score5, NVL(VS.SCORE6,0) AS score6,
+		NVL(VS.SCORE7,0) AS score7, NVL(VS.SCORE8,0) AS score8, NVL(VS.STATUS,0) AS status,
+		VS.COMMENTS AS comments, NVL(VS.CONFIRM_NUMBER,#{confirmNumber}) AS confirmNumber FROM
+		KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY A,
+		KPC_PERSONAL_VALUE_SCORE_HST VS WHERE E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE =
+		T.TEAM_CODE(+) AND E.DIVISION_CODE = D.DIVISION_CODE(+) AND E.EMPLOYE_ID = VS.EMPLOYE_ID(+)
+		AND E.USE_YN='Y' <![CDATA[AND A.AUTHORITY_LEVEL < 4]]> AND VS.CONFIRM_NUMBER(+) = #{confirmNumber} AND VS.MONTH(+) = #{month} AND
+		E.EMPLOYE_ID = #{employeId} </select>
 </mapper>
