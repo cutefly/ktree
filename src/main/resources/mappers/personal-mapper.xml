@@ -41,4 +41,10 @@
         FROM kpc_personal_authority
         WHERE employe_id = #{employeId}
     </select>
+
+    <update id="updatePassword" parameterType="map">
+        UPDATE kpc_employe
+        SET pwd = #{newPassword}
+        WHERE employe_id = #{employeId}
+    </update>
 </mapper>
