@@ -1,7 +1,7 @@
 package kr.co.kpcard.ktree.controller;
 
-import kr.co.kpcard.ktree.domain.Employee;
-import kr.co.kpcard.ktree.service.EmployeeService;
+import kr.co.kpcard.ktree.domain.Tester;
+import kr.co.kpcard.ktree.service.TesterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,20 +14,20 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class EmployeeController {
+public class TesterController {
 
-    private final EmployeeService employeeService;
+    private final TesterService testerService;
 
-    @GetMapping("/employees")
-    public List<Employee> getEmployees() {
-        return employeeService.getAllEmployees();
+    @GetMapping("/testers")
+    public List<Tester> getTesters() {
+        return testerService.getAllTesters();
     }
 
-    @GetMapping("/employee")
-    public Employee getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+    @GetMapping("/tester/me")
+    public Tester getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails != null) {
-            String employeId = userDetails.getUsername();
-            return employeeService.getEmployeeByEmployeId(employeId);
+            String testerId = userDetails.getUsername();
+            return testerService.getTesterByTesterId(testerId);
         }
         return null;
     }
