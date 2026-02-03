@@ -2,15 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="Personal">
 	<select id="getEmploye" parameterType="HashMap" resultType="kr.co.kpcard.ktree.domain.Employe">
-		SELECT E.EMPLOYE_ID AS employeId, E.NAME AS employeName, E.PWD AS password, E.USE_YN AS
-		useYn, E.TEAM_CODE AS teamCode, T.TEAM_NAME AS teamName, E.DIVISION_CODE AS divisionCode,
-		D.DIVISION_NAME AS divisionName, A.AUTHORITY_LEVEL AS authLevel, E.POSITION AS position FROM
-		KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY A WHERE
-		E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE = T.TEAM_CODE(+) AND E.DIVISION_CODE =
-		D.DIVISION_CODE(+) AND E.USE_YN = 'Y' <if test='employeId != "kpc_admin"'>AND
-		A.AUTHORITY_LEVEL &lt; 4</if>
-			<if test='employeId != null'> AND E.EMPLOYE_ID=#{employeId}</if>
-		ORDER BY E.NAME </select>
+	<![CDATA[ 
+		SELECT E.EMPLOYE_ID AS employeId, 
+               E.NAME AS employeName, 
+               E.PWD AS password, 
+               E.USE_YN as useYn, 
+               E.TEAM_CODE AS teamCode, 
+               T.TEAM_NAME AS teamName, 
+               E.DIVISION_CODE AS divisionCode,
+	           D.DIVISION_NAME AS divisionName, 
+	           A.AUTHORITY_LEVEL AS authLevel, 
+	           E.POSITION AS position 
+          from KPC_EMPLOYE E 
+          left OUTER join KPC_DIVISION_INFO D
+            on E.DIVISION_CODE = D.DIVISION_CODE
+          left OUTER join KPC_TEAM_INFO T
+            on E.TEAM_CODE = T.TEAM_CODE
+          left OUTER join KPC_PERSONAL_AUTHORITY A
+            on E.EMPLOYE_ID = A.EMPLOYE_ID	
+         where E.USE_YN = 'Y'
+		]]>
+		<if
+			test='employeId != "kpc_admin"'>AND A.AUTHORITY_LEVEL &lt; 4</if>
+			<if
+			test='employeId != null'> AND E.EMPLOYE_ID=#{employeId}</if> ORDER BY E.NAME </select>
 
 	<select id="getDivision" parameterType="HashMap"
 		resultType="kr.co.kpcard.ktree.domain.DivisionInfo"> SELECT D.DIVISION_CODE AS code,
@@ -39,14 +54,14 @@
 		   PS.SEQ AS seq,
 		   PS.MONTH AS month,
 		   E.EMPLOYE_ID AS employeId,
-		   NVL(PS.SCORE1,0) AS score1,
-           NVL(PS.SCORE2,0) AS score2,
-           NVL(PS.SCORE3,0) AS score3,
-           NVL(PS.SCORE4,0) AS score4,
-           NVL(PS.SCORE5,0) AS score5,
-           NVL(PS.SCORE6,0) AS score6,
-           NVL(PS.SCORE7,0) AS score7,
-           NVL(PS.SCORE8,0) AS score8,
+		   COALESCE(PS.SCORE1,0) AS score1,
+           COALESCE(PS.SCORE2,0) AS score2,
+           COALESCE(PS.SCORE3,0) AS score3,
+           COALESCE(PS.SCORE4,0) AS score4,
+           COALESCE(PS.SCORE5,0) AS score5,
+           COALESCE(PS.SCORE6,0) AS score6,
+           COALESCE(PS.SCORE7,0) AS score7,
+           COALESCE(PS.SCORE8,0) AS score8,
            PS.DISSENT AS dissent,
            PS.COMMENTS1 AS comments1,
            PS.COMMENTS2 AS comments2,
@@ -54,15 +69,13 @@
 		   PS.CONFIRM_NUMBER AS confirmNumber,
 		   E.CONFIRM1,
 		   E.CONFIRM2
-		FROM
-			KPC_EMPLOYE E,
-			KPC_PERSONAL_PROJECT_SCORE PS
-		WHERE
-			PS.MONTH(+) = #{month}
-			AND E.EMPLOYE_ID = PS.EMPLOYE_ID(+)
+	  FROM KPC_EMPLOYE E
+      left outer join KPC_PERSONAL_PROJECT_SCORE PS
+		on E.EMPLOYE_ID = PS.EMPLOYE_ID AND PS.MONTH = #{month}
+	 WHERE E.EMPLOYE_ID is not null
 	]]>
 			<if
-			test='searchOption != "all"'>AND E.EMPLOYE_ID(+) = #{employeId}</if>
+			test='searchOption != "all"'>AND E.EMPLOYE_ID = #{employeId}</if>
 	</select>
 
 	<!-- 사용하지 않음(Reference query에 오류가 있음) -->
@@ -335,14 +348,33 @@
 
 
 	<select id="getProjectScoreHistory" parameterType="HashMap"
-		resultType="kr.co.kpcard.ktree.domain.ProjectScore"> SELECT PS.SEQ AS seq, E.EMPLOYE_ID AS
-		employeId, E.NAME AS employeName , D.DIVISION_NAME AS divisionName, T.TEAM_NAME AS teamName,
-		PS.SCORE1 AS score1, PS.SCORE2 AS score2, PS.SCORE3 AS score3, PS.SCORE4 AS score4,
-		PS.SCORE5 AS score5, PS.SCORE6 AS score6, PS.SCORE7 AS score7, PS.STATUS AS status FROM
-		KPC_EMPLOYE E, KPC_DIVISION_INFO D, KPC_TEAM_INFO T, KPC_PERSONAL_AUTHORITY A,
-		KPC_PERSONAL_PROJECT_SCORE_HST PS WHERE E.EMPLOYE_ID=A.EMPLOYE_ID(+) AND E.TEAM_CODE =
-		T.TEAM_CODE(+) AND E.DIVISION_CODE = D.DIVISION_CODE(+) AND E.EMPLOYE_ID = PS.EMPLOYE_ID(+)
-		AND PS.MONTH(+) = #{month} AND E.USE_YN='Y' <![CDATA[AND A.AUTHORITY_LEVEL < 4]]>
+		resultType="kr.co.kpcard.ktree.domain.ProjectScore">
+	<![CDATA[
+        SELECT PS.SEQ AS seq, 
+               E.EMPLOYE_ID AS employeId, 
+               E.NAME AS employeName , 
+               D.DIVISION_NAME AS divisionName, 
+               T.TEAM_NAME AS teamName,
+		       PS.SCORE1 AS score1, 
+               PS.SCORE2 AS score2, 
+               PS.SCORE3 AS score3, 
+               PS.SCORE4 AS score4,
+	    	   PS.SCORE5 AS score5, 
+               PS.SCORE6 AS score6, 
+               PS.SCORE7 AS score7, 
+               PS.STATUS AS status 
+          FROM KPC_EMPLOYE E
+          left outer join KPC_DIVISION_INFO D
+            on E.DIVISION_CODE = D.DIVISION_CODE
+          left outer join  KPC_TEAM_INFO T
+            on E.TEAM_CODE = T.TEAM_CODE
+          left outer join KPC_PERSONAL_PROJECT_SCORE_HST PS
+            on E.EMPLOYE_ID = PS.EMPLOYE_ID AND PS.MONTH = #{month}
+          left outer join KPC_PERSONAL_AUTHORITY A
+            on E.EMPLOYE_ID = A.EMPLOYE_ID
+         WHERE E.USE_YN='Y'
+ 		   AND A.AUTHORITY_LEVEL < 4
+		]]>
 			<if test='searchOption != "all"'>AND
 		E.EMPLOYE_ID = #{employeId}</if> ORDER BY E.NAME </select>
 

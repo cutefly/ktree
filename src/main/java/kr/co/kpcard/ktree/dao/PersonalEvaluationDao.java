@@ -98,7 +98,7 @@ public class PersonalEvaluationDao {
 	}
 
 	public ProjectScore getProjectScore(String employeId, String yyyyMM) {
-		logger.info("getProjectScore | IN | Param : employeId=>" + employeId + "yyyyMM=>" + yyyyMM);
+		logger.info("getProjectScore | IN | Param : employeId=>" + employeId + ", yyyyMM=>" + yyyyMM);
 
 		ProjectScore result = new ProjectScore();
 		try {
@@ -116,7 +116,7 @@ public class PersonalEvaluationDao {
 	}
 
 	public List<ProjectScore> getProjectScoreAll(String employeId, String yyyyMM) {
-		logger.info("getProjectScoreAll | IN | Param : employeId=>" + employeId + "yyyyMM=>" + yyyyMM);
+		logger.info("getProjectScoreAll | IN | Param : employeId=>" + employeId + ", yyyyMM=>" + yyyyMM);
 
 		List<ProjectScore> result = new ArrayList<ProjectScore>();
 		try {

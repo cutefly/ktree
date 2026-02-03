@@ -149,26 +149,22 @@ public class PersonalEvaluationController {
 			logger.debug("current : {}, param : {}",
 					Integer.parseInt(DateUtil.getCurrentDate("yyyyMM")), Integer.parseInt(yyyyMM));
 			if (Integer.parseInt(DateUtil.getCurrentDate("yyyyMM")) > Integer.parseInt(yyyyMM)) {
-				logger.debug("step 1");
 				if (searchOption.equals("all")) {
-					logger.debug("step 2");
 					if (divisionCode > 0) {
-						logger.debug("step 3");
 						result = personalEvaluationService.getProjectScoreDivision(
 								employeId, yyyyMM, divisionCode);
 					} else {
-						logger.debug("step 4");
 						result = personalEvaluationService
 								.getProjectScoreAll(employeId, yyyyMM);
 					}
 				} else {
-					logger.debug("step 5");
 					result = personalEvaluationService
 							.getProjectScore(employeId, yyyyMM);
 				}
-				logger.debug("step 6");
 
+				logger.debug("projectScoreList : {}", result.get("resultProjectScore"));
 				model.addAttribute("projectScoreList", result.get("resultProjectScore"));
+				logger.debug("scoreHistoryList : {}", result.get("scoreHistory"));
 				model.addAttribute("scoreHistoryList", result.get("scoreHistory"));
 
 				Date today = Calendar.getInstance().getTime();
