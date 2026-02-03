@@ -15,6 +15,7 @@ import kr.co.kpcard.ktree.domain.TeamInfo;
 import kr.co.kpcard.ktree.domain.ValueScore;
 import lombok.RequiredArgsConstructor;
 
+import org.apache.ibatis.session.SqlSession;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class PersonalEvaluationDao {
 
 	private final Logger logger = LoggerFactory.getLogger(PersonalEvaluationDao.class);
 
-	SqlSessionTemplate sqlSession;
+	private final SqlSession sqlSession;
 
 	@Resource(name = "transactionManager")
 	protected DataSourceTransactionManager transactionManager;

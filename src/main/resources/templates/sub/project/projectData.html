@@ -1,0 +1,87 @@
+<span class="col-lg-10 pull-left" style="text-align:left;"><label> * 
+    관리입력 : PJ업무를 제외한 회사의 공통업무 또는 해피머니와 관련된 업무</label></span>
+<table class="table" id="dataTables-example">
+    <thead>
+        <tr>
+            <td width="3%" rowspan="2"><b>No</b></td>
+            <td width="3%" rowspan="2"><input type="checkbox" name="allSeq" onClick="allCheck('idx[]');" /></td>
+            <td width="6%" rowspan="2"><b>이름</b></td>
+            <td width="*" rowspan="2"><b>부서</b></td>
+            <td width="8%" rowspan="2"><b>팀</b></td>
+            <td rowspan="2"><b>상태</b></td>
+            <td width="7%" colspan="6"><b>직접비</b></td>
+            <td width="7%" colspan="2"><b>공통비</b></td>
+            <td width="7%"><b>합계</b></td>
+        </tr>
+        <tr>
+            <td width="7%"><b>캐시박스</b></td>
+            <td width="7%" title="갤럭시스토어, 스캔잇 포함"><b><u>POSA(주)</u></b></td>
+            <td width="7%"><b>POP</b></td>
+            <td width="7%"><b>Palrago</b></td>
+            <td width="7%" title="제주올레 포함"><b><u>T-Grid(주)</u></b></td>
+            <td width="7%"><b>Topping</b></td>
+            <td width="7%"><b>관리(입력)</b></td>
+            <td width="7%"><b>관리(기본)</b></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="projectScore, iterStat : ${projectScoreList}"
+            th:style="${(projectScore.status == 4 || projectScore.status == 5) and #authorization.expression('hasRole(\'ROLE_USER\')')} ? 'background-color:#FF9090' : ''">
+            
+            <td th:text="${iterStat.count}"></td>
+            <td>
+                <input type="checkbox" name="idx[]" th:value="${iterStat.index}"
+                    th:if="${(session.employeId == projectScore.employeId and projectScore.status == 0) or (projectScore.status == 1 and session.employeId == projectScore.confirm1) or (projectScore.status == 2 and session.employeId == projectScore.confirm2)} and ${projectScore.status < 3}" />
+                <input type="hidden" name="seq" th:id="'seq_' + ${iterStat.index}" th:value="${projectScore.seq}" />
+                <input type="hidden" name="employeId" th:id="'employeId_' + ${iterStat.index}"
+                    th:value="${projectScore.employeId}" />
+                <input type="hidden" name="confirmNumber" th:id="'confirmNumber_' + ${iterStat.index}"
+                    th:value="${session.employeId == projectScore.confirm1 ? 1 : (session.employeId == projectScore.confirm2 ? 2 : 0)}" />
+            </td>
+            <td th:text="${projectScore.employeName}"></td>
+            <td th:text="${projectScore.divisionName}"></td>
+            <td th:text="${projectScore.teamName}"></td>
+            <td>
+                <span th:switch="${projectScore.status}">
+                    <font color='red' th:case="0">미등록</font>
+                    <font color='green' th:case="1">상신</font>
+                    <font color='green' th:case="2">1차승인</font>
+                    <font color='blue' th:case="3">설정 완료</font>
+                    <font color='red' th:case="4">이의 제기</font>
+                    <font color='green' th:case="5">이의 제기(1차)</font>
+                    <font color='blue' th:case="6">설정 완료</font>
+                </span>
+                <br th:if="${((session.employeId == projectScore.employeId and projectScore.status >= 3) or (projectScore.status == 4 and session.employeId == projectScore.confirm1) or (projectScore.status == 5 and session.employeId == projectScore.confirm2) or ((session.employeId == projectScore.employeId or session.employeId == projectScore.confirm1 or session.employeId == projectScore.confirm2) and projectScore.status == 6)) and isAvailable}" />
+                <button type="button" class="btn btn-danger btn-xs"
+                    th:if="${((session.employeId == projectScore.employeId and projectScore.status >= 3) or (projectScore.status == 4 and session.employeId == projectScore.confirm1) or (projectScore.status == 5 and session.employeId == projectScore.confirm2) or ((session.employeId == projectScore.employeId or session.employeId == projectScore.confirm1 or session.employeId == projectScore.confirm2) and projectScore.status == 6)) and isAvailable}"
+                    th:onclick="'openDissentPop(\'' + ${projectScore.employeId} + '\', \'' + ${projectScore.month} + '\');'"
+                    th:text="${projectScore.status >= 4 ? '이의제기 확인' : '이의제기'}"></button>
+            </td>
+
+            <!-- 점수출력 -->
+            <th:block th:with="scores=${new float[]{projectScore.score1, projectScore.score2, projectScore.score3, projectScore.score4, projectScore.score5, projectScore.score6, projectScore.score7, projectScore.score8}}">
+                <td width="7%" th:each="k : ${#numbers.sequence(0, 7)}">
+                    <th:block th:with="scoreF=${scores[k]}, myScoreF=${scoreHistoryList.?[employeId == projectScore.employeId][0]?.getScore(k+1) ?: 0}">
+                        <div th:if="${((session.employeId == projectScore.employeId and projectScore.status == 0) or (projectScore.status == 1 and session.employeId == projectScore.confirm1) or (projectScore.status == 2 and session.employeId == projectScore.confirm2)) and projectScore.status < 3 and isAvailable}">
+                            <input type="text" size="2" th:name="'projectScoreList[' + ${iterStat.index} + '].score' + ${k+1}" th:id="'score' + ${iterStat.index} + '_' + ${k+1}" maxlength="3" th:value="${scoreF}" onkeydown="numberChk(event)" onkeyup="checkLimit(this, event)" onfocus="onFocusBlank(this);" onblur="outFocusValue(this);" style="ime-mode:disabled;" th:if="${k < 7}" />
+                            <th:block th:if="${k == 7}">
+                                <span th:text="${scoreF}"></span>
+                                <input type="hidden" size="2" th:name="'projectScoreList[' + ${iterStat.index} + '].score' + ${k+1}" th:id="'score' + ${iterStat.index} + '_' + ${k+1}" maxlength="3" th:value="${scoreF}" />
+                            </th:block>
+                        </div>
+                        <div th:unless="${((session.employeId == projectScore.employeId and projectScore.status == 0) or (projectScore.status == 1 and session.employeId == projectScore.confirm1) or (projectScore.status == 2 and session.employeId == projectScore.confirm2)) and projectScore.status < 3 and isAvailable}">
+                            <span th:text="${scoreF}"></span>
+                            <th:block th:if="${k < 7 and projectScore.employeId == session.employeId}">
+                                <font style='font-size:12px;' th:text="'(' + ${myScoreF} + ')'"></font>
+                                <font color='red' th:if="${scoreF > myScoreF}">▲</font>
+                                <font color='blue' th:if="${scoreF < myScoreF}">▼</font>
+                                <font color='green' th:if="${scoreF == myScoreF}">■</font>
+                            </th:block>
+                        </div>
+                    </th:block>
+                </td>
+                <td width="7%"><b><input type="text" size="2" th:id="'totalscore' + ${iterStat.index}" th:value="${#aggregates.sum(scores)}" readonly /></b></td>
+            </th:block>
+        </tr>
+    </tbody>
+</table>

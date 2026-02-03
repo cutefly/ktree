@@ -24,14 +24,19 @@ public class SecurityConfig {
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http
+                                .csrf(csrf -> csrf.disable()) // Disable CSRF for simplicity
+                                // .headers(headers -> headers.frameOptions(frameOptions ->
+                                // frameOptions.sameOrigin())) // Enable
                                 .authorizeHttpRequests(authorize -> authorize
                                                 .requestMatchers("/", "/login", "/css/**", "/js/**", "/images/**",
                                                                 "/fonts/**", "/less/**",
                                                                 "/scss/**")
                                                 .permitAll() // Permit access to home, login page, static resources
                                                 // .requestMatchers("/password", "/change-password").permitAll()
-                                                .requestMatchers("/api/**").authenticated() // Require authentication
-                                                                                            // for /api/**
+                                                .requestMatchers("/api/**",
+                                                                "/eval/**")
+                                                .authenticated() // Require authentication
+                                                                 // for /api/**
                                                 .anyRequest().authenticated() // All other requests require
                                                                               // authentication
                                 )

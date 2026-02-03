@@ -34,3 +34,27 @@ SELECT E.EMPLOYE_ID AS employeId,
     on E.EMPLOYE_ID = A.EMPLOYE_ID	
  where E.USE_YN = 'Y'
 ;
+
+SELECT PS.SEQ AS seq, 
+       E.EMPLOYE_ID AS employeId, 
+       E.NAME AS employeName , 
+       D.DIVISION_NAME AS divisionName, 
+       T.TEAM_NAME AS teamName,
+		   PS.SCORE1 AS score1, 
+       PS.SCORE2 AS score2, 
+       PS.SCORE3 AS score3, 
+       PS.SCORE4 AS score4,
+		   PS.SCORE5 AS score5, 
+       PS.SCORE6 AS score6, 
+       PS.SCORE7 AS score7, 
+       PS.STATUS AS status 
+  FROM KPC_EMPLOYE E
+  left outer join KPC_DIVISION_INFO D
+    on E.DIVISION_CODE = D.DIVISION_CODE
+  left outer join  KPC_TEAM_INFO T
+    on E.TEAM_CODE = T.TEAM_CODE
+  left outer join KPC_PERSONAL_PROJECT_SCORE_HST PS
+    on E.EMPLOYE_ID = PS.EMPLOYE_ID AND PS.MONTH = #{month}
+  left outer join KPC_PERSONAL_AUTHORITY A
+    on E.EMPLOYE_ID = A.EMPLOYE_ID AND A.AUTHORITY_LEVEL < 4
+ WHERE E.USE_YN='Y'

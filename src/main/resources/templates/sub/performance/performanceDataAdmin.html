@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/default :: layout(~{::title}, ~{::section})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>성과 / 가치평가 (Admin)</title>
+</head>
+<body>
+<section>
+    <div class="row">
+        <div><h2 class="page-header">성과 / 가치평가</h2></div>
+        <div class="panel panel-red">
+            <div class="panel-heading">성과 / 가치평가</div>
+            <div class="panel-body centerText">
+                <form id="frm" name="frm">
+                    <!-- content of the form -->
+                </form>
+            </div>
+            <div class="panel-body align-right">
+                <div class="col-xs-2 pull-right"><button type="button" class="btn btn-danger btn-sm btn-block" onclick="savePerformAdmin();">등록</button></div>
+                <div class="col-xs-2 pull-right"><button type="button" class="btn btn-danger btn-outline btn-sm btn-block" onclick="javascript:history.go(-1);">목록</button></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function savePerformAdmin(){
+            var data = $('#frm').serialize();
+            var values1 = [];
+            var values2 = [];
+
+            for(var i=0; i<$('input[name="performScore[]"]').length; i++){
+                if($('input[name="performScore[]"]').eq(i).val() > 10){
+                    alert('평가점수는 10점을 초과 할 수 없습니다.');
+                    $('input[name="performScore[]"]').eq(i).focus();
+                    return;
+                }
+            }
+
+            for(var i=0; i<$('input[name="valueScores1[]"]').length; i++){
+                values1.push($('input[name="valueScores1[]"]').eq(i).is(':checked'));
+            }
+            for(var i=0; i<$('input[name="valueScores2[]"]').length; i++){
+                values2.push($('input[name="valueScores2[]"]').eq(i).is(':checked'));
+            }
+
+            $.ajax({
+                url : '/savePerformScoreAdmin',
+                type : 'post',
+                dataType : 'text',
+                data : data+'&values1[]='+values1+'&values2[]='+values2,
+                success : function(res){
+                    if(res=='S'){
+                        alert('등록이 완료되었습니다.');
+                        document.location.href='/performanceListAdmin?yyyyMM='+$('#month').val();
+                    }else{
+                        alert('등록중 에러가 발생하였습니다. \n에러가 계속될경우 기술개발팀에 문의해주세요.');
+                    }
+                },error : function(e){
+                    alert('등록실패');
+                    console.log(e);
+                }
+            });
+        }
+    </script>
+</section>
+</body>
+</html>

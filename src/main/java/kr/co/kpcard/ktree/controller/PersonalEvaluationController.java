@@ -33,66 +33,18 @@ import kr.co.kpcard.ktree.service.PersonalEvaluationService;
 import kr.co.kpcard.ktree.utility.DateUtil;
 import lombok.RequiredArgsConstructor;
 
-@Controller("PersonalEvaluation")
+//@Controller("PersonalEvaluation")
+@Controller
 @RequiredArgsConstructor
+@RequestMapping("/eval")
 @SessionAttributes("Member")
 public class PersonalEvaluationController {
 	protected final Logger logger = LoggerFactory.getLogger(PersonalEvaluationController.class);
 
-	private PersonalEvaluationService personalEvaluationService;
+	private final PersonalEvaluationService personalEvaluationService;
 
 	// @Value("${valid.work.date}")
-	private Integer validWorkDate = 20260101; // 영업일
-
-	/**
-	 * 메인화면
-	 * 
-	 * @return view
-	 */
-	@RequestMapping(value = "/main")
-	public String main() {
-		return "/sub/main";
-	}
-
-	/**
-	 * 패스워드 변경 화면
-	 * 
-	 * @param request
-	 * @return view
-	 */
-	@RequestMapping(value = "/password")
-	public String password(HttpServletRequest request) {
-		Employe employeInfo = personalEvaluationService
-				.getEmploye((String) (request.getSession().getAttribute("employeId")));
-		request.setAttribute("employeInfo", employeInfo);
-		return "/sub/setting/password";
-	}
-
-	/**
-	 * 비밀번호 변경
-	 * 
-	 * @param password
-	 * @param request
-	 * @return
-	 */
-	@RequestMapping(value = "/updatePassword")
-	@ResponseBody
-	public String savePassword(
-			@RequestParam(value = "password") String password,
-			HttpServletRequest request) {
-		logger.info("savePassword | IN | Param: password={}", password);
-		String msg = "";
-		boolean result = personalEvaluationService
-				.updatePassword((String) (request.getSession().getAttribute("employeId")), password);
-
-		if (result) {
-			msg = "S";
-		} else {
-			msg = "F";
-		}
-
-		return msg;
-	}
+	private Integer validWorkDate = 15; // 영업일
 
 	/**
 	 * 프로젝트 기여도 설정 화면
@@ -104,12 +56,12 @@ public class PersonalEvaluationController {
 	 */
 	@RequestMapping(value = "/projectList")
 	public String projectList(@RequestParam(value = "yyyyMM", defaultValue = "") String yyyyMM,
-			HttpServletRequest request) {
+			Model model, jakarta.servlet.http.HttpSession session) {
 		String yyyyMMDefault = StringUtils.defaultIfBlank(yyyyMM,
 				new SimpleDateFormat("yyyyMM").format(DateUtils.addMonths(new Date(), -1)));
 
 		logger.debug("request performanceList : {}", yyyyMMDefault);
-		request.setAttribute("yyyyMM", yyyyMMDefault);
+		model.addAttribute("yyyyMM", yyyyMMDefault);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 		Calendar cal = Calendar.getInstance();
@@ -124,17 +76,20 @@ public class PersonalEvaluationController {
 		logger.debug("Today : {}", sdf.format(today));
 
 		Date limitDayOfMonth = getLimitDate(today, validWorkDate);
-		request.setAttribute("isAvailable", today.after(limitDayOfMonth) ? Boolean.FALSE : Boolean.TRUE); // 평가 가능한 일자인지
-																											// 비교
+		model.addAttribute("isAvailable", today.after(limitDayOfMonth) ? Boolean.FALSE : Boolean.TRUE); // 평가 가능한 일자인지
+																										// 비교
 		logger.info("currentDate : " + sdf.format(today) + ", limitDate : " + sdf.format(limitDayOfMonth)
-				+ ", isAvaliable : " + request.getAttribute("isAvailable"));
+				+ ", isAvaliable : " + model.getAttribute("isAvailable"));
 
 		List<DivisionInfo> divisionList = personalEvaluationService.getDivisionList();
+		logger.debug("divisionList : {}", divisionList.toString());
 		List<TeamInfo> teamList = personalEvaluationService.getTeamList(1);
-		request.setAttribute("divisionList", divisionList); // 부서리스트
-		request.setAttribute("teamList", teamList); // 팀리스트
+		logger.debug("teamList : {}", teamList.toString());
+		model.addAttribute("divisionList", divisionList); // 부서리스트
+		model.addAttribute("teamList", teamList); // 팀리스트
+		model.addAttribute("sessionAuthLevel", session.getAttribute("authLevel")); // 세션에서 authLevel 추가
 
-		return "/sub/project/projectList";
+		return "sub/project/projectList";
 	}
 
 	/**
@@ -183,46 +138,55 @@ public class PersonalEvaluationController {
 	public String getProjectData(@RequestParam String yyyyMM,
 			@RequestParam String searchOption,
 			@RequestParam(value = "divisionCode", defaultValue = "0") int divisionCode,
-			HttpServletRequest request,
-			Model model) {
+			Model model, jakarta.servlet.http.HttpSession session) {
 		logger.debug("getProjectData | IN | param['yyyyMM':" + yyyyMM + ", 'searchOption':" + searchOption
 				+ ", 'divisionCode':" + divisionCode + "]");
 		HashMap<String, Object> result = new HashMap<String, Object>();
 
 		try {
+			String employeId = (String) session.getAttribute("employeId");
+			logger.debug("employeId from session : {}", employeId);
+			logger.debug("current : {}, param : {}",
+					Integer.parseInt(DateUtil.getCurrentDate("yyyyMM")), Integer.parseInt(yyyyMM));
 			if (Integer.parseInt(DateUtil.getCurrentDate("yyyyMM")) > Integer.parseInt(yyyyMM)) {
+				logger.debug("step 1");
 				if (searchOption.equals("all")) {
+					logger.debug("step 2");
 					if (divisionCode > 0) {
+						logger.debug("step 3");
 						result = personalEvaluationService.getProjectScoreDivision(
-								(String) request.getSession().getAttribute("employeId"), yyyyMM, divisionCode);
+								employeId, yyyyMM, divisionCode);
 					} else {
+						logger.debug("step 4");
 						result = personalEvaluationService
-								.getProjectScoreAll((String) request.getSession().getAttribute("employeId"), yyyyMM);
+								.getProjectScoreAll(employeId, yyyyMM);
 					}
 				} else {
+					logger.debug("step 5");
 					result = personalEvaluationService
-							.getProjectScore((String) request.getSession().getAttribute("employeId"), yyyyMM);
+							.getProjectScore(employeId, yyyyMM);
 				}
+				logger.debug("step 6");
 
-				request.setAttribute("projectScoreList", result.get("resultProjectScore"));
-				request.setAttribute("scoreHistoryList", result.get("scoreHistory"));
+				model.addAttribute("projectScoreList", result.get("resultProjectScore"));
+				model.addAttribute("scoreHistoryList", result.get("scoreHistory"));
 
 				Date today = Calendar.getInstance().getTime();
 
 				Date limitDayOfMonth = getLimitDate(today, validWorkDate);
-				request.setAttribute("isAvailable", today.after(limitDayOfMonth) ? Boolean.FALSE : Boolean.TRUE); // 평가
-																													// 가능한
-																													// 일자인지
-																													// 비교
-
+				model.addAttribute("isAvailable", today.after(limitDayOfMonth) ? Boolean.FALSE : Boolean.TRUE); // 평가
+																												// 가능한
+																												// 일자인지
+																												// 비교
+				model.addAttribute("sessionEmployeId", employeId);
 			} else {
 				throw new GlobalException("Failed", "현재 월 이후의 데이터는 조회가 불가합니다.");
 			}
 		} catch (GlobalException e) {
 			throw e;
 		}
-		logger.debug("grtProjectData | OUT |");
-		return "/sub/project/projectData";
+		logger.debug("getProjectData | OUT |");
+		return "sub/project/projectData";
 	}
 
 	/**
@@ -268,7 +232,7 @@ public class PersonalEvaluationController {
 			throw e;
 		}
 
-		logger.debug("grtProjectData | OUT |");
+		logger.debug("getProjectData | OUT |");
 
 		return "/sub/project/projectDataAdmin";
 	}

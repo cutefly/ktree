@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html th:replace="~{layout/default :: layout(~{::title}, ~{::section})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>성과 / 가치평가 (Admin)</title>
+</head>
+<body>
+<section>
+    <div class="row">
+        <div><h2 class="page-header">성과 / 가치평가</h2></div>
+        <div class="panel panel-red">
+            <div class="panel-heading">성과 / 가치평가</div>
+            <div class="panel-body tabbable tabs-below" id="searchDiv">
+                <table class="table" id="formTable">
+                    <tr>
+                        <td class="col-lg-10">
+                            <div class="form-group col-lg-3">
+                                <div class="col-xs-10">
+                                    <label class="form-inline">조회일자 - </label>
+                                </div>
+
+                                <div class="col-xs-10">
+                                    <input class="form-control date-picker" type="text" id="searchSDate" name="searchSDate" placeholder="조회시작일" th:value="${yyyyMM}" readonly="readonly"/>
+                                </div>
+
+                                <div class="col-xs-1">
+                                    <button type="button" class="btn btn-danger btn-sm" id="searchBtn" name="searchBtn" onclick="searchData('performanceListAdmin');">Search</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="panel-body  centerText" id="data-panel">
+
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+    <script>
+        setDatePicker();
+
+        $(document).ready(function(){
+            searchData('performanceListAdmin');
+        });
+    </script>
+</section>
+</body>
+</html>

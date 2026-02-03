@@ -1,0 +1,72 @@
+<span class="col-lg-10 pull-left" style="text-align:left;"><label> * 성과평가 산정기준: Sales Meeting, weekly Meeting, WIP 기반하여 점수 부여(만점 10점) </label></span>
+<span class="col-lg-10 pull-left" style="text-align:left;" th:if="${!performanceValueList.isEmpty()}"><label th:text="'* 성과평과 + 가치평가 환산비율 : (성과평가 ' + ${#numbers.formatInteger(performanceValueList[0].performRatio * 100, 0)} + '%), (가치평가 ' + ${#numbers.formatInteger(performanceValueList[0].valueRatio * 100, 0)} + '%)'"></label></span>
+<span class="col-lg-10 pull-left" style="text-align:left;"><label> * 가치평가 기호표 : ○=> 1명 선택, ◎=> 2명선택 </label></span>
+<table class="table">
+    <thead>
+        <tr>
+            <td width="2%" rowspan="2"><b>No</b></td>
+            <td width="6%" rowspan="2" valign="middle"><b>이름</b></td>
+            <td width="9%" rowspan="2"><b>부서</b></td>
+            <td width="8%" rowspan="2"><b>팀</b></td>
+            <td width="6%" rowspan="2"><b>상태</b></td>
+            <td rowspan="2"><b>성과평가</br>총점</b></td>
+            <td width="6%" colspan="8"><b>가치평가</b></td>
+            <td rowspan="2"><b>가치평가</br>총점</b></td>
+            <td width="7%" rowspan="2"><b>최종점수</b></td>
+            <td width="7%" rowspan="2"><b></b></td>
+        </tr>
+        <tr>
+            <td width="6%"><b>판단력</b></td>
+            <td width="6%"><b>소통</b></td>
+            <td width="6%"><b>임팩트</b></td>
+            <td width="6%"><b>호기심</b></td>
+            <td width="6%"><b>혁신</b></td>
+            <td width="6%"><b>열정</b></td>
+            <td width="6%"><b>정직</b></td>
+            <td width="7%"><b>이타적 행동</b></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each="performanceValue, iterStat : ${performanceValueList}" th:with="
+            useAuthLevel = ${session.authLevel - performanceValue.authLevel},
+            confirmUrl = (${useAuthLevel == 1} ? '/performanceConfirm1' : ((${useAuthLevel == 2}) ? '/performanceConfirm2' : '')),
+            btnText = '평가하기'
+            ">
+            <input type="hidden" name="employeId" th:id="'employeId_' + ${iterStat.index}" th:value="${performanceValue.employeId}"/>
+            <td th:text="${iterStat.count}"></td>
+            <td th:text="${performanceValue.employeName}"></td>
+            <td th:text="${performanceValue.divisionName}"></td>
+            <td th:text="${performanceValue.teamName}"></td>
+            <td>
+                 <th:block th:if="${performanceValue.perfomScore1 > 0 && performanceValue.perfomScore2 > 0}">
+                    <font color="blue" th:if="${performanceValue.dissent == null || (performanceValue.dissentComments1 == null || performanceValue.dissentComments2 == null)}">평가완료</font>
+                    <font color="blue" th:if="${performanceValue.dissent != null && performanceValue.dissentComments1 != null && performanceValue.dissentComments2 != null}">이의제기<br/>(평가완료)</font>
+                    <font color="green" th:if="${performanceValue.dissent != null && (performanceValue.dissentComments1 == null || performanceValue.dissentComments2 == null)}">이의제기<br/>(재평가중)</font>
+                </th:block>
+                <font color="green" th:if="${(performanceValue.perfomScore1 > 0 || performanceValue.perfomScore2 > 0) && !(performanceValue.perfomScore1 > 0 && performanceValue.perfomScore2 > 0)}">평가중</font>
+                <font color="red" th:if="${performanceValue.perfomScore1 <= 0 && performanceValue.perfomScore2 <= 0}">미등록</font>
+            </td>
+            <td width="7%" th:text="${(performanceValue.perfomScore1 + performanceValue.perfomScore2)}"></td>
+            <th:block th:with="valueScoreTot1=0, valueScoreTot2=0">
+                <td width="6%" th:each="score1, scoreStat : ${performanceValue.valueScore1}">
+                    <th:block th:with="score2 = ${performanceValue.valueScore2[scoreStat.index]}">
+                        <span th:if="${score1 && score2}">◎</span>
+                        <span th:if="${(score1 && !score2) || (!score1 && score2)}">○</span>
+                        <th:block th:with="valueScoreTot1 = ${valueScoreTot1 + (score1 ? 1 : 0)}"></th:block>
+                        <th:block th:with="valueScoreTot2 = ${valueScoreTot2 + (score2 ? 1 : 0)}"></th:block>
+                    </th:block>
+                </td>
+                 <td width="7%" th:with="
+                    valueScoreTot1Calc = ${valueScoreTot1 > 0 ? valueScoreTot1 + 2 : valueScoreTot1},
+                    valueScoreTot2Calc = ${valueScoreTot2 > 0 ? valueScoreTot2 + 2 : valueScoreTot2}"
+                     th:text="${valueScoreTot1Calc + valueScoreTot2Calc}">
+                </td>
+                <td width="7%" th:text="${(performanceValue.perfomScore1 + performanceValue.perfomScore2) * performanceValue.performRatio + (valueScoreTot1Calc + valueScoreTot2Calc) * performanceValue.valueRatio}">
+                </td>
+            </th:block>
+            <td width="7%">
+                <button type="button" class="btn btn-success btn-sm btn-block" th:onclick="'moveConfirm(\'/performanceDataAdmin\', \'' + ${performanceValue.employeId} + '\');'">평가확인</button>
+            </td>
+        </tr>
+    </tbody>
+</table>

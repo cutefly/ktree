@@ -35,7 +35,7 @@ public class PersonalEvaluationService {
 	static final List<Integer> developTeam = new ArrayList<Integer>(); // 기술개발연구소
 	static final List<Integer> financeTeam = new ArrayList<Integer>(); // 재무본부
 
-	private PersonalEvaluationDao personalEvaluationDao;
+	private final PersonalEvaluationDao personalEvaluationDao;
 
 	public HashMap<String, Object> getProjectScore(String employeId, String yyyyMM) {
 		logger.info("getProjectScoreList | IN |");

@@ -8,7 +8,7 @@
                     <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>평가<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
                         <li th:if="${session.employeId != 'kpc_admin'}">
-                            <a th:href="@{/projectList}">프로젝트</a>
+                            <a th:href="@{/eval/projectList}">프로젝트</a>
                         </li>
                         <!--/* 인사평가 정책 변경에 따른 메뉴 표시 제거
                         <li th:if="${session.employeId != 'kpc_admin'}">
@@ -16,10 +16,10 @@
                         </li>
                         */-->
                         <li th:if="${session.employeId == 'kpc_admin'}">
-                            <a th:href="@{/projectListAdmin}">프로젝트</a>
+                            <a th:href="@{/eval/projectListAdmin}">프로젝트</a>
                         </li>
                         <li th:if="${session.employeId == 'kpc_admin'}">
-                            <a th:href="@{/performanceListAdmin}">성과/가치</a>
+                            <a th:href="@{/eval/performanceListAdmin}">성과/가치</a>
                         </li>
                     </ul>
                     <!-- /.nav-second-level -->

@@ -104,5 +104,18 @@ public class ProjectScore {
 		this.confirm1 = confirm1;
 		this.confirm2 = confirm2;
 	}
+	public float getScore(int k) {
+		switch (k) {
+			case 1: return score1;
+			case 2: return score2;
+			case 3: return score3;
+			case 4: return score4;
+			case 5: return score5;
+			case 6: return score6;
+			case 7: return score7;
+			case 8: return score8;
+			default: return 0;
+		}
+	}
 
 }

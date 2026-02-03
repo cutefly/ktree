@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+
+<head>
+    <title>프로젝트 기여도</title>
+</head>
+
+<body>
+<div layout:fragment="content">
+    <div class="row">
+        <div>
+            <h2 class="page-header">프로젝트 기여도</h2>
+        </div>
+        <div class="panel panel-red">
+            <div class="panel-heading">프로젝트 기여도</div>
+            <div class="panel-body tabbable tabs-below" id="searchDiv">
+                <table class="table" id="formTable">
+                    <tr>
+                        <td class="col-lg-10">
+                            <div class="form-group col-lg-3">
+                                <div class="col-xs-10">
+                                    <label class="form-inline">조회일자 - </label>
+                                </div>
+                                <div class="col-xs-10">
+                                    <input class="form-control date-picker" type="text" id="searchSDate" name="searchSDate" placeholder="조회시작일" th:value="${yyyyMM}" readonly />
+                                </div>
+                                <div class="col-xs-1">
+                                    <button type="button" class="btn btn-danger btn-sm" id="searchBtn" name="searchBtn" onClick="searchData('project');">Search</button>
+                                </div>
+                            </div>
+                            <div class="form-group col-lg-8">
+                                <div class="col-xs-10">
+                                    <label class="form-inline">조회 조건 -</label>
+                                </div>
+                                <div class="col-xs-3">
+                                    <select class="form-control" name="divisionCode" id="divisionCode">
+                                        <option value="">전체</option>
+                                        <option th:each="division : ${divisionList}" th:value="${division.code}" th:text="${division.name}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-xs-3">
+                                    <label>나만 보기 <input type="radio" id="searchOption" name="searchOption" value="" th:checked="${#strings.equals(sessionAuthLevel, '0')}" /></label>
+                                    <label>전체 보기 <input type="radio" id="searchOption" name="searchOption" value="all" th:checked="${!#strings.equals(sessionAuthLevel, '0')}" /></label>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="panel-body centerText" id="data-panel">
+            </div>
+
+            <div class="panel-body" align="right" th:if="${isAvailable}">
+                <div class="col-xs-2 pull-right">
+                    <button type="button" class="btn btn-danger btn-sm btn-block" id="saveProjectBtn" name="saveProjectBtn" onClick="saveProjectData();">상신</button>
+                </div>
+            </div>
+            <div class="panel-body" align="right" th:unless="${isAvailable}">
+                <div class="col-xs-2 pull-right">
+                    <button type="button" class="btn btn-danger btn-sm btn-block" onClick="alert('평가기간이 아닙니다.');">상신</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.row -->
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        setDatePicker();
+
+        $(document).ready(function () {
+            searchData('project');
+        });
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>
