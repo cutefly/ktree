@@ -349,22 +349,22 @@ public class PersonalEvaluationController {
 	 */
 	@RequestMapping(value = "/popProjectDissent")
 	public String projectDissentPop(@RequestParam(value = "employeId") String employeId,
-			@RequestParam(value = "yyyyMM") String yyyyMM,
-			HttpServletRequest request) {
+			@RequestParam(value = "yyyyMM") String yyyyMM, Model model, jakarta.servlet.http.HttpSession session) {
+		logger.info("employeId : {}, yyyyMM : {}", employeId, yyyyMM);
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		result = personalEvaluationService.getProjectScore(employeId, yyyyMM);
 		for (ResultProjectScore projectScore : (List<ResultProjectScore>) result.get("resultProjectScore")) {
-			request.setAttribute("employeId", employeId);
-			request.setAttribute("yyyyMM", yyyyMM);
-			request.setAttribute("status", projectScore.getStatus());
-			request.setAttribute("dissent", projectScore.getDissent());
-			request.setAttribute("comments1", projectScore.getComments1());
-			request.setAttribute("comments2", projectScore.getComments2());
-			request.setAttribute("authLevel", projectScore.getEmployeLevel());
-			request.setAttribute("confirm1", projectScore.getConfirm1());
-			request.setAttribute("confirm2", projectScore.getConfirm2());
+			model.addAttribute("employeId", employeId);
+			model.addAttribute("yyyyMM", yyyyMM);
+			model.addAttribute("status", projectScore.getStatus());
+			model.addAttribute("dissent", projectScore.getDissent());
+			model.addAttribute("comments1", projectScore.getComments1());
+			model.addAttribute("comments2", projectScore.getComments2());
+			model.addAttribute("authLevel", projectScore.getEmployeLevel());
+			model.addAttribute("confirm1", projectScore.getConfirm1());
+			model.addAttribute("confirm2", projectScore.getConfirm2());
 		}
-		return "/sub/project/projectDissentPop";
+		return "sub/project/projectDissentPop";
 	}
 
 	/**

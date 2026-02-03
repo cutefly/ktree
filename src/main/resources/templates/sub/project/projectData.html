@@ -54,7 +54,7 @@
                 <br th:if="${projectScore.dissentable and isAvailable}" />
                 <button type="button" class="btn btn-danger btn-xs"
                     th:if="${projectScore.dissentable and isAvailable}"
-                    th:onclick="'openDissentPop(\'' + ${projectScore.employeId} + '\', \'' + ${projectScore.month} + '\');'"
+                    th:attr="onclick=|openDissentPop('${projectScore.employeId}', '${projectScore.month}')|" 
                     th:text="${projectScore.status >= 4 ? '이의제기 확인' : '이의제기'}"></button>
             </td>
 

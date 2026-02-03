@@ -1,2 +1,4 @@
                                     <label>나만 보기 <input type="radio" id="searchOption" name="searchOption" value="" th:checked="${#numbers.formatInteger(sessionAuthLevel, 0) < 1}" /></label>
                                     <label>전체 보기 <input type="radio" id="searchOption" name="searchOption" value="all" th:checked="${#numbers.formatInteger(sessionAuthLevel, 0) >= 1}" /></label>
+
+                    th:onclick="'openDissentPop(\'' + ${projectScore.employeId} + '\', \'' + ${projectScore.month} + '\');'"
