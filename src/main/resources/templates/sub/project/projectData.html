@@ -26,17 +26,17 @@
     </thead>
     <tbody>
         <tr th:each="projectScore, iterStat : ${projectScoreList}"
-            th:style="${(projectScore.status == 4 || projectScore.status == 5) and #authorization.expression('hasRole(\'ROLE_USER\')')} ? 'background-color:#FF9090' : ''">
+            th:style="${(projectScore.status == 4 || projectScore.status == 5)} ? 'background-color:#FF9090' : ''">
             
             <td th:text="${iterStat.count}"></td>
             <td>
                 <input type="checkbox" name="idx[]" th:value="${iterStat.index}"
-                    th:if="${(session.employeId == projectScore.employeId and projectScore.status == 0) or (projectScore.status == 1 and session.employeId == projectScore.confirm1) or (projectScore.status == 2 and session.employeId == projectScore.confirm2)} and ${projectScore.status < 3}" />
+                    th:if="${projectScore.evaluable}" />
                 <input type="hidden" name="seq" th:id="'seq_' + ${iterStat.index}" th:value="${projectScore.seq}" />
                 <input type="hidden" name="employeId" th:id="'employeId_' + ${iterStat.index}"
                     th:value="${projectScore.employeId}" />
                 <input type="hidden" name="confirmNumber" th:id="'confirmNumber_' + ${iterStat.index}"
-                    th:value="${session.employeId == projectScore.confirm1 ? 1 : (session.employeId == projectScore.confirm2 ? 2 : 0)}" />
+                    th:value="${projectScore.evaluable ? 2 : 0}" />
             </td>
             <td th:text="${projectScore.employeName}"></td>
             <td th:text="${projectScore.divisionName}"></td>
@@ -51,25 +51,25 @@
                     <font color='green' th:case="5">이의 제기(1차)</font>
                     <font color='blue' th:case="6">설정 완료</font>
                 </span>
-                <br th:if="${((session.employeId == projectScore.employeId and projectScore.status >= 3) or (projectScore.status == 4 and session.employeId == projectScore.confirm1) or (projectScore.status == 5 and session.employeId == projectScore.confirm2) or ((session.employeId == projectScore.employeId or session.employeId == projectScore.confirm1 or session.employeId == projectScore.confirm2) and projectScore.status == 6)) and isAvailable}" />
+                <br th:if="${projectScore.dissentable and isAvailable}" />
                 <button type="button" class="btn btn-danger btn-xs"
-                    th:if="${((session.employeId == projectScore.employeId and projectScore.status >= 3) or (projectScore.status == 4 and session.employeId == projectScore.confirm1) or (projectScore.status == 5 and session.employeId == projectScore.confirm2) or ((session.employeId == projectScore.employeId or session.employeId == projectScore.confirm1 or session.employeId == projectScore.confirm2) and projectScore.status == 6)) and isAvailable}"
+                    th:if="${projectScore.dissentable and isAvailable}"
                     th:onclick="'openDissentPop(\'' + ${projectScore.employeId} + '\', \'' + ${projectScore.month} + '\');'"
                     th:text="${projectScore.status >= 4 ? '이의제기 확인' : '이의제기'}"></button>
             </td>
 
             <!-- 점수출력 -->
-            <th:block th:with="scores=${new float[]{projectScore.score1, projectScore.score2, projectScore.score3, projectScore.score4, projectScore.score5, projectScore.score6, projectScore.score7, projectScore.score8}}">
+            <th:block th:with="scores=${projectScore.scores}">
                 <td width="7%" th:each="k : ${#numbers.sequence(0, 7)}">
-                    <th:block th:with="scoreF=${scores[k]}, myScoreF=${scoreHistoryList.?[employeId == projectScore.employeId][0]?.getScore(k+1) ?: 0}">
-                        <div th:if="${((session.employeId == projectScore.employeId and projectScore.status == 0) or (projectScore.status == 1 and session.employeId == projectScore.confirm1) or (projectScore.status == 2 and session.employeId == projectScore.confirm2)) and projectScore.status < 3 and isAvailable}">
+                    <th:block th:with="scoreF=${scores[k]}, myScoreF=${projectScore.myScores != null ? projectScore.myScores[k] : 0}">
+                        <div th:if="${projectScore.evaluable and isAvailable}">
                             <input type="text" size="2" th:name="'projectScoreList[' + ${iterStat.index} + '].score' + ${k+1}" th:id="'score' + ${iterStat.index} + '_' + ${k+1}" maxlength="3" th:value="${scoreF}" onkeydown="numberChk(event)" onkeyup="checkLimit(this, event)" onfocus="onFocusBlank(this);" onblur="outFocusValue(this);" style="ime-mode:disabled;" th:if="${k < 7}" />
                             <th:block th:if="${k == 7}">
                                 <span th:text="${scoreF}"></span>
                                 <input type="hidden" size="2" th:name="'projectScoreList[' + ${iterStat.index} + '].score' + ${k+1}" th:id="'score' + ${iterStat.index} + '_' + ${k+1}" maxlength="3" th:value="${scoreF}" />
                             </th:block>
                         </div>
-                        <div th:unless="${((session.employeId == projectScore.employeId and projectScore.status == 0) or (projectScore.status == 1 and session.employeId == projectScore.confirm1) or (projectScore.status == 2 and session.employeId == projectScore.confirm2)) and projectScore.status < 3 and isAvailable}">
+                        <div th:unless="${projectScore.evaluable and isAvailable}">
                             <span th:text="${scoreF}"></span>
                             <th:block th:if="${k < 7 and projectScore.employeId == session.employeId}">
                                 <font style='font-size:12px;' th:text="'(' + ${myScoreF} + ')'"></font>
@@ -80,7 +80,7 @@
                         </div>
                     </th:block>
                 </td>
-                <td width="7%"><b><input type="text" size="2" th:id="'totalscore' + ${iterStat.index}" th:value="${#aggregates.sum(scores)}" readonly /></b></td>
+                <td width="7%"><b><input type="text" size="2" th:id="'totalscore' + ${iterStat.index}" th:value="${projectScore.totalScore}" readonly /></b></td>
             </th:block>
         </tr>
     </tbody>

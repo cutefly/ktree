@@ -1,6 +1,9 @@
 package kr.co.kpcard.ktree.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -11,6 +14,9 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProjectScore {
 	private int seq;
 
@@ -78,43 +84,26 @@ public class ProjectScore {
 	private String confirm1;
 	private String confirm2;
 
-	public ProjectScore() {
-	}
-
-	public ProjectScore(String month, String employeId, float score1, float score2, float score3, float score4,
-			float score5,
-			float score6, float score7, float score8, String dissent, String comments1, String comments2, int status,
-			int confirmNumber, String confirm1, String confirm2) {
-		super();
-		this.month = month;
-		this.employeId = employeId;
-		this.score1 = score1;
-		this.score2 = score2;
-		this.score3 = score3;
-		this.score4 = score4;
-		this.score5 = score5;
-		this.score6 = score6;
-		this.score7 = score7;
-		this.score8 = score8;
-		this.dissent = dissent;
-		this.comments1 = comments1;
-		this.comments2 = comments2;
-		this.status = status;
-		this.confirmNumber = confirmNumber;
-		this.confirm1 = confirm1;
-		this.confirm2 = confirm2;
-	}
 	public float getScore(int k) {
 		switch (k) {
-			case 1: return score1;
-			case 2: return score2;
-			case 3: return score3;
-			case 4: return score4;
-			case 5: return score5;
-			case 6: return score6;
-			case 7: return score7;
-			case 8: return score8;
-			default: return 0;
+			case 1:
+				return score1;
+			case 2:
+				return score2;
+			case 3:
+				return score3;
+			case 4:
+				return score4;
+			case 5:
+				return score5;
+			case 6:
+				return score6;
+			case 7:
+				return score7;
+			case 8:
+				return score8;
+			default:
+				return 0;
 		}
 	}
 

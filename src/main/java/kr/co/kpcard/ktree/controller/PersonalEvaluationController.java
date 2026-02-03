@@ -31,6 +31,7 @@ import kr.co.kpcard.ktree.domain.ResultProjectScore;
 import kr.co.kpcard.ktree.domain.TeamInfo;
 import kr.co.kpcard.ktree.service.PersonalEvaluationService;
 import kr.co.kpcard.ktree.utility.DateUtil;
+import kr.co.kpcard.ktree.utility.ProjectUtil;
 import lombok.RequiredArgsConstructor;
 
 //@Controller("PersonalEvaluation")
@@ -162,16 +163,32 @@ public class PersonalEvaluationController {
 							.getProjectScore(employeId, yyyyMM);
 				}
 
-				logger.debug("projectScoreList : {}", result.get("resultProjectScore"));
-				model.addAttribute("projectScoreList", result.get("resultProjectScore"));
+				List<ResultProjectScore> projectScoreList = new ArrayList<>();
+				List<ProjectScore> scoreHistList = (List<ProjectScore>) result.get("scoreHistory");
+
+				for (Object obj : (List<?>) result.get("resultProjectScore")) {
+					ResultProjectScore resultProjectScore = (ResultProjectScore) obj;
+					logger.debug("resultProjectScore employeId : {}", resultProjectScore.getEmployeId());
+					resultProjectScore.setUserAuth(ProjectUtil.calcUseAuth(employeId, resultProjectScore));
+					resultProjectScore.setUserDissent(ProjectUtil.calcUseDissent(employeId, resultProjectScore));
+					resultProjectScore.setAuthLevel(ProjectUtil.calcAuthLevel(employeId, resultProjectScore));
+					resultProjectScore.setEvaluable(ProjectUtil.calcEvaluable(employeId, resultProjectScore));
+					resultProjectScore.setDissentable(ProjectUtil.calcDissentable(employeId, resultProjectScore));
+
+					resultProjectScore.setMyScores(ProjectUtil.calcMyScores(employeId, scoreHistList));
+					logger.debug("resultProjectScore evaluable : {}", resultProjectScore.isEvaluable());
+					projectScoreList.add(resultProjectScore);
+				}
+				logger.debug("projectScoreList : {}", projectScoreList);
+				model.addAttribute("projectScoreList", projectScoreList);
+
 				logger.debug("scoreHistoryList : {}", result.get("scoreHistory"));
 				model.addAttribute("scoreHistoryList", result.get("scoreHistory"));
 
 				Date today = Calendar.getInstance().getTime();
 
 				Date limitDayOfMonth = getLimitDate(today, validWorkDate);
-				model.addAttribute("isAvailable", today.after(limitDayOfMonth) ? Boolean.FALSE : Boolean.TRUE); // 평가
-																												// 가능한
+				model.addAttribute("isAvailable", today.after(limitDayOfMonth) ? Boolean.FALSE : Boolean.TRUE); // 평가가능한
 																												// 일자인지
 																												// 비교
 				model.addAttribute("sessionEmployeId", employeId);
@@ -276,18 +293,25 @@ public class PersonalEvaluationController {
 		boolean isSuccessed = false;
 		try {
 			for (int i = 0; i < employeId.size(); i++) {
-				ProjectScore projectScore = new ProjectScore(yyyyMM,
-						employeId.get(i),
-						score1.get(i),
-						score2.get(i),
-						score3.get(i),
-						score4.get(i),
-						score5.get(i),
-						score6.get(i),
-						score7.get(i),
-						score8.get(i), "", "", "", 0, 0, "", "");
-				projectScore.setSeq(seq.get(i));
-				projectScore.setConfirmNumber(confirmNumber.get(i));
+				ProjectScore projectScore = ProjectScore.builder()
+						.seq(seq.get(i))
+						.month(yyyyMM)
+						.employeId(employeId.get(i))
+						.score1(score1.get(i))
+						.score2(score2.get(i))
+						.score3(score3.get(i))
+						.score4(score4.get(i))
+						.score5(score5.get(i))
+						.score6(score6.get(i))
+						.score7(score7.get(i))
+						.score8(score8.get(i))
+						.dissent("")
+						.comments1("")
+						.comments2("")
+						.status(0)
+						.confirmNumber(confirmNumber.get(i))
+						.build();
+
 				logger.debug(
 						String.format("add score : seq = %d, value = [%f, %f, %f, %f, %f, %f, %f, %f], confirm = %d",
 								seq.get(i),

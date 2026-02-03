@@ -93,13 +93,10 @@
 	<select id="getProjectScoreCount" parameterType="HashMap" resultType="int">
 	<![CDATA[
 		SELECT COUNT(*) AS cnt
-		FROM
-			KPC_EMPLOYE E,
-			KPC_PERSONAL_PROJECT_SCORE PS
-		WHERE
-			E.EMPLOYE_ID = PS.EMPLOYE_ID(+)
-			AND PS.MONTH = #{month}
-			AND E.EMPLOYE_ID = #{employeId}
+		  FROM KPC_EMPLOYE E
+          LEFT OUTER JOIN KPC_PERSONAL_PROJECT_SCORE PS
+		    ON E.EMPLOYE_ID = PS.EMPLOYE_ID AND PS.MONTH = #{month}
+		 WHERE E.EMPLOYE_ID = #{employeId}
 	]]>
 	</select>
 
@@ -111,7 +108,8 @@
 		)
 		VALUES
 		(
-		  KPC_ADMIN_SEQ.NEXTVAL,
+		  -- KPC_ADMIN_SEQ.NEXTVAL,
+		  COALESCE( (SELECT MAX(SEQ) FROM KPC_PERSONAL_PROJECT_SCORE), 0 ) + 1,
 		  #{month},
 		  #{employeId},
 		  #{score1},
@@ -126,7 +124,7 @@
 		  #{comments1},
 		  #{comments2},
 		  #{status},
-		  SYSDATE
+		  CURRENT_TIMESTAMP
 		)
 	]]>
 	</insert>

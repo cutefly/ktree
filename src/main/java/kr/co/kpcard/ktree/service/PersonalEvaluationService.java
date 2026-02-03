@@ -52,8 +52,7 @@ public class PersonalEvaluationService {
 		float scoreRatio = 0;
 
 		if (employe.getEmployeId().equals(projectScore.getEmployeId())) {
-			if (projectScore.getStatus() > 0) // 최초 1회 이상 프로젝트 기여도 설정이 되어 있는 경우
-			{
+			if (projectScore.getStatus() > 0) { // 최초 1회 이상 프로젝트 기여도 설정이 되어 있는 경우{
 				scoreRatio = projectScore.getScore8();
 			} else {
 				switch (employe.getDivisionCode()) {
@@ -80,21 +79,25 @@ public class PersonalEvaluationService {
 						break;
 				}
 			}
-			resultProjectScore.setProjectScore(projectScore.getSeq(),
-					projectScore.getMonth(),
-					projectScore.getScore1(),
-					projectScore.getScore2(),
-					projectScore.getScore3(),
-					projectScore.getScore4(),
-					projectScore.getScore5(),
-					projectScore.getScore6(),
-					projectScore.getScore7(),
-					scoreRatio,
-					projectScore.getStatus(), projectScore.getDissent(),
-					projectScore.getComments1(), projectScore.getComments2(),
-					projectScore.getConfirmNumber(),
-					projectScore.getConfirm1(),
-					projectScore.getConfirm2());
+			resultProjectScore = ResultProjectScore.builder()
+					.seq(projectScore.getSeq())
+					.month(projectScore.getMonth())
+					.score1(projectScore.getScore1())
+					.score2(projectScore.getScore2())
+					.score3(projectScore.getScore3())
+					.score4(projectScore.getScore4())
+					.score5(projectScore.getScore5())
+					.score6(projectScore.getScore6())
+					.score7(projectScore.getScore7())
+					.score8(scoreRatio)
+					.status(projectScore.getStatus())
+					.dissent(projectScore.getDissent())
+					.comments1(projectScore.getComments1())
+					.comments2(projectScore.getComments2())
+					.confirmNumber(projectScore.getConfirmNumber())
+					.confirm1(projectScore.getConfirm1())
+					.confirm2(projectScore.getConfirm2())
+					.build();
 		}
 		resultProjectScore.setEmploye(employe.getEmployeId(),
 				employe.getEmployeName(),
@@ -165,21 +168,25 @@ public class PersonalEvaluationService {
 								break;
 						}
 					}
-					resultProjectScore.setProjectScore(projectScore.getSeq(),
-							projectScore.getMonth(),
-							projectScore.getScore1(),
-							projectScore.getScore2(),
-							projectScore.getScore3(),
-							projectScore.getScore4(),
-							projectScore.getScore5(),
-							projectScore.getScore6(),
-							projectScore.getScore7(),
-							scoreRatio,
-							projectScore.getStatus(), projectScore.getDissent(),
-							projectScore.getComments1(), projectScore.getComments2(),
-							projectScore.getConfirmNumber(),
-							projectScore.getConfirm1(),
-							projectScore.getConfirm2());
+					resultProjectScore = ResultProjectScore.builder()
+							.seq(projectScore.getSeq())
+							.month(projectScore.getMonth())
+							.score1(projectScore.getScore1())
+							.score2(projectScore.getScore2())
+							.score3(projectScore.getScore3())
+							.score4(projectScore.getScore4())
+							.score5(projectScore.getScore5())
+							.score6(projectScore.getScore6())
+							.score7(projectScore.getScore7())
+							.score8(scoreRatio)
+							.status(projectScore.getStatus())
+							.dissent(projectScore.getDissent())
+							.comments1(projectScore.getComments1())
+							.comments2(projectScore.getComments2())
+							.confirmNumber(projectScore.getConfirmNumber())
+							.confirm1(projectScore.getConfirm1())
+							.confirm2(projectScore.getConfirm2())
+							.build();
 				}
 			}
 
@@ -257,21 +264,25 @@ public class PersonalEvaluationService {
 									break;
 							}
 						}
-						resultProjectScore.setProjectScore(projectScore.getSeq(),
-								projectScore.getMonth(),
-								projectScore.getScore1(),
-								projectScore.getScore2(),
-								projectScore.getScore3(),
-								projectScore.getScore4(),
-								projectScore.getScore5(),
-								projectScore.getScore6(),
-								projectScore.getScore7(),
-								scoreRatio,
-								projectScore.getStatus(), projectScore.getDissent(),
-								projectScore.getComments1(), projectScore.getComments2(),
-								projectScore.getConfirmNumber(),
-								projectScore.getConfirm1(),
-								projectScore.getConfirm2());
+						resultProjectScore = ResultProjectScore.builder()
+								.seq(projectScore.getSeq())
+								.month(projectScore.getMonth())
+								.score1(projectScore.getScore1())
+								.score2(projectScore.getScore2())
+								.score3(projectScore.getScore3())
+								.score4(projectScore.getScore4())
+								.score5(projectScore.getScore5())
+								.score6(projectScore.getScore6())
+								.score7(projectScore.getScore7())
+								.score8(scoreRatio)
+								.status(projectScore.getStatus())
+								.dissent(projectScore.getDissent())
+								.comments1(projectScore.getComments1())
+								.comments2(projectScore.getComments2())
+								.confirmNumber(projectScore.getConfirmNumber())
+								.confirm1(projectScore.getConfirm1())
+								.confirm2(projectScore.getConfirm2())
+								.build();
 					}
 				}
 				resultProjectScore.setEmploye(employe.getEmployeId(),
