@@ -203,6 +203,31 @@ public class PersonalEvaluationController {
 	}
 
 	/**
+	 * 직원 관리 화면(Admin)
+	 * 
+	 * @param yyyyMM
+	 * @param request
+	 * @return 직원 관리 화면 View
+	 * @attributes 조회년월 : yyyyMM
+	 */
+	@RequestMapping(value = "/employeListAdmin")
+	public String employeListAdmin(Model model, jakarta.servlet.http.HttpSession session) {
+		logger.debug("request employeList");
+
+		// Admin이 아닌 경우 접근 불가
+		if (session.getAttribute("employeId").equals("kpc_admin")) {
+			List<DivisionInfo> divisionList = personalEvaluationService.getDivisionList();
+			List<TeamInfo> teamList = personalEvaluationService.getTeamList(1);
+			model.addAttribute("divisionList", divisionList); // 부서리스트
+			model.addAttribute("teamList", teamList); // 팀리스트
+
+			return "/sub/employe/employeListAdmin";
+		} else {
+			return "redirect:/";
+		}
+	}
+
+	/**
 	 * 프로젝트 기여도 데이터 리스트(Admin)
 	 * 
 	 * @param yyyyMM
@@ -264,6 +289,35 @@ public class PersonalEvaluationController {
 		logger.debug("getProjectData | OUT |");
 
 		return "/sub/project/projectDataAdmin";
+	}
+
+	/**
+	 * 직원 데이터 리스트(Admin)
+	 * 
+	 * @param yyyyMM
+	 * @param searchOption : all(전체), 혹은 본인만
+	 * @param divisionCode : 특정부서
+	 * @param request
+	 * @param model
+	 * @return
+	 * @attribute employeList 직원 리스트
+	 */
+	@RequestMapping(value = "/employeDataAdmin")
+	public String getEmployeDataAdmin(@RequestParam(value = "divisionCode", defaultValue = "0") int divisionCode,
+			Model model, jakarta.servlet.http.HttpSession session) {
+		logger.debug("getEmployeData | IN |");
+		try {
+			if (session.getAttribute("employeId").equals("kpc_admin")) {
+				List<Employe> employeList = personalEvaluationService.getEmployeList(divisionCode);
+				model.addAttribute("employeList", employeList);
+			}
+		} catch (GlobalException e) {
+			throw e;
+		}
+
+		logger.debug("getEmployeData | OUT |");
+
+		return "/sub/employe/employeDataAdmin";
 	}
 
 	/**

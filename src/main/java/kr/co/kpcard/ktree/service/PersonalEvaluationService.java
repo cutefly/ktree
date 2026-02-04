@@ -930,6 +930,16 @@ public class PersonalEvaluationService {
 		return isSucceeded;
 	}
 
+	public List<Employe> getEmployeList(int divisionCode) {
+		logger.info("getEmployeList | IN |");
+
+		List<Employe> result = personalEvaluationDao.getEmployeList(divisionCode);
+
+		logger.info("getEmployeList | OUT |");
+
+		return result;
+	}
+
 	public void setRatio() {
 
 		/* 유통사업본부 */

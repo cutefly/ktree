@@ -24,8 +24,8 @@
 		]]>
 		<if
 			test='employeId != "kpc_admin"'>AND A.AUTHORITY_LEVEL &lt; 4</if>
-			<if
-			test='employeId != null'> AND E.EMPLOYE_ID=#{employeId}</if> ORDER BY E.NAME </select>
+						<if test='employeId != null'> AND E.EMPLOYE_ID=#{employeId}</if> 
+						<if test='divisionCode != null and divisionCode > 0'> AND E.DIVISION_CODE=#{divisionCode}</if> ORDER BY E.NAME </select>
 
 	<select id="getDivision" parameterType="HashMap"
 		resultType="kr.co.kpcard.ktree.domain.DivisionInfo"> SELECT D.DIVISION_CODE AS code,

@@ -64,6 +64,23 @@ public class PersonalEvaluationDao {
 		return result;
 	}
 
+	public List<Employe> getEmployeList(int divisionCode) {
+		logger.info("getEmploye | IN | divisionCode: " + divisionCode);
+
+		List<Employe> result = new ArrayList<Employe>();
+		try {
+			HashMap<String, Object> param = new HashMap<String, Object>();
+			param.put("divisionCode", divisionCode);
+			result = sqlSession.selectList("Personal.getEmploye", param);
+			if (result != null) {
+				logger.info("getEmploye | OUT | Param : result=> {}", result.size());
+			}
+		} catch (Exception e) {
+			logger.error("exception : {}", e.getMessage());
+		}
+		return result;
+	}
+
 	public boolean insertEmploye(Employe employe) {
 		boolean result = false;
 

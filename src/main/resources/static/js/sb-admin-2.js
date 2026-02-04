@@ -166,6 +166,7 @@ var searchData = function(type){
 
 	if(type=='project'){url="projectData";}
 	if(type=='projectAdmin'){url="projectDataAdmin";}
+	if(type=='employeAdmin'){url="employeDataAdmin";}
 	if(type=='performanceList'){url="performanceListData";}
 	if(type=='performanceListAdmin'){url="performanceListDataAdmin";}
 

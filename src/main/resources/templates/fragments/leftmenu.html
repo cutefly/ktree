@@ -23,6 +23,9 @@
                             <a th:href="@{/eval/performanceListAdmin}">성과/가치</a>
                         </li>
                         */-->
+                        <li th:if="${session.employeId == 'kpc_admin'}">
+                            <a th:href="@{/eval/employeListAdmin}">직원 관리</a>
+                        </li>
                     </ul>
                     <!-- /.nav-second-level -->
                 </li>
