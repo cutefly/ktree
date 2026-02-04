@@ -153,12 +153,13 @@ var allCheck = function(name){
 }
 
 var searchData = function(type){
-	var url,sDate,eDate,searchOption,divisionCode;
+	var url,sDate,eDate,searchOption,divisionCode,useYn;
 
 	sDate = $("#searchSDate");
 	eDate = $("#searchEDate");
 	searchOption = ($("#searchOption:checked").length>0)? $("#searchOption:checked").val() : "";
 	divisionCode = ($("#divisionCode").length>0)? $("#divisionCode").val() : "";
+	useYn = ($("#useYn").length>0)? $("#useYn").val() : "";
 	if((eDate.val()=="" && eDate.length>0) || (sDate.val()=="" && sDate.length>0)){
 		alert('조회날짜를 선택해주세요.');
 		return;
@@ -174,7 +175,7 @@ var searchData = function(type){
 		url : url,
 		type : 'post',
 		dataType : 'text',
-		data : {yyyyMM : sDate.val(), eyyyyMM:eDate.val(), searchOption:searchOption, divisionCode : divisionCode},
+		data : {yyyyMM : sDate.val(), eyyyyMM:eDate.val(), searchOption:searchOption, divisionCode : divisionCode, useYn : useYn},
 		success : function(data){
 			$("#data-panel").html(data);
 			$("#pageType").val(type);

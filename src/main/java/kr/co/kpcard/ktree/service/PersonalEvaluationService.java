@@ -930,10 +930,10 @@ public class PersonalEvaluationService {
 		return isSucceeded;
 	}
 
-	public List<Employe> getEmployeList(int divisionCode) {
+	public List<Employe> getEmployeList(int divisionCode, String useYn) {
 		logger.info("getEmployeList | IN |");
 
-		List<Employe> result = personalEvaluationDao.getEmployeList(divisionCode);
+		List<Employe> result = personalEvaluationDao.getEmployeList(divisionCode, useYn);
 
 		logger.info("getEmployeList | OUT |");
 

@@ -23,9 +23,6 @@
                             <a th:href="@{/eval/performanceListAdmin}">성과/가치</a>
                         </li>
                         */-->
-                        <li th:if="${session.employeId == 'kpc_admin'}">
-                            <a th:href="@{/eval/employeListAdmin}">직원 관리</a>
-                        </li>
                     </ul>
                     <!-- /.nav-second-level -->
                 </li>
@@ -37,6 +34,9 @@
                 <li>
                     <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>설정<span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level">
+                        <li th:if="${session.employeId == 'kpc_admin'}">
+                            <a th:href="@{/eval/employeListAdmin}">임직원 관리</a>
+                        </li>
                         <li>
                             <a th:href="@{/password}">비밀번호 변경</a>
                         </li>

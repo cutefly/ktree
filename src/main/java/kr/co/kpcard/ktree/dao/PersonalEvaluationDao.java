@@ -64,13 +64,14 @@ public class PersonalEvaluationDao {
 		return result;
 	}
 
-	public List<Employe> getEmployeList(int divisionCode) {
-		logger.info("getEmploye | IN | divisionCode: " + divisionCode);
+	public List<Employe> getEmployeList(int divisionCode, String useYn) {
+		logger.info("getEmploye | IN | divisionCode: " + divisionCode + ", useYn: " + useYn);
 
 		List<Employe> result = new ArrayList<Employe>();
 		try {
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			param.put("divisionCode", divisionCode);
+			param.put("useYn", useYn);
 			result = sqlSession.selectList("Personal.getEmploye", param);
 			if (result != null) {
 				logger.info("getEmploye | OUT | Param : result=> {}", result.size());
