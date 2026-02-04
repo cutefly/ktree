@@ -1,11 +1,17 @@
 package kr.co.kpcard.ktree.utility;
 
+import java.util.Date;
 import java.util.List;
 
 import kr.co.kpcard.ktree.domain.ProjectScore;
 import kr.co.kpcard.ktree.domain.ResultProjectScore;
 
+/*
+ * Project 관련 Utility Class
+ */
 public class ProjectUtil {
+
+    // 평가권한자 여부
     public static boolean calcUseAuth(String sessionId, ResultProjectScore resultProjectScore) {
         boolean useAuth = false;
         if (sessionId.equals(resultProjectScore.getEmployeId()) && resultProjectScore.getStatus() == 0) {
@@ -18,6 +24,7 @@ public class ProjectUtil {
         return useAuth;
     }
 
+    // 이의제기권한자 여부
     public static boolean calcUseDissent(String sessionId,
             ResultProjectScore resultProjectScore) {
 
@@ -37,6 +44,7 @@ public class ProjectUtil {
         return useDissent;
     }
 
+    // 평가권한 레벨 계산
     public static int calcAuthLevel(String sessionId, ResultProjectScore resultProjectScore) {
         int authLevel = 0;
 
@@ -46,8 +54,8 @@ public class ProjectUtil {
         return authLevel;
     }
 
+    // 평가자 여부
     public static boolean calcEvaluable(String sessionId, ResultProjectScore resultProjectScore) {
-        // 평가자 여부
         boolean evaluable = false;
 
         boolean condition0 = sessionId.equals(resultProjectScore.getEmployeId())
@@ -61,14 +69,8 @@ public class ProjectUtil {
         return evaluable;
     }
 
-    // (session.employeId == projectScore.employeId and projectScore.status >= 3) or
-    // (projectScore.status == 4 and session.employeId == projectScore.confirm1) or
-    // (projectScore.status == 5 and session.employeId == projectScore.confirm2) or
-    // ((session.employeId == projectScore.employeId or session.employeId ==
-    // projectScore.confirm1 or session.employeId == projectScore.confirm2) and
-    // projectScore.status == 6))
+    // 이의제기자 여부
     public static boolean calcDissentable(String sessionId, ResultProjectScore resultProjectScore) {
-        // 이의제기자 여부
         boolean dissentable = false;
 
         boolean condition0 = sessionId.equals(resultProjectScore.getEmployeId())
@@ -86,6 +88,7 @@ public class ProjectUtil {
         return dissentable;
     }
 
+    // 나의 점수 계산
     public static List<Float> calcMyScores(String employeId, List<ProjectScore> scoreHistList) {
         List<Float> myScores = List.of(0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f);
 

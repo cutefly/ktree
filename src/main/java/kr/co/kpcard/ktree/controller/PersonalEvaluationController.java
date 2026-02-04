@@ -103,19 +103,19 @@ public class PersonalEvaluationController {
 	 */
 	@RequestMapping(value = "/projectListAdmin")
 	public String projectListAdmin(@RequestParam(value = "yyyyMM", defaultValue = "") String yyyyMM,
-			HttpServletRequest request) {
+			Model model, jakarta.servlet.http.HttpSession session) {
 		String yyyyMMDefault = StringUtils.defaultIfBlank(yyyyMM,
 				new SimpleDateFormat("yyyyMM").format(DateUtils.addMonths(new Date(), -1)));
 
 		logger.debug("request performanceList : {}", yyyyMMDefault);
-		request.setAttribute("yyyyMM", yyyyMMDefault);
+		model.addAttribute("yyyyMM", yyyyMMDefault);
 
 		// Admin이 아닌 경우 접근 불가
-		if (request.getSession().getAttribute("employeId").equals("kpc_admin")) {
+		if (session.getAttribute("employeId").equals("kpc_admin")) {
 			List<DivisionInfo> divisionList = personalEvaluationService.getDivisionList();
 			List<TeamInfo> teamList = personalEvaluationService.getTeamList(1);
-			request.setAttribute("divisionList", divisionList); // 부서리스트
-			request.setAttribute("teamList", teamList); // 팀리스트
+			model.addAttribute("divisionList", divisionList); // 부서리스트
+			model.addAttribute("teamList", teamList); // 팀리스트
 
 			return "/sub/project/projectListAdmin";
 		} else {
@@ -182,8 +182,8 @@ public class PersonalEvaluationController {
 				logger.debug("projectScoreList : {}", projectScoreList);
 				model.addAttribute("projectScoreList", projectScoreList);
 
-				logger.debug("scoreHistoryList : {}", result.get("scoreHistory"));
-				model.addAttribute("scoreHistoryList", result.get("scoreHistory"));
+				// logger.debug("scoreHistoryList : {}", result.get("scoreHistory"));
+				// model.addAttribute("scoreHistoryList", result.get("scoreHistory"));
 
 				Date today = Calendar.getInstance().getTime();
 
@@ -218,26 +218,42 @@ public class PersonalEvaluationController {
 	public String getProjectDataAdmin(@RequestParam String yyyyMM,
 			@RequestParam String searchOption,
 			@RequestParam(value = "divisionCode", defaultValue = "0") int divisionCode,
-			HttpServletRequest request,
-			Model model) {
+			Model model, jakarta.servlet.http.HttpSession session) {
 		logger.debug("getProjectData | IN |");
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		try {
+			String employeId = (String) session.getAttribute("employeId");
 			if (Integer.parseInt(DateUtil.getCurrentDate("yyyyMM")) > Integer.parseInt(yyyyMM)) {
 				if (searchOption.equals("all")) {
 					if (divisionCode > 0) {
 						result = personalEvaluationService.getProjectScoreDivision(
-								(String) request.getSession().getAttribute("employeId"), yyyyMM, divisionCode);
+								employeId, yyyyMM, divisionCode);
 					} else {
 						result = personalEvaluationService
-								.getProjectScoreAll((String) request.getSession().getAttribute("employeId"), yyyyMM);
+								.getProjectScoreAll((String) employeId, yyyyMM);
 					}
 				} else {
 					result = personalEvaluationService
-							.getProjectScore((String) request.getSession().getAttribute("employeId"), yyyyMM);
+							.getProjectScore((String) employeId, yyyyMM);
 				}
-				request.setAttribute("projectScoreList", result.get("resultProjectScore"));
-				request.setAttribute("scoreHistoryList", result.get("scoreHistory"));
+				List<ResultProjectScore> projectScoreList = new ArrayList<>();
+				List<ProjectScore> scoreHistList = (List<ProjectScore>) result.get("scoreHistory");
+
+				for (Object obj : (List<?>) result.get("resultProjectScore")) {
+					ResultProjectScore resultProjectScore = (ResultProjectScore) obj;
+					logger.debug("resultProjectScore employeId : {}", resultProjectScore.getEmployeId());
+					resultProjectScore.setUserAuth(ProjectUtil.calcUseAuth(employeId, resultProjectScore));
+					resultProjectScore.setUserDissent(ProjectUtil.calcUseDissent(employeId, resultProjectScore));
+					resultProjectScore.setAuthLevel(ProjectUtil.calcAuthLevel(employeId, resultProjectScore));
+					resultProjectScore.setEvaluable(ProjectUtil.calcEvaluable(employeId, resultProjectScore));
+					resultProjectScore.setDissentable(ProjectUtil.calcDissentable(employeId, resultProjectScore));
+
+					resultProjectScore.setMyScores(ProjectUtil.calcMyScores(employeId, scoreHistList));
+					logger.debug("resultProjectScore evaluable : {}", resultProjectScore.isEvaluable());
+					projectScoreList.add(resultProjectScore);
+				}
+				model.addAttribute("projectScoreList", projectScoreList);
+				model.addAttribute("scoreHistoryList", result.get("scoreHistory"));
 			} else {
 				throw new GlobalException("Failed", "현재 월 이후의 데이터는 조회가 불가합니다.");
 			}
@@ -351,6 +367,8 @@ public class PersonalEvaluationController {
 	public String projectDissentPop(@RequestParam(value = "employeId") String employeId,
 			@RequestParam(value = "yyyyMM") String yyyyMM, Model model, jakarta.servlet.http.HttpSession session) {
 		logger.info("employeId : {}, yyyyMM : {}", employeId, yyyyMM);
+		String sessionEmployeId = (String) session.getAttribute("employeId");
+
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		result = personalEvaluationService.getProjectScore(employeId, yyyyMM);
 		for (ResultProjectScore projectScore : (List<ResultProjectScore>) result.get("resultProjectScore")) {
@@ -363,6 +381,28 @@ public class PersonalEvaluationController {
 			model.addAttribute("authLevel", projectScore.getEmployeLevel());
 			model.addAttribute("confirm1", projectScore.getConfirm1());
 			model.addAttribute("confirm2", projectScore.getConfirm2());
+
+			// additional attributes for popup
+			Date limitDayOfMonth = getLimitDate(Calendar.getInstance().getTime(), validWorkDate);
+
+			int useAuthLevel = ProjectUtil.calcAuthLevel(sessionEmployeId, projectScore);
+			Boolean isAvailable = Calendar.getInstance().getTime().after(limitDayOfMonth) ? Boolean.FALSE
+					: Boolean.TRUE;
+
+			boolean commentable = false;
+			if (employeId.equals(sessionEmployeId) && projectScore.getStatus() < 5)
+				commentable = true;
+			else if (useAuthLevel == 1 && projectScore.getStatus() < 5)
+				commentable = true;
+			else if (useAuthLevel == 2 && projectScore.getStatus() < 6)
+				commentable = true;
+
+			model.addAttribute("useAuthLevel", useAuthLevel);
+			model.addAttribute("isAvailable", isAvailable); // 평가 가능한지
+			model.addAttribute("commentable", commentable && isAvailable); // 평가 가능한지
+			logger.info("useAuthLevel : {}", model.getAttribute("useAuthLevel"));
+			logger.info("isAvailable : {}", model.getAttribute("isAvailable"));
+			logger.info("commentable : {}", model.getAttribute("commentable"));
 		}
 		return "sub/project/projectDissentPop";
 	}

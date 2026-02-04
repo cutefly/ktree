@@ -41,8 +41,8 @@
                                     </select>
                                 </div>
                                 <div class="col-xs-3">
-                                    <label>나만 보기 <input type="radio" id="searchOption" name="searchOption" value="" th:checked="${#strings.equals(sessionAuthLevel, '0')}" /></label>
-                                    <label>전체 보기 <input type="radio" id="searchOption" name="searchOption" value="all" th:checked="${!#strings.equals(sessionAuthLevel, '0')}" /></label>
+                                    <label>나만 보기 <input type="radio" id="searchOption" name="searchOption" value="" th:checked="${session.authLevel < 1}" /></label>
+                                    <label>전체 보기 <input type="radio" id="searchOption" name="searchOption" value="all" th:checked="${session.authLevel >= 1}" /></label>
                                 </div>
                             </div>
                         </td>

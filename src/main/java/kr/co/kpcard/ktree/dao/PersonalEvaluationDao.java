@@ -16,7 +16,6 @@ import kr.co.kpcard.ktree.domain.ValueScore;
 import lombok.RequiredArgsConstructor;
 
 import org.apache.ibatis.session.SqlSession;
-import org.mybatis.spring.SqlSessionTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;

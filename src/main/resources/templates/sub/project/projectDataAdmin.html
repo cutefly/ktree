@@ -1,4 +1,6 @@
-<span class="col-lg-10 pull-left" style="text-align:left;"><label> * 관리입력 : PJ업무를 제외한 회사의 공통업무 또는 해피머니와 관련된 업무</label></span>
+<span class="col-lg-10 pull-left" style="text-align:left;">
+    <label> * 관리입력 : PJ업무를 제외한 회사의 공통업무 또는 해피머니와 관련된 업무</label>
+</span>
 <table class="table" id="dataTables-example">
     <thead>
         <tr>
@@ -24,17 +26,14 @@
         </tr>
     </thead>
     <tbody>
-        <tr th:each="projectScore, iterStat : ${projectScoreList}" th:with="
-                useAuthLevel = ${session.authLevel - projectScore.employeLevel},
-                useAuth = true,
-                useDissent = true
-            " th:styleappend="${(projectScore.status == 4 || projectScore.status == 5) && useDissent} ? 'background-color:#FF9090;'">
+        <tr th:each="projectScore, iterStat : ${projectScoreList}"
+            th:styleappend="${(projectScore.status == 4 || projectScore.status == 5) && projectScore.dissentable} ? 'background-color:#FF9090;'">
             <td th:text="${iterStat.count}"></td>
             <td>
-                <input type="checkbox" name="idx[]" th:value="${iterStat.index}" th:if="${useAuth && projectScore.status < 3}"/>
+                <input type="checkbox" name="idx[]" th:value="${iterStat.index}" th:if="${projectScore.status < 3}"/>
                 <input type="hidden" name="seq" th:id="'seq_' + ${iterStat.index}" th:value="${projectScore.seq}" />
                 <input type="hidden" name="employeId" th:id="'employeId_' + ${iterStat.index}" th:value="${projectScore.employeId}" />
-                <input type="hidden" name="confirmNumber" th:id="'confirmNumber_' + ${iterStat.index}" th:value="${useAuthLevel}" />
+                <input type="hidden" name="confirmNumber" th:id="'confirmNumber_' + ${iterStat.index}" th:value="${projectScore.authLevel}" />
             </td>
             <td th:text="${projectScore.employeName}"></td>
             <td th:text="${projectScore.divisionName}"></td>
@@ -51,20 +50,30 @@
                 </span>
                 <br th:if="${projectScore.status >= 4}"/>
                 <button type="button" class="btn btn-danger btn-xs" th:if="${projectScore.status >= 4}"
-                        th:onclick="'openDissentPop(\'' + ${projectScore.employeId} + '\', \'' + ${projectScore.month} + '\');'"
+                    th:attr="onclick=|openDissentPop('${projectScore.employeId}', '${projectScore.month}')|"
                         th:text="${projectScore.status >= 4} ? '확인' : '이의제기'">
                 </button>
             </td>
-            <!-- Score columns -->
-            <th:block th:with="scores = ${ {projectScore.score1, projectScore.score2, projectScore.score3, projectScore.score4, projectScore.score5, projectScore.score6, projectScore.score7, projectScore.score8} }">
-                <td width="7%" th:each="score, scoreStat : ${scores}">
-                     <input type="text" size="2" th:name="'projectScoreList[' + ${iterStat.index} + '].score' + ${scoreStat.count}" th:id="'score' + ${iterStat.index} + '_' + ${scoreStat.count}" maxlength="3" th:value="${score}" onkeydown="numberChk(event)" onkeyup="checkLimit(this, event)" onfocus="onFocusBlank(this);" onblur="outFocusValue(this);" style="ime-mode:disabled;" th:if="${scoreStat.count < 8}"/>
-                     <th:block th:if="${scoreStat.count >= 8}">
-                        <span th:text="${score}"></span>
-                        <input type="hidden" size="2" th:name="'projectScoreList[' + ${iterStat.index} + '].score' + ${scoreStat.count}" th:id="'score' + ${iterStat.index} + '_' + ${scoreStat.count}" maxlength="3" th:value="${score}"/>
-                     </th:block>
+            <!-- 점수출력 -->
+            <th:block th:with="scores=${projectScore.scores}">
+                <td width="7%" th:each="k : ${#numbers.sequence(0, 7)}">
+                    <th:block
+                        th:with="scoreF=${scores[k]}, myScoreF=${projectScore.myScores != null ? projectScore.myScores[k] : 0}">
+                        <div >
+                            <input type="text" size="2" th:name="'projectScoreList[' + ${iterStat.index} + '].score' + ${k+1}"
+                                th:id="'score' + ${iterStat.index} + '_' + ${k+1}" maxlength="3" th:value="${scoreF}"
+                                onkeydown="numberChk(event)" onkeyup="checkLimit(this, event)" onfocus="onFocusBlank(this);"
+                                onblur="outFocusValue(this);" style="ime-mode:disabled;" th:if="${k < 7}" />
+                            <th:block th:if="${k == 7}">
+                                <span th:text="${scoreF}"></span>
+                                <input type="hidden" size="2" th:name="'projectScoreList[' + ${iterStat.index} + '].score' + ${k+1}"
+                                    th:id="'score' + ${iterStat.index} + '_' + ${k+1}" maxlength="3" th:value="${scoreF}" />
+                            </th:block>
+                        </div>
+                    </th:block>
                 </td>
-                <td width="7%"><b><input type="text" size="2" th:id="'totalscore' + ${iterStat.index}" th:value="${projectScore.score1 + projectScore.score2 + projectScore.score3 + projectScore.score4 + projectScore.score5 + projectScore.score6 + projectScore.score7 + projectScore.score8}" readonly="readonly" /></b></td>
+                <td width="7%"><b><input type="text" size="2" th:id="'totalscore' + ${iterStat.index}"
+                            th:value="${projectScore.totalScore}" readonly /></b></td>
             </th:block>
         </tr>
     </tbody>

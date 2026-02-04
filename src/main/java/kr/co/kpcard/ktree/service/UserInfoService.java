@@ -17,6 +17,10 @@ public class UserInfoService {
         return userInfoDao.findByUserId(userId).orElse(null);
     }
 
+    public Integer findAuthorityLevelByUserId(String userId) {
+        return userInfoDao.findAuthorityLevelByUserId(userId).orElse(null);
+    }
+
     @Transactional
     public boolean changePassword(String userId, String currentPassword, String newPassword) {
         UserInfo userInfo = getUserByUserId(userId);

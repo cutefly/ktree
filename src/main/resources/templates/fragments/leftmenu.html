@@ -18,9 +18,11 @@
                         <li th:if="${session.employeId == 'kpc_admin'}">
                             <a th:href="@{/eval/projectListAdmin}">프로젝트</a>
                         </li>
+                        <!--/* 인사평가 정책 변경에 따른 메뉴 표시 제거
                         <li th:if="${session.employeId == 'kpc_admin'}">
                             <a th:href="@{/eval/performanceListAdmin}">성과/가치</a>
                         </li>
+                        */-->
                     </ul>
                     <!-- /.nav-second-level -->
                 </li>

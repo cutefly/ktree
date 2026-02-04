@@ -30,7 +30,7 @@ public class SecurityConfig {
                                 .authorizeHttpRequests(authorize -> authorize
                                                 .requestMatchers("/", "/login", "/css/**", "/js/**", "/images/**",
                                                                 "/fonts/**", "/less/**",
-                                                                "/scss/**")
+                                                                "/scss/**", "/favicon.ico")
                                                 .permitAll() // Permit access to home, login page, static resources
                                                 // .requestMatchers("/password", "/change-password").permitAll()
                                                 .requestMatchers("/api/**",

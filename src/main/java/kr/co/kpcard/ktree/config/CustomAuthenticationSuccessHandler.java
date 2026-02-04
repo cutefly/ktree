@@ -28,16 +28,18 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         String username = authentication.getName();
         UserInfo userInfo = userInfoService.getUserByUserId(username);
+        Integer authLevel = userInfoService.findAuthorityLevelByUserId(username);
 
         if (userInfo != null) {
             HttpSession session = request.getSession();
             session.setAttribute("employeId", userInfo.employeId());
             session.setAttribute("employeName", userInfo.name());
+            session.setAttribute("authLevel", authLevel);
 
             Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
             if (!authorities.isEmpty()) {
                 GrantedAuthority auth = authorities.iterator().next();
-                session.setAttribute("authLevel", auth.getAuthority());
+                session.setAttribute("authority", auth.getAuthority());
             }
 
         }

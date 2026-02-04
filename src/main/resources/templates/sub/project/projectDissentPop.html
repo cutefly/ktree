@@ -12,27 +12,26 @@
                     <form class="form-signin" method="POST">
                         <input type="hidden" id="employeId" name="employeId" th:value="${employeId}"/>
                         <input type="hidden" id="yyyyMM" name="yyyyMM" th:value="${yyyyMM}"/>
-                        <input type="hidden" id="useAuthLevel" name="useAuthLevel" th:value="${(confirm1 == session.employeId) ? 1 : ((confirm2 == session.employeId) ? 2 : 0)}"/>
+                        <input type="hidden" id="useAuthLevel" name="useAuthLevel" th:value="${useAuthLevel}"/>
                         <fieldset>
                             <div><label>이의 사항 등록</label></div>
                             <div class="form-group">
-                                <textarea name="dissent" id="dissent" class="form-control" rows="2" style="margin-top: 0px; margin-bottom: 0px; height: 60px; resizeable:false" th:readonly="${!employeId.equals(session.employeId) || status >= 5}" th:text="${dissent}"></textarea>
+                                <textarea name="dissent" id="dissent" class="form-control" rows="2" style="margin-top: 0px; margin-bottom: 0px; height: 60px; resizeable:false" th:readonly="${!(employeId.equals(session.employeId) && status < 5)}" th:text="${dissent}"></textarea>
                             </div>
                             <div><label>1차평가자 Comment</label></div>
                             <div class="form-group">
-                                <textarea name="comments1" id="comments1" class="form-control" rows="2" style="margin-top: 0px; margin-bottom: 0px; height: 60px; resizeable:false" th:readonly="${useAuthLevel != 1 || status >= 6}" th:text="${comments1}"></textarea>
+                                <textarea name="comments1" id="comments1" class="form-control" rows="2" style="margin-top: 0px; margin-bottom: 0px; height: 60px; resizeable:false" th:readonly="${!(useAuthLevel == 1 && status < 6)}" th:text="${comments1}"></textarea>
                             </div>
                             <div><label>2차평가자 Comment</label></div>
                             <div class="form-group">
-                                <textarea name="comments2" id="comments2" class="form-control" rows="2" style="margin-top: 0px; margin-bottom: 0px; height: 60px; resizeable:false" th:readonly="${useAuthLevel != 2 || status >= 6}" th:text="${comments2}"></textarea>
+                                <textarea name="comments2" id="comments2" class="form-control" rows="2" style="margin-top: 0px; margin-bottom: 0px; height: 60px; resizeable:false" th:readonly="${!(useAuthLevel == 2 && status < 6)}" th:text="${comments2}"></textarea>
                             </div>
 
-                            <th:block th:if="${comments2 != null && comments1 != null}">
-                                <button class="btn btn-lg btn-danger btn-block btn-outline" type="button" onclick="javascript:window.open('about:blank','_self').close();">닫기</button>
-                            </th:block>
-                            <th:block th:unless="${comments2 != null && comments1 != null}">
+                            <th:block th:if="${commentable}">
                                 <button class="btn btn-lg btn-danger btn-block" type="button" onclick="saveComments();">Comment 등록</button>
                             </th:block>
+                                <button class="btn btn-lg btn-danger btn-block btn-outline" type="button"
+                                    onclick="javascript:window.open('about:blank','_self').close();">닫기</button>
                         </fieldset>
                     </form>
                 </div>

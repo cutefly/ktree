@@ -1,5 +1,6 @@
-<span class="col-lg-10 pull-left" style="text-align:left;"><label> * 
-    관리입력 : PJ업무를 제외한 회사의 공통업무 또는 해피머니와 관련된 업무</label></span>
+<span class="col-lg-10 pull-left" style="text-align:left;">
+    <label> * 관리입력 : PJ업무를 제외한 회사의 공통업무 또는 해피머니와 관련된 업무</label>
+</span>
 <table class="table" id="dataTables-example">
     <thead>
         <tr>
@@ -26,7 +27,7 @@
     </thead>
     <tbody>
         <tr th:each="projectScore, iterStat : ${projectScoreList}"
-            th:style="${(projectScore.status == 4 || projectScore.status == 5)} ? 'background-color:#FF9090' : ''">
+            th:style="${(projectScore.status == 4 || projectScore.status == 5) && projectScore.dissentable} ? 'background-color:#FF9090' : ''">
             
             <td th:text="${iterStat.count}"></td>
             <td>
