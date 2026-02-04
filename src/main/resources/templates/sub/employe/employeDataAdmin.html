@@ -11,6 +11,7 @@
                 <th class="text-center"><b>직급</b></th>
                 <th class="text-center"><b>등급</b></th>
                 <th class="text-center"><b>사용여부</b></th>
+                <th class="text-center"><b>관리</b></th>
             </tr>
         </thead>
         <tbody>
@@ -43,6 +44,9 @@
                         <span th:case="Y">사용</span>
                         <span th:case="N">미사용</span>
                     </span>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" th:attr="onclick=|javascript:resetEmployePassword('${employe.employeId}');|">비밀번호 변경</button>
                 </td>
             </tr>
         </tbody>

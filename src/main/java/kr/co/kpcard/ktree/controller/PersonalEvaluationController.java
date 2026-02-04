@@ -518,6 +518,33 @@ public class PersonalEvaluationController {
 		return "/sub/employe/employeDataAdmin";
 	}
 
+    /**
+     * 직원 비밀번호 초기화
+     * @param employeId
+     * @param session
+     * @return S: 성공, F: 실패
+     */
+    @RequestMapping(value = "/resetEmployePassword", produces = "application/text; charset=euc-kr")
+    @ResponseBody
+    public String resetEmployePassword(@RequestParam("employeId") String employeId, jakarta.servlet.http.HttpSession session) {
+        logger.info("resetEmployePassword | IN | employeId : {}", employeId);
+        String res = "F";
+        try {
+            if (session.getAttribute("employeId").equals("kpc_admin")) {
+                boolean result = personalEvaluationService.resetEmployePassword(employeId);
+                if (result) {
+                    res = "S";
+                }
+            } else {
+                logger.warn("Unauthorized attempt to reset password for employeId: {}", employeId);
+            }
+        } catch (Exception e) {
+            logger.error("Error resetting password for employeId: {}", employeId, e);
+        }
+        logger.info("resetEmployePassword | OUT | result : {}", res);
+        return res;
+    }
+
 	/**
 	 * 성과/가치평가 리스트 화면
 	 * 

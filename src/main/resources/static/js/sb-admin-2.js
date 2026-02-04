@@ -438,3 +438,25 @@ var outFocusValue = function(obj){
 		obj.value = historyVal;
 	}
 }
+
+var resetEmployePassword = function(employeId) {
+    if (confirm(employeId + ' 님의 비밀번호를 초기화 하시겠습니까? 초기화된 비밀번호는 기본 비밀번호로 변경됩니다.')) {
+        $.ajax({
+            url: 'resetEmployePassword', // This will be the new endpoint
+            type: 'post',
+            dataType: 'text',
+            data: { employeId: employeId },
+            success: function(response) {
+                if (response === 'S') {
+                    alert(employeId + ' 님의 비밀번호가 성공적으로 초기화되었습니다.');
+                } else {
+                    alert('비밀번호 초기화에 실패하였습니다.');
+                }
+            },
+            error: function(request, status, error) {
+                alert('비밀번호 초기화 중 오류가 발생하였습니다.');
+                console.error("Error resetting password:", request.responseText);
+            }
+        });
+    }
+};
