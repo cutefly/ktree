@@ -1,0 +1,6 @@
+kpc_personal_authority 테이블을 사용하지 않고 kpc_emploe 테이블에 auth_level 필드 추가
+csrf.disabled 로 csrf 우회 차단 해제
+
+thymeleaf 특수성
+th:onclick="'openDissentPop(\'' + ${projectScore.employeId} + '\', \'' + ${projectScore.month} + '\');'"
+=> th:attr="onclick=|openDissentPop('${projectScore.employeId}', '${projectScore.month}')|" 

@@ -47,43 +47,53 @@
 			<if test='divisionCode != null'> AND
 		D.DIVISION_CODE=#{divisionCode} </if> ORDER BY T.TEAM_CODE </select>
 
-	<update id="updateEmploye" parameterType="kr.co.kpcard.ktree.domain.EmployeInfo">
-		UPDATE KPC_EMPLOYE
+
+	<select id="getUser" parameterType="HashMap"
+		resultType="kr.co.kpcard.ktree.domain.Employe">
+		<![CDATA[
+		SELECT
+			EMPLOYE_ID AS employeId,
+			NAME AS employeName,
+			PWD AS password,
+			USE_YN as useYn,
+			TEAM_CODE AS teamCode,
+			DIVISION_CODE AS divisionCode,
+			AUTH_LEVEL AS authLevel,
+			POSITION AS position
+		FROM KPC_EMPLOYE
+		WHERE EMPLOYE_ID = #{employeId}
+		]]>
+	</select>
+
+	<update id="updateUser" parameterType="kr.co.kpcard.ktree.domain.Employe"> 
+	<![CDATA[
+		UPDATE KPC_EMPLOYE 
+	]]>
 		<set>
 			<if test="employeName != null">NAME = #{employeName},</if>
-			<if test="password != null">PWD = #{password},</if>
+			<if test="password != null">PWD
+		= #{password},</if>
 			<if test="useYn != null">USE_YN = #{useYn},</if>
-			<if test="teamCode > 0">TEAM_CODE = #{teamCode},</if>
+			<if test="teamCode > 0">TEAM_CODE
+		= #{teamCode},</if>
 			<if test="divisionCode > 0">DIVISION_CODE = #{divisionCode},</if>
-			<if test="authLevel > 0">AUTH_LEVEL = #{authLevel},</if>
-			<if test="position > 0">POSITION = #{position},</if>
-		</set>
+			<if
+				test="authLevel > 0">AUTH_LEVEL = #{authLevel},</if>
+			<if test="position > 0">POSITION
+		= #{position},</if>
+		</set> 
+	<![CDATA[
 		WHERE EMPLOYE_ID = #{employeId}
+	]]>
 	</update>
 
-	<insert id="insertEmploye" parameterType="kr.co.kpcard.ktree.domain.EmployeInfo">
-		INSERT INTO KPC_EMPLOYE
-		(
-			EMPLOYE_ID,
-			NAME,
-			PWD,
-			USE_YN,
-			TEAM_CODE,
-			DIVISION_CODE,
-			AUTH_LEVEL,
-			POSITION
-		)
-		VALUES
-		(
-			#{employeId},
-			#{employeName},
-			#{password},
-			#{useYn},
-			#{teamCode},
-			#{divisionCode},
-			#{authLevel},
-			#{position}
-		)
+	<insert id="insertUser" parameterType="kr.co.kpcard.ktree.domain.Employe">
+	<![CDATA[
+		INSERT INTO
+		KPC_EMPLOYE ( EMPLOYE_ID, NAME, PWD, USE_YN, TEAM_CODE, DIVISION_CODE, AUTH_LEVEL, POSITION
+		) VALUES ( #{employeId}, #{employeName}, #{password}, #{useYn}, #{teamCode},
+		#{divisionCode}, #{authLevel}, #{position} ) 
+	]]>
 	</insert>
 
 	<select id="getProjectScore" parameterType="HashMap"
