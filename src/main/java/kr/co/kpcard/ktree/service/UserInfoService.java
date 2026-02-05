@@ -1,7 +1,6 @@
 package kr.co.kpcard.ktree.service;
 
 import kr.co.kpcard.ktree.dao.UserInfoDao;
-import kr.co.kpcard.ktree.domain.EmployeInfo;
 import kr.co.kpcard.ktree.domain.UserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class UserInfoService {
 
     private final UserInfoDao userInfoDao;
