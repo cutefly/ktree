@@ -46,6 +46,7 @@
                     </span>
                 </td>
                 <td>
+                    <button type="button" class="btn btn-info btn-sm" th:onclick="|location.href='@{/employe/form(employeId=${employe.employeId})}'|">수정</button>
                     <button type="button" class="btn btn-danger btn-sm" th:attr="onclick=|javascript:resetPassword('${employe.employeId}');|">비밀번호 초기화</button>
                 </td>
             </tr>

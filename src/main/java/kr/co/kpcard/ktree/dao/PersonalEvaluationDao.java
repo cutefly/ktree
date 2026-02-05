@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import jakarta.annotation.Resource;
+import kr.co.kpcard.ktree.domain.Employe;
 import kr.co.kpcard.ktree.domain.DivisionInfo;
 import kr.co.kpcard.ktree.domain.EmployeInfo;
 import kr.co.kpcard.ktree.domain.PerformanceScore;
@@ -90,6 +91,58 @@ public class PersonalEvaluationDao {
 
 		} catch (Exception e) {
 		}
+
+		return result;
+	}
+
+	public Employe getUser(String employeId) {
+		logger.info("getUser | IN | Param : employeId=> {}", employeId);
+
+		Employe result = new Employe();
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		try {
+			param.put("employeId", employeId);
+			result = sqlSession.selectOne("Personal.getUser", param);
+			if (result != null) {
+				logger.info("getUser | OUT | Param : result=> {}", result.getName());
+			}
+		} catch (Exception e) {
+			logger.error("exception : {}", e.getMessage());
+		}
+		return result;
+	}
+
+	public boolean addUser(Employe employe) {
+		logger.info("addUser | IN |");
+
+		boolean result = false;
+
+		try {
+			int resultValue = sqlSession.insert("Personal.insertUser", employe);
+			if (resultValue >= 1) {
+				result = true;
+			}
+		} catch (Exception e) {
+			logger.error("exception : {}", e.getMessage());
+		}
+		logger.info("addUser | OUT | Param : result=> {}", result);
+
+		return result;
+	}
+
+	public boolean updateUser(Employe employe) {
+		logger.info("updateUser | IN |");
+		boolean result = false;
+
+		try {
+			int resultValue = sqlSession.update("Personal.updateUser", employe);
+			if (resultValue >= 1) {
+				result = true;
+			}
+		} catch (Exception e) {
+			logger.error("exception : {}", e.getMessage());
+		}
+		logger.info("updateUser | OUT | ");
 
 		return result;
 	}

@@ -36,7 +36,7 @@ public class UserInfoService {
     }
 
     public boolean resetPassword(String userId) {
-        final String DEFAULT_PASSWORD = "ktree123!";
+        final String DEFAULT_PASSWORD = "kpcard1@";
         UserInfo userInfo = getUserByUserId(userId);
 
         if (userInfo != null) {

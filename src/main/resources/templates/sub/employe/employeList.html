@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+    <title>Employee List</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Employee List</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Employee Overview
+                </div>
+                <div class="panel-body">
+                    <div th:if="${message}" class="alert alert-info" th:text="${message}"></div>
+                    <p>This is a placeholder for the employee list. You can navigate to <a th:href="@{/employe/form}">Add New Employee</a>.</p>
+                    <p>Or edit an employee using ID: <a th:href="@{/employe/form(employeId='testId')}">Edit 'testId'</a></p>
+                    <!-- Employee list table will go here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -70,4 +70,9 @@ public class Employe {
 	 * 컨펌2
 	 */
 	private String confirm2;
+	/**
+	 * 모드
+	 */
+	private String mode;
+
 }

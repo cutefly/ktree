@@ -12,7 +12,7 @@
                T.TEAM_NAME AS teamName, 
                E.DIVISION_CODE AS divisionCode,
 	           D.DIVISION_NAME AS divisionName, 
-	           A.AUTHORITY_LEVEL AS authLevel, 
+	           E.AUTH_LEVEL AS authLevel, 
 	           E.POSITION AS position 
           from KPC_EMPLOYE E 
           left OUTER join KPC_DIVISION_INFO D
@@ -21,10 +21,10 @@
             on E.TEAM_CODE = T.TEAM_CODE
           left OUTER join KPC_PERSONAL_AUTHORITY A
             on E.EMPLOYE_ID = A.EMPLOYE_ID	
-         where E.USE_YN = 'Y'
+         where E.SEQ >= 0
 		]]>
 		<if
-			test='employeId != "kpc_admin"'>AND A.AUTHORITY_LEVEL &lt; 4</if>
+			test='employeId != "kpc_admin"'>AND E.AUTH_LEVEL &lt; 4</if>
 						<if
 			test='employeId != null'> AND E.EMPLOYE_ID=#{employeId}</if> 
 						<if
@@ -53,13 +53,16 @@
 		<![CDATA[
 		SELECT
 			EMPLOYE_ID AS employeId,
-			NAME AS employeName,
-			PWD AS password,
+			NAME AS name,
+			PWD AS pwd,
+			AUTHORITY_CODE AS authorityCode,
 			USE_YN as useYn,
 			TEAM_CODE AS teamCode,
 			DIVISION_CODE AS divisionCode,
 			AUTH_LEVEL AS authLevel,
-			POSITION AS position
+			POSITION AS position,
+			CONFIRM1 AS confirm1,
+			CONFIRM2 AS confirm2
 		FROM KPC_EMPLOYE
 		WHERE EMPLOYE_ID = #{employeId}
 		]]>
@@ -70,17 +73,23 @@
 		UPDATE KPC_EMPLOYE 
 	]]>
 		<set>
-			<if test="employeName != null">NAME = #{employeName},</if>
-			<if test="password != null">PWD
-		= #{password},</if>
-			<if test="useYn != null">USE_YN = #{useYn},</if>
-			<if test="teamCode > 0">TEAM_CODE
-		= #{teamCode},</if>
-			<if test="divisionCode > 0">DIVISION_CODE = #{divisionCode},</if>
+			<if test="name != null">NAME = #{name},</if>
+			<!--<if
+			test="pwd != null">PWD = #{pwd},</if>-->
+			<if
+				test="useYn != null">USE_YN = #{useYn},</if>
+			<if
+				test="teamCode > 0">TEAM_CODE = #{teamCode},</if>
+			<if test="divisionCode > 0">DIVISION_CODE
+		= #{divisionCode},</if>
 			<if
 				test="authLevel > 0">AUTH_LEVEL = #{authLevel},</if>
 			<if test="position > 0">POSITION
 		= #{position},</if>
+			<if
+				test="confirm1 != null">CONFIRM1 = #{confirm1},</if>
+			<if
+				test="confirm2 != null">CONFIRM2 = #{confirm2},</if>
 		</set> 
 	<![CDATA[
 		WHERE EMPLOYE_ID = #{employeId}
@@ -89,10 +98,35 @@
 
 	<insert id="insertUser" parameterType="kr.co.kpcard.ktree.domain.Employe">
 	<![CDATA[
-		INSERT INTO
-		KPC_EMPLOYE ( EMPLOYE_ID, NAME, PWD, USE_YN, TEAM_CODE, DIVISION_CODE, AUTH_LEVEL, POSITION
-		) VALUES ( #{employeId}, #{employeName}, #{password}, #{useYn}, #{teamCode},
-		#{divisionCode}, #{authLevel}, #{position} ) 
+		INSERT INTO	KPC_EMPLOYE ( 
+		    SEQ, 
+			EMPLOYE_ID, 
+			NAME, 
+			PWD, 
+			AUTHORITY_CODE,
+			CREATE_DATE,
+			USE_YN, 
+			TEAM_CODE, 
+			DIVISION_CODE, 
+			AUTH_LEVEL, 
+			POSITION,
+			CONFIRM1,
+			CONFIRM2
+		) VALUES ( 
+		    (SELECT coalesce(MAX(SEQ)+1) FROM KPC_EMPLOYE),
+		    #{employeId}, 
+			#{name}, 
+			#{pwd},
+			'0',
+			CURRENT_TIMESTAMP,
+			#{useYn}, 
+			#{teamCode},
+			#{divisionCode}, 
+			#{authLevel},
+			#{position},
+			#{confirm1},
+			#{confirm2}
+		) 
 	]]>
 	</insert>
 
@@ -135,7 +169,7 @@
 			<include refid="getProjectScore"/>
 		)
 		WHERE (	E.EMPLOYE_ID = #{employeId}
-			OR	A.AUTHORITY_LEVEL < #{authCode}	)
+			OR	E.AUTH_LEVEL < #{authCode}	)
 	]]>
 	</select>
 
@@ -420,7 +454,7 @@
           left outer join KPC_PERSONAL_AUTHORITY A
             on E.EMPLOYE_ID = A.EMPLOYE_ID
          WHERE E.USE_YN='Y'
- 		   AND A.AUTHORITY_LEVEL < 4
+ 		   AND E.AUTH_LEVEL < 4
 		]]>
 			<if test='searchOption != "all"'>AND
 		E.EMPLOYE_ID = #{employeId}</if> ORDER BY E.NAME </select>
@@ -433,7 +467,7 @@
 			<include refid="getProjectScore"/>
 		)
 		WHERE (	E.EMPLOYE_ID = #{employeId}
-			OR	A.AUTHORITY_LEVEL < #{authCode}	)
+			OR	E.AUTh_LEVEL < #{authCode}	)
 	]]>
 	</select>
 
