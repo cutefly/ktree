@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 import jakarta.annotation.Resource;
 import kr.co.kpcard.ktree.domain.DivisionInfo;
-import kr.co.kpcard.ktree.domain.Employe;
+import kr.co.kpcard.ktree.domain.EmployeInfo;
 import kr.co.kpcard.ktree.domain.PerformanceScore;
 import kr.co.kpcard.ktree.domain.ProjectScore;
 import kr.co.kpcard.ktree.domain.ResultPerformanceScore;
@@ -32,10 +32,10 @@ public class PersonalEvaluationDao {
 	@Resource(name = "transactionManager")
 	protected DataSourceTransactionManager transactionManager;
 
-	public Employe getEmploye(String employeId) {
+	public EmployeInfo getEmploye(String employeId) {
 		logger.info("getEmploye | IN | Param : employeId=> {}", employeId);
 
-		Employe result = new Employe();
+		EmployeInfo result = new EmployeInfo();
 		HashMap<String, Object> param = new HashMap<String, Object>();
 		try {
 			param.put("employeId", employeId);
@@ -49,10 +49,10 @@ public class PersonalEvaluationDao {
 		return result;
 	}
 
-	public List<Employe> getEmployeList() {
+	public List<EmployeInfo> getEmployeList() {
 		logger.info("getEmploye | IN | NoParam");
 
-		List<Employe> result = new ArrayList<Employe>();
+		List<EmployeInfo> result = new ArrayList<EmployeInfo>();
 		try {
 			result = sqlSession.selectList("Personal.getEmploye");
 			if (result != null) {
@@ -64,10 +64,10 @@ public class PersonalEvaluationDao {
 		return result;
 	}
 
-	public List<Employe> getEmployeList(int divisionCode, String useYn) {
+	public List<EmployeInfo> getEmployeList(int divisionCode, String useYn) {
 		logger.info("getEmploye | IN | divisionCode: " + divisionCode + ", useYn: " + useYn);
 
-		List<Employe> result = new ArrayList<Employe>();
+		List<EmployeInfo> result = new ArrayList<EmployeInfo>();
 		try {
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			param.put("divisionCode", divisionCode);
@@ -82,7 +82,7 @@ public class PersonalEvaluationDao {
 		return result;
 	}
 
-	public boolean insertEmploye(Employe employe) {
+	public boolean insertEmploye(EmployeInfo employe) {
 		boolean result = false;
 
 		try {
@@ -94,7 +94,7 @@ public class PersonalEvaluationDao {
 		return result;
 	}
 
-	public boolean updateEmploye(Employe employe) {
+	public boolean updateEmploye(EmployeInfo employe) {
 		logger.info("updateEmploye | IN | employe=> {}", employe.getEmployeId());
 
 		boolean result = false;
@@ -248,7 +248,7 @@ public class PersonalEvaluationDao {
 		try {
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			param.put("employeId", employeId);
-			Employe employe = sqlSession.selectOne("Personal.getEmploye", param);
+			EmployeInfo employe = sqlSession.selectOne("Personal.getEmploye", param);
 
 			param.put("authLevel", authLevel);
 			param.put("divisionCode", employe.getDivisionCode());
@@ -636,7 +636,7 @@ public class PersonalEvaluationDao {
 		try {
 			HashMap<String, Object> param = new HashMap<String, Object>();
 			param.put("employeId", employeId);
-			Employe employe = sqlSession.selectOne("Personal.getEmploye", param);
+			EmployeInfo employe = sqlSession.selectOne("Personal.getEmploye", param);
 
 			param.put("authLevel", authLevel);
 			param.put("divisionCode", employe.getDivisionCode());

@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import kr.co.kpcard.ktree.domain.DivisionInfo;
-import kr.co.kpcard.ktree.domain.Employe;
+import kr.co.kpcard.ktree.domain.EmployeInfo;
 import kr.co.kpcard.ktree.domain.PerformanceScore;
 import kr.co.kpcard.ktree.domain.PerformanceValue;
 import kr.co.kpcard.ktree.dao.PersonalEvaluationDao;
@@ -45,7 +45,7 @@ public class PersonalEvaluationService {
 		ResultProjectScore resultProjectScore = new ResultProjectScore();
 		ProjectScore projectScore = personalEvaluationDao.getProjectScore(employeId, yyyyMM);
 		ProjectScore projectScoreHistory = personalEvaluationDao.getProjectScoreHistory(employeId, yyyyMM);
-		Employe employe = personalEvaluationDao.getEmploye(employeId);
+		EmployeInfo employe = personalEvaluationDao.getEmploye(employeId);
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
 		setRatio();
@@ -126,13 +126,13 @@ public class PersonalEvaluationService {
 		List<ResultProjectScore> resultList = new ArrayList<ResultProjectScore>();
 		List<ProjectScore> projectScoreList = personalEvaluationDao.getProjectScoreAll(employeId, yyyyMM);
 		List<ProjectScore> projectScoreHistoryList = personalEvaluationDao.getProjectScoreAllHistory(employeId, yyyyMM);
-		List<Employe> employeList = personalEvaluationDao.getEmployeList();
+		List<EmployeInfo> employeList = personalEvaluationDao.getEmployeList();
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
 		setRatio();
 		float scoreRatio = 0;
 
-		for (Employe employe : employeList) {
+		for (EmployeInfo employe : employeList) {
 
 			ResultProjectScore resultProjectScore = new ResultProjectScore();
 
@@ -221,14 +221,14 @@ public class PersonalEvaluationService {
 		List<ResultProjectScore> resultList = new ArrayList<ResultProjectScore>();
 		List<ProjectScore> projectScoreList = personalEvaluationDao.getProjectScoreAll(employeId, yyyyMM);
 		List<ProjectScore> projectScoreHistoryList = personalEvaluationDao.getProjectScoreAllHistory(employeId, yyyyMM);
-		List<Employe> employeList = personalEvaluationDao.getEmployeList();
+		List<EmployeInfo> employeList = personalEvaluationDao.getEmployeList();
 
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 
 		setRatio();
 		float scoreRatio = 0;
 
-		for (Employe employe : employeList) {
+		for (EmployeInfo employe : employeList) {
 			if (employe.getDivisionCode() == divisionCode) {
 				ResultProjectScore resultProjectScore = new ResultProjectScore();
 
@@ -355,7 +355,7 @@ public class PersonalEvaluationService {
 		List<ResultPerformanceScore> performanceScoreList = personalEvaluationDao.getPerformanceScoreList(employeId,
 				authLevel, yyyyMM);
 		List<ResultPerformanceScore> performanceScoreResult = new ArrayList<ResultPerformanceScore>();
-		Employe employeInfo = getEmploye(employeId);
+		EmployeInfo employeInfo = getEmploye(employeId);
 
 		logger.debug("Total PerformanceScoreList=> {}, authLevel=> ()", performanceScoreList.size(), authLevel);
 		if (employeInfo.getPosition() < 4 && authLevel < 4) {
@@ -930,10 +930,10 @@ public class PersonalEvaluationService {
 		return isSucceeded;
 	}
 
-	public List<Employe> getEmployeList(int divisionCode, String useYn) {
+	public List<EmployeInfo> getEmployeList(int divisionCode, String useYn) {
 		logger.info("getEmployeList | IN |");
 
-		List<Employe> result = personalEvaluationDao.getEmployeList(divisionCode, useYn);
+		List<EmployeInfo> result = personalEvaluationDao.getEmployeList(divisionCode, useYn);
 
 		logger.info("getEmployeList | OUT |");
 
@@ -1015,35 +1015,37 @@ public class PersonalEvaluationService {
 		return state;
 	}
 
-	public Employe getEmploye(String employeId) {
-		Employe employe = personalEvaluationDao.getEmploye(employeId);
+	public EmployeInfo getEmploye(String employeId) {
+		EmployeInfo employe = personalEvaluationDao.getEmploye(employeId);
 		return employe;
 	}
 
 	public boolean updatePassword(String employeId, String password) {
-		Employe employe = new Employe();
+		EmployeInfo employe = new EmployeInfo();
 		employe.setEmployeId(employeId);
 		employe.setPassword(password);
 		boolean result = personalEvaluationDao.updateEmploye(employe);
 		return result;
 	}
 
-    public boolean resetEmployePassword(String employeId) {
-        logger.info("resetEmployePassword | IN | employeId: {}", employeId);
-        boolean result = false;
-        try {
-            // Define a default password. In a real application, this should be more secure.
-            // For this example, assuming DAO/Mapper handles hashing or a plain text default.
-            // If the application uses Spring Security's PasswordEncoder, it should be injected and used here.
-            final String DEFAULT_PASSWORD = "ktree123!"; 
-            
-            result = updatePassword(employeId, DEFAULT_PASSWORD); // Using the existing updatePassword method
-        } catch (Exception e) {
-            logger.error("Error resetting password for employeId: {}", employeId, e);
-        }
-        logger.info("resetEmployePassword | OUT | result: {}", result);
-        return result;
-    }
+	public boolean resetEmployePassword(String employeId) {
+		logger.info("resetEmployePassword | IN | employeId: {}", employeId);
+		boolean result = false;
+		try {
+			// Define a default password. In a real application, this should be more secure.
+			// For this example, assuming DAO/Mapper handles hashing or a plain text
+			// default.
+			// If the application uses Spring Security's PasswordEncoder, it should be
+			// injected and used here.
+			final String DEFAULT_PASSWORD = "ktree123!";
+
+			result = updatePassword(employeId, DEFAULT_PASSWORD); // Using the existing updatePassword method
+		} catch (Exception e) {
+			logger.error("Error resetting password for employeId: {}", employeId, e);
+		}
+		logger.info("resetEmployePassword | OUT | result: {}", result);
+		return result;
+	}
 
 	public List<DivisionInfo> getDivisionList() {
 		List<DivisionInfo> result = personalEvaluationDao.getDivisionList();

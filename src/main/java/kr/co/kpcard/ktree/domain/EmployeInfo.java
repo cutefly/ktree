@@ -11,7 +11,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Employe {
+public class EmployeInfo {
 	/**
 	 * 사번
 	 */
@@ -53,6 +53,6 @@ public class Employe {
 	 */
 	private int position;
 
-	public Employe() {
+	public EmployeInfo() {
 	}
 }
