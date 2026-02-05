@@ -1020,33 +1020,6 @@ public class PersonalEvaluationService {
 		return employe;
 	}
 
-	public boolean updatePassword(String employeId, String password) {
-		EmployeInfo employe = new EmployeInfo();
-		employe.setEmployeId(employeId);
-		employe.setPassword(password);
-		boolean result = personalEvaluationDao.updateEmploye(employe);
-		return result;
-	}
-
-	public boolean resetEmployePassword(String employeId) {
-		logger.info("resetEmployePassword | IN | employeId: {}", employeId);
-		boolean result = false;
-		try {
-			// Define a default password. In a real application, this should be more secure.
-			// For this example, assuming DAO/Mapper handles hashing or a plain text
-			// default.
-			// If the application uses Spring Security's PasswordEncoder, it should be
-			// injected and used here.
-			final String DEFAULT_PASSWORD = "ktree123!";
-
-			result = updatePassword(employeId, DEFAULT_PASSWORD); // Using the existing updatePassword method
-		} catch (Exception e) {
-			logger.error("Error resetting password for employeId: {}", employeId, e);
-		}
-		logger.info("resetEmployePassword | OUT | result: {}", result);
-		return result;
-	}
-
 	public List<DivisionInfo> getDivisionList() {
 		List<DivisionInfo> result = personalEvaluationDao.getDivisionList();
 

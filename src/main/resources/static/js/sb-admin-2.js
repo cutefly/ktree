@@ -439,10 +439,10 @@ var outFocusValue = function(obj){
 	}
 }
 
-var resetEmployePassword = function(employeId) {
+var resetPassword = function(employeId) {
     if (confirm(employeId + ' 님의 비밀번호를 초기화 하시겠습니까? 초기화된 비밀번호는 기본 비밀번호로 변경됩니다.')) {
         $.ajax({
-            url: 'resetEmployePassword', // This will be the new endpoint
+            url: '/reset-password', // This will be the new endpoint
             type: 'post',
             dataType: 'text',
             data: { employeId: employeId },

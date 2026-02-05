@@ -1,11 +1,15 @@
 package kr.co.kpcard.ktree.service;
 
 import kr.co.kpcard.ktree.dao.UserInfoDao;
+import kr.co.kpcard.ktree.domain.EmployeInfo;
 import kr.co.kpcard.ktree.domain.UserInfo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -27,6 +31,18 @@ public class UserInfoService {
         if (userInfo != null && currentPassword.equals(userInfo.pwd())) {
             // String encodedNewPassword = passwordEncoder.encode(newPassword);
             userInfoDao.updatePassword(userId, newPassword);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean resetPassword(String userId) {
+        final String DEFAULT_PASSWORD = "ktree123!";
+        UserInfo userInfo = getUserByUserId(userId);
+
+        if (userInfo != null) {
+            // String encodedNewPassword = passwordEncoder.encode(newPassword);
+            userInfoDao.updatePassword(userId, DEFAULT_PASSWORD);
             return true;
         }
         return false;

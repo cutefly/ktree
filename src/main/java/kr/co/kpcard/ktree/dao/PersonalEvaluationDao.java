@@ -94,22 +94,6 @@ public class PersonalEvaluationDao {
 		return result;
 	}
 
-	public boolean updateEmploye(EmployeInfo employe) {
-		logger.info("updateEmploye | IN | employe=> {}", employe.getEmployeId());
-
-		boolean result = false;
-		try {
-			int resultValue = sqlSession.update("Personal.updateEmploye", employe);
-			if (resultValue >= 1)
-				result = true;
-			logger.info("getEmploye | OUT | Param : result=> {}", result);
-
-		} catch (Exception e) {
-			logger.error("updateEmploye : {}", e.getMessage());
-		}
-		return result;
-	}
-
 	public boolean deleteEmploye(String seq) {
 		return false;
 	}
