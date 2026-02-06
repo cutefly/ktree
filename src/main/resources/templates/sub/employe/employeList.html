@@ -33,15 +33,15 @@
                             <label for="divisionCode">Division</label>
                             <select id="divisionCode" name="divisionCode" class="form-control">
                                 <option value="">All</option>
-                                <option th:each="division : ${divisions}" th:value="${division.code}" th:text="${division.name}" th:selected="${division.code == param.divisionCode}"></option>
+                                <option th:each="division : ${divisions}" th:value="${division.code}" th:text="${division.name}" th:selected="${#strings.equals(division.code, param.divisionCode)}"></option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="useYn">Use Y/N</label>
                             <select id="useYn" name="useYn" class="form-control">
                                 <option value="">All</option>
-                                <option value="Y" th:selected="${param.useYn == 'Y'}">Y</option>
-                                <option value="N" th:selected="${param.useYn == 'N'}">N</option>
+                                <option value="Y" th:selected="${#strings.equals(param.useYn, 'Y')}">Y</option>
+                                <option value="N" th:selected="${#strings.equals(param.useYn, 'N')}">N</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Search</button>

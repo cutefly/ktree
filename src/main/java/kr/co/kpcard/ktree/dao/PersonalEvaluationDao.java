@@ -149,6 +149,21 @@ public class PersonalEvaluationDao {
 		return getUserList(new HashMap<>());
 	}
 
+	public List<Employe> getUserListByAuthLevel(int authLevel) {
+		logger.info("getUserListByAuthLevel | IN | authLevel: " + authLevel);
+
+		List<Employe> result = new ArrayList<Employe>();
+		try {
+			result = sqlSession.selectList("Personal.getUserListByAuthLevel", authLevel);
+			if (result != null) {
+				logger.info("getUserListByAuthLevel | OUT | Param : result=> {}", result.size());
+			}
+		} catch (Exception e) {
+			logger.error("exception : {}", e.getMessage());
+		}
+		return result;
+	}
+
 	public boolean addUser(Employe employe) {
 		logger.info("addUser | IN |");
 

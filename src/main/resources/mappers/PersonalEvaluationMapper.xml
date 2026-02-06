@@ -49,56 +49,27 @@
 
 
 	<select id="getUser" parameterType="HashMap"
-		resultType="kr.co.kpcard.ktree.domain.Employe">
-		SELECT
-			E.SEQ as seq,
-			E.EMPLOYE_ID AS employeId,
-			E.NAME AS name,
-			E.PWD AS pwd,
-			E.AUTHORITY_CODE AS authorityCode,
-			E.USE_YN as useYn,
-			E.TEAM_CODE AS teamCode,
-			T.TEAM_NAME AS teamName,
-			E.DIVISION_CODE AS divisionCode,
-			D.DIVISION_NAME AS divisionName,
-			E.AUTH_LEVEL AS authLevel,
-			E.POSITION AS position,
-			E.CONFIRM1 AS confirm1,
-			E.CONFIRM2 AS confirm2
-		FROM KPC_EMPLOYE E
-		LEFT OUTER JOIN KPC_DIVISION_INFO D ON E.DIVISION_CODE = D.DIVISION_CODE
-		LEFT OUTER JOIN KPC_TEAM_INFO T ON E.TEAM_CODE = T.TEAM_CODE
-		<where>
-			<if test="employeId != null and employeId != ''">
-				AND E.EMPLOYE_ID = #{employeId}
-			</if>
-			<if test="seq != null and seq != ''">
-				AND E.SEQ = #{seq}
-			</if>
+		resultType="kr.co.kpcard.ktree.domain.Employe"> SELECT E.SEQ as seq, E.EMPLOYE_ID AS
+		employeId, E.NAME AS name, E.PWD AS pwd, E.AUTHORITY_CODE AS authorityCode, E.USE_YN as
+		useYn, E.TEAM_CODE AS teamCode, T.TEAM_NAME AS teamName, E.DIVISION_CODE AS divisionCode,
+		D.DIVISION_NAME AS divisionName, E.AUTH_LEVEL AS authLevel, E.POSITION AS position,
+		E.CONFIRM1 AS confirm1, E.CONFIRM2 AS confirm2 FROM KPC_EMPLOYE E LEFT OUTER JOIN
+		KPC_DIVISION_INFO D ON E.DIVISION_CODE = D.DIVISION_CODE LEFT OUTER JOIN KPC_TEAM_INFO T ON
+		E.TEAM_CODE = T.TEAM_CODE <where>
+			<if test="employeId != null and employeId != ''"> AND E.EMPLOYE_ID = #{employeId} </if>
+			<if
+				test="seq != null and seq != ''"> AND E.SEQ = #{seq} </if>
 		</where>
 	</select>
 
 	<select id="getUserList" parameterType="java.util.Map"
-		resultType="kr.co.kpcard.ktree.domain.Employe">
-		SELECT
-			E.SEQ as seq,
-			E.EMPLOYE_ID AS employeId,
-			E.NAME AS name,
-			E.PWD AS pwd,
-			E.AUTHORITY_CODE AS authorityCode,
-			E.USE_YN as useYn,
-			E.TEAM_CODE AS teamCode,
-			T.TEAM_NAME AS teamName,
-			E.DIVISION_CODE AS divisionCode,
-			D.DIVISION_NAME AS divisionName,
-			E.AUTH_LEVEL AS authLevel,
-			E.POSITION AS position,
-			E.CONFIRM1 AS confirm1,
-			E.CONFIRM2 AS confirm2
-		FROM KPC_EMPLOYE E
-		LEFT OUTER JOIN KPC_DIVISION_INFO D ON E.DIVISION_CODE = D.DIVISION_CODE
-		LEFT OUTER JOIN KPC_TEAM_INFO T ON E.TEAM_CODE = T.TEAM_CODE
-		<where>
+		resultType="kr.co.kpcard.ktree.domain.Employe"> SELECT E.SEQ as seq, E.EMPLOYE_ID AS
+		employeId, E.NAME AS name, E.PWD AS pwd, E.AUTHORITY_CODE AS authorityCode, E.USE_YN as
+		useYn, E.TEAM_CODE AS teamCode, T.TEAM_NAME AS teamName, E.DIVISION_CODE AS divisionCode,
+		D.DIVISION_NAME AS divisionName, E.AUTH_LEVEL AS authLevel, E.POSITION AS position,
+		E.CONFIRM1 AS confirm1, E.CONFIRM2 AS confirm2 FROM KPC_EMPLOYE E LEFT OUTER JOIN
+		KPC_DIVISION_INFO D ON E.DIVISION_CODE = D.DIVISION_CODE LEFT OUTER JOIN KPC_TEAM_INFO T ON
+		E.TEAM_CODE = T.TEAM_CODE <where>
 			<if test="employeId != null and employeId != ''"> AND E.EMPLOYE_ID = #{employeId} </if>
 			<if
 				test="name != null and name != ''"> AND E.NAME LIKE '%' || #{name} || '%' </if>
@@ -107,23 +78,27 @@
 		#{divisionCode} </if>
 			<if test="useYn != null and useYn != ''"> AND E.USE_YN = #{useYn} </if>
 		</where>
-		ORDER BY E.NAME
-	</select>
+		ORDER BY E.NAME </select>
 
-	<update id="updateUser" parameterType="kr.co.kpcard.ktree.domain.Employe">
-		UPDATE KPC_EMPLOYE
-		<set>
+	<select id="getUserListByAuthLevel" parameterType="int"
+		resultType="kr.co.kpcard.ktree.domain.Employe"> SELECT EMPLOYE_ID AS employeId, NAME AS name
+		FROM KPC_EMPLOYE WHERE AUTH_LEVEL >= #{authLevel} ORDER BY NAME </select>
+
+	<update id="updateUser" parameterType="kr.co.kpcard.ktree.domain.Employe"> UPDATE KPC_EMPLOYE <set>
 			<if test="name != null">NAME = #{name},</if>
 			<if test="useYn != null">USE_YN = #{useYn},</if>
-			<if test="teamCode > 0">TEAM_CODE = #{teamCode},</if>
-			<if test="divisionCode > 0">DIVISION_CODE = #{divisionCode},</if>
+			<if
+				test="teamCode > 0">TEAM_CODE = #{teamCode},</if>
+			<if test="divisionCode > 0">DIVISION_CODE
+		= #{divisionCode},</if>
 			<if test="authLevel > 0">AUTH_LEVEL = #{authLevel},</if>
-			<if test="position > 0">POSITION = #{position},</if>
-			<if test="confirm1 != null">CONFIRM1 = #{confirm1},</if>
+			<if
+				test="position > 0">POSITION = #{position},</if>
+			<if test="confirm1 != null">CONFIRM1
+		= #{confirm1},</if>
 			<if test="confirm2 != null">CONFIRM2 = #{confirm2},</if>
 		</set>
-		WHERE SEQ = #{seq}
-	</update>
+		WHERE SEQ = #{seq} </update>
 
 	<insert id="insertUser" parameterType="kr.co.kpcard.ktree.domain.Employe">
 	<![CDATA[

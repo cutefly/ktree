@@ -48,6 +48,8 @@ public class EmployeController {
         model.addAttribute("teams", teamService.getTeamList(0));
         model.addAttribute("authLevels", AuthLevel.values());
         model.addAttribute("positions", Position.values());
+        model.addAttribute("primaryReviewers", employeService.getReviewers(1));
+        model.addAttribute("secondaryReviewers", employeService.getReviewers(2));
         logger.info("showEmployeForm | OUT | Adding employe to model: {}", employe);
         return "sub/employe/employeAddEdit";
     }

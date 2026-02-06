@@ -76,11 +76,15 @@
                                 </div>
                                 <div class="form-group">
                                     <label>1차 평가자</label>
-                                    <input type="text" th:field="*{confirm1}" class="form-control" placeholder="Confirm1" required>
+                                    <select th:field="*{confirm1}" class="form-control">
+                                        <option th:each="reviewer : ${primaryReviewers}" th:value="${reviewer.employeId}" th:text="${reviewer.name}"></option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label>2차 평가자</label>
-                                    <input type="text" th:field="*{confirm2}" class="form-control" placeholder="Confirm2" required>
+                                    <select th:field="*{confirm2}" class="form-control">
+                                        <option th:each="reviewer : ${secondaryReviewers}" th:value="${reviewer.employeId}" th:text="${reviewer.name}"></option>
+                                    </select>
                                 </div>
                                 <button type="submit" class="btn btn-primary" th:text="${employe.seq != null ? 'Update Employee' : 'Add Employee'}"></button>
                                 <button type="reset" class="btn btn-default">Reset</button>

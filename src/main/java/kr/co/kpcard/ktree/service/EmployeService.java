@@ -51,6 +51,10 @@ public class EmployeService {
         return employe;
     }
 
+    public List<Employe> getReviewers(int authLevel) {
+        return personalEvaluationDao.getUserListByAuthLevel(authLevel);
+    }
+
     @Transactional
     public boolean addEmploye(Employe employe) {
         logger.info("addEmploye | IN | employe: {}", employe);
