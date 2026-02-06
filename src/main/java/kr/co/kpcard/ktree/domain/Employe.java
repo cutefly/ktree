@@ -43,6 +43,10 @@ public class Employe {
 	 */
 	private int authLevel;
 	/**
+	 * 권한명
+	 */
+	private String authLevelName;
+	/**
 	 * 생성일
 	 */
 	private java.time.LocalDateTime createDate;
@@ -55,13 +59,25 @@ public class Employe {
 	 */
 	private int teamCode;
 	/**
+	 * 팀명
+	 */
+	private String teamName;
+	/**
 	 * 부서코드
 	 */
 	private int divisionCode;
 	/**
+	 * 부서명
+	 */
+	private String divisionName;
+	/**
 	 * 직급(0: 직원, 1: 팀장, 2: 본부장, 3: 임원)
 	 */
 	private int position;
+	/**
+	 * 직급명
+	 */
+	private String positionName;
 	/**
 	 * 컨펌1
 	 */

@@ -5,8 +5,8 @@
         employe_id, name, pwd, authority_code, create_date, use_yn, team_code, division_code,
         position, confirm1, confirm2 FROM kpc_employe WHERE employe_id = #{userId} </select>
 
-    <select id="findAuthorityLevelByUserId" resultType="java.lang.Integer"> SELECT authority_level
-        FROM kpc_personal_authority WHERE employe_id = #{UserId} </select>
+    <select id="findAuthorityLevelByUserId" resultType="java.lang.Integer"> SELECT auth_level FROM
+        kpc_employe WHERE employe_id = #{userId} </select>
 
     <update id="updatePassword" parameterType="map"> UPDATE kpc_employe SET pwd = #{newPassword}
         WHERE employe_id = #{userId} </update>

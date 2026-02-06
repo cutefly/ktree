@@ -50,62 +50,64 @@
 
 	<select id="getUser" parameterType="HashMap"
 		resultType="kr.co.kpcard.ktree.domain.Employe">
-		<![CDATA[
 		SELECT
-			SEQ as seq,
-			EMPLOYE_ID AS employeId,
-			NAME AS name,
-			PWD AS pwd,
-			AUTHORITY_CODE AS authorityCode,
-			USE_YN as useYn,
-			TEAM_CODE AS teamCode,
-			DIVISION_CODE AS divisionCode,
-			AUTH_LEVEL AS authLevel,
-			POSITION AS position,
-			CONFIRM1 AS confirm1,
-			CONFIRM2 AS confirm2
-		FROM KPC_EMPLOYE
-		]]>
+			E.SEQ as seq,
+			E.EMPLOYE_ID AS employeId,
+			E.NAME AS name,
+			E.PWD AS pwd,
+			E.AUTHORITY_CODE AS authorityCode,
+			E.USE_YN as useYn,
+			E.TEAM_CODE AS teamCode,
+			T.TEAM_NAME AS teamName,
+			E.DIVISION_CODE AS divisionCode,
+			D.DIVISION_NAME AS divisionName,
+			E.AUTH_LEVEL AS authLevel,
+			E.POSITION AS position,
+			E.CONFIRM1 AS confirm1,
+			E.CONFIRM2 AS confirm2
+		FROM KPC_EMPLOYE E
+		LEFT OUTER JOIN KPC_DIVISION_INFO D ON E.DIVISION_CODE = D.DIVISION_CODE
+		LEFT OUTER JOIN KPC_TEAM_INFO T ON E.TEAM_CODE = T.TEAM_CODE
 		<where>
 			<if test="employeId != null and employeId != ''">
-				AND EMPLOYE_ID = #{employeId}
+				AND E.EMPLOYE_ID = #{employeId}
 			</if>
 			<if test="seq != null and seq != ''">
-				AND SEQ = #{seq}
+				AND E.SEQ = #{seq}
 			</if>
 		</where>
 	</select>
 
 	<select id="getUserList" parameterType="java.util.Map"
 		resultType="kr.co.kpcard.ktree.domain.Employe">
-		<![CDATA[
 		SELECT
-			SEQ as seq,
-			EMPLOYE_ID AS employeId,
-			NAME AS name,
-			PWD AS pwd,
-			AUTHORITY_CODE AS authorityCode,
-			USE_YN as useYn,
-			TEAM_CODE AS teamCode,
-			DIVISION_CODE AS divisionCode,
-			AUTH_LEVEL AS authLevel,
-			POSITION AS position,
-			CONFIRM1 AS confirm1,
-			CONFIRM2 AS confirm2
-		FROM KPC_EMPLOYE
-		]]>
+			E.SEQ as seq,
+			E.EMPLOYE_ID AS employeId,
+			E.NAME AS name,
+			E.PWD AS pwd,
+			E.AUTHORITY_CODE AS authorityCode,
+			E.USE_YN as useYn,
+			E.TEAM_CODE AS teamCode,
+			T.TEAM_NAME AS teamName,
+			E.DIVISION_CODE AS divisionCode,
+			D.DIVISION_NAME AS divisionName,
+			E.AUTH_LEVEL AS authLevel,
+			E.POSITION AS position,
+			E.CONFIRM1 AS confirm1,
+			E.CONFIRM2 AS confirm2
+		FROM KPC_EMPLOYE E
+		LEFT OUTER JOIN KPC_DIVISION_INFO D ON E.DIVISION_CODE = D.DIVISION_CODE
+		LEFT OUTER JOIN KPC_TEAM_INFO T ON E.TEAM_CODE = T.TEAM_CODE
 		<where>
-			<if test="employeId != null and employeId != ''"> AND EMPLOYE_ID = #{employeId} </if>
+			<if test="employeId != null and employeId != ''"> AND E.EMPLOYE_ID = #{employeId} </if>
 			<if
-				test="name != null and name != ''"> AND NAME LIKE '%' || #{name} || '%' </if>
+				test="name != null and name != ''"> AND E.NAME LIKE '%' || #{name} || '%' </if>
 			<if
-				test="divisionCode != null and divisionCode != ''"> AND DIVISION_CODE =
+				test="divisionCode != null and divisionCode != ''"> AND E.DIVISION_CODE =
 		#{divisionCode} </if>
-			<if test="useYn != null and useYn != ''"> AND USE_YN = #{useYn} </if>
+			<if test="useYn != null and useYn != ''"> AND E.USE_YN = #{useYn} </if>
 		</where>
-		<![CDATA[
-		ORDER BY NAME
-		]]>
+		ORDER BY E.NAME
 	</select>
 
 	<update id="updateUser" parameterType="kr.co.kpcard.ktree.domain.Employe">

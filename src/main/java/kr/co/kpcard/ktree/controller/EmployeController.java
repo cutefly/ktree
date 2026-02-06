@@ -1,11 +1,15 @@
 package kr.co.kpcard.ktree.controller;
 
+import kr.co.kpcard.ktree.app.enums.Position;
+import kr.co.kpcard.ktree.app.enums.AuthLevel;
 import kr.co.kpcard.ktree.domain.Employe;
 import kr.co.kpcard.ktree.service.DivisionService;
+import kr.co.kpcard.ktree.service.TeamService;
 import kr.co.kpcard.ktree.service.EmployeService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +26,7 @@ public class EmployeController {
     private final Logger logger = LoggerFactory.getLogger(EmployeController.class);
     private final EmployeService employeService;
     private final DivisionService divisionService;
+    private final TeamService teamService;
 
     @GetMapping("/form")
     public String showEmployeForm(@RequestParam(value = "seq", required = false) Long seq, Model model) {
@@ -40,6 +45,10 @@ public class EmployeController {
         }
         model.addAttribute("employe", employe);
         model.addAttribute("mode", mode);
+        model.addAttribute("divisions", divisionService.getDivisionList());
+        model.addAttribute("teams", teamService.getTeamList(0));
+        model.addAttribute("authLevels", AuthLevel.values());
+        model.addAttribute("positions", Position.values());
         logger.info("showEmployeForm | OUT | Adding employe to model: {}", employe);
         return "sub/employe/employeAddEdit";
     }

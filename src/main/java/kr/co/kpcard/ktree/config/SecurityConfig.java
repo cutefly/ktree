@@ -36,7 +36,9 @@ public class SecurityConfig {
                                                 .requestMatchers("/api/**",
                                                                 "/eval/**")
                                                 .authenticated() // Require authentication
-                                                                 // for /api/**
+                                                // for /api/**
+                                                .requestMatchers("/employe/**").hasRole("ADMIN") // Only ADMIN can
+                                                                                                 // access /employe/**
                                                 .anyRequest().authenticated() // All other requests require
                                                                               // authentication
                                 )

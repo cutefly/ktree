@@ -1,8 +1,9 @@
 package kr.co.kpcard.ktree.service;
 
+import kr.co.kpcard.ktree.app.enums.AuthLevel;
+import kr.co.kpcard.ktree.app.enums.Position;
 import kr.co.kpcard.ktree.dao.PersonalEvaluationDao;
 import kr.co.kpcard.ktree.domain.Employe;
-import kr.co.kpcard.ktree.domain.EmployeInfo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,9 +23,14 @@ public class EmployeService {
     public List<Employe> getEmployeList(Map<String, Object> params) {
         logger.info("getEmployeList | IN ");
         List<Employe> employes = personalEvaluationDao.getUserList(params);
+        employes.forEach(employe -> {
+            employe.setAuthLevelName(AuthLevel.fromCode(employe.getAuthLevel()).getDescription());
+            employe.setPositionName(Position.fromCode(employe.getPosition()).getDescription());
+        });
         logger.info("getEmployeList | OUT | " + employes.size());
         return employes;
     }
+
     public List<Employe> getEmployeList() {
         return getEmployeList(new java.util.HashMap<>());
     }
@@ -35,6 +40,10 @@ public class EmployeService {
         Employe employe = null;
         try {
             employe = personalEvaluationDao.getUser(seq);
+            if (employe != null) {
+                employe.setAuthLevelName(AuthLevel.fromCode(employe.getAuthLevel()).getDescription());
+                employe.setPositionName(Position.fromCode(employe.getPosition()).getDescription());
+            }
         } catch (Exception e) {
             logger.error("Error retrieving employe with SEQ {}: {}", seq, e.getMessage());
         }

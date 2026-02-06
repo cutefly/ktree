@@ -44,31 +44,35 @@
                                 </div>
                                 </th:block>
                                 <div class="form-group">
+                                    <label>Division</label>
+                                    <select th:field="*{divisionCode}" class="form-control">
+                                        <option th:each="division : ${divisions}" th:value="${division.code}" th:text="${division.name}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Team</label>
+                                    <select th:field="*{teamCode}" class="form-control">
+                                        <option th:each="team : ${teams}" th:value="${team.code}" th:text="${team.name}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Position</label>
+                                    <select th:field="*{position}" class="form-control">
+                                        <option th:each="pos : ${positions}" th:value="${pos.code}" th:text="${pos.description}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Auth Level</label>
+                                    <select th:field="*{authLevel}" class="form-control">
+                                        <option th:each="level : ${authLevels}" th:value="${level.code}" th:text="${level.description}"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label>Use YN</label>
                                     <select th:field="*{useYn}" class="form-control">
                                         <option value="Y">Y</option>
                                         <option value="N">N</option>
                                     </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Team Code</label>
-                                    <input type="number" th:field="*{teamCode}" class="form-control"
-                                           placeholder="Enter Team Code">
-                                </div>
-                                <div class="form-group">
-                                    <label>Division Code</label>
-                                    <input type="number" th:field="*{divisionCode}" class="form-control"
-                                           placeholder="Enter Division Code">
-                                </div>
-                                <div class="form-group">
-                                    <label>Auth Level</label>
-                                    <input type="number" th:field="*{authLevel}" class="form-control"
-                                           placeholder="Enter Authority Level">
-                                </div>
-                                <div class="form-group">
-                                    <label>Position</label>
-                                    <input type="number" th:field="*{position}" class="form-control"
-                                           placeholder="Enter Position">
                                 </div>
                                 <div class="form-group">
                                     <label>1차 평가자</label>

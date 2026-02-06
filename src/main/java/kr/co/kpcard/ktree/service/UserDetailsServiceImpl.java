@@ -1,5 +1,6 @@
 package kr.co.kpcard.ktree.service;
 
+import kr.co.kpcard.ktree.app.enums.AuthLevel;
 import kr.co.kpcard.ktree.dao.UserInfoDao;
 import kr.co.kpcard.ktree.domain.UserInfo;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Integer authorityLevel = authorityLevelOptional.orElse(0); // Default to 0 if not found
 
         List<GrantedAuthority> authorities = new ArrayList<>();
-        if (authorityLevel == 4) {
+        if (authorityLevel == AuthLevel.ADMIN.getCode()) {
             authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
         } else {
             authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
