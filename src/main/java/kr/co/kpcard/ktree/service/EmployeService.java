@@ -2,11 +2,16 @@ package kr.co.kpcard.ktree.service;
 
 import kr.co.kpcard.ktree.dao.PersonalEvaluationDao;
 import kr.co.kpcard.ktree.domain.Employe;
+import kr.co.kpcard.ktree.domain.EmployeInfo;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +19,13 @@ public class EmployeService {
 
     private final Logger logger = LoggerFactory.getLogger(EmployeService.class);
     private final PersonalEvaluationDao personalEvaluationDao;
+
+    public List<Employe> getEmployeList(Map<String, Object> params) {
+        logger.info("getEmployeList | IN ");
+        List<Employe> employes = personalEvaluationDao.getUserList(params);
+        logger.info("getEmployeList | OUT | " + employes.size());
+        return employes;
+    }
 
     public Employe getEmploye(String employeId) {
         logger.info("getEmploye | IN | employeId: {}", employeId);

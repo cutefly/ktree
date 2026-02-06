@@ -20,9 +20,63 @@
                 </div>
                 <div class="panel-body">
                     <div th:if="${message}" class="alert alert-info" th:text="${message}"></div>
-                    <p>This is a placeholder for the employee list. You can navigate to <a th:href="@{/employe/form}">Add New Employee</a>.</p>
-                    <p>Or edit an employee using ID: <a th:href="@{/employe/form(employeId='testId')}">Edit 'testId'</a></p>
-                    <!-- Employee list table will go here -->
+                    <form th:action="@{/employe/list}" method="get" class="form-inline">
+                        <div class="form-group">
+                            <label for="employeId">ID</label>
+                            <input type="text" id="employeId" name="employeId" th:value="${param.employeId}" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" th:value="${param.name}" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="divisionCode">Division</label>
+                            <select id="divisionCode" name="divisionCode" class="form-control">
+                                <option value="">All</option>
+                                <option th:each="division : ${divisions}" th:value="${division.code}" th:text="${division.name}" th:selected="${division.code == param.divisionCode}"></option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="useYn">Use Y/N</label>
+                            <select id="useYn" name="useYn" class="form-control">
+                                <option value="">All</option>
+                                <option value="Y" th:selected="${param.useYn == 'Y'}">Y</option>
+                                <option value="N" th:selected="${param.useYn == 'N'}">N</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Search</button>
+                    </form>
+                    <br/>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Auth Level</th>
+                                    <th>Use Y/N</th>
+                                    <th>Division Code</th>
+                                    <th>Team Code</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="employee : ${employees}">
+                                    <td th:text="${employee.employeId}"></td>
+                                    <td th:text="${employee.name}"></td>
+                                    <td th:text="${employee.authLevel}"></td>
+                                    <td th:text="${employee.useYn}"></td>
+                                    <td th:text="${employee.divisionCode}"></td>
+                                    <td th:text="${employee.teamCode}"></td>
+                                    <td>
+                                        <a th:href="@{/employe/form(employeId=${employee.employeId})}" class="btn btn-primary btn-xs">Modify</a>
+                                        <a th:attr="onclick=|javascript:resetPassword('${employee.employeId}');|" class="btn btn-warning btn-xs">Reset Password</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <a th:href="@{/employe/form}" class="btn btn-success">Add New Employee</a>
                 </div>
             </div>
         </div>

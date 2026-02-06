@@ -68,6 +68,37 @@
 		]]>
 	</select>
 
+	<select id="getUserList" parameterType="java.util.Map"
+		resultType="kr.co.kpcard.ktree.domain.Employe">
+		<![CDATA[
+		SELECT
+			EMPLOYE_ID AS employeId,
+			NAME AS name,
+			PWD AS pwd,
+			AUTHORITY_CODE AS authorityCode,
+			USE_YN as useYn,
+			TEAM_CODE AS teamCode,
+			DIVISION_CODE AS divisionCode,
+			AUTH_LEVEL AS authLevel,
+			POSITION AS position,
+			CONFIRM1 AS confirm1,
+			CONFIRM2 AS confirm2
+		FROM KPC_EMPLOYE
+		]]>
+		<where>
+			<if test="employeId != null and employeId != ''"> AND EMPLOYE_ID = #{employeId} </if>
+			<if
+				test="name != null and name != ''"> AND NAME LIKE '%' || #{name} || '%' </if>
+			<if
+				test="divisionCode != null and divisionCode != ''"> AND DIVISION_CODE =
+		#{divisionCode} </if>
+			<if test="useYn != null and useYn != ''"> AND USE_YN = #{useYn} </if>
+		</where>
+		<![CDATA[
+		ORDER BY NAME
+		]]>
+	</select>
+
 	<update id="updateUser" parameterType="kr.co.kpcard.ktree.domain.Employe"> 
 	<![CDATA[
 		UPDATE KPC_EMPLOYE 

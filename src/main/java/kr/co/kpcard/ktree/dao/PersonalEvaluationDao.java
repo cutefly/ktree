@@ -1,6 +1,7 @@
 package kr.co.kpcard.ktree.dao;
 
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -110,6 +111,25 @@ public class PersonalEvaluationDao {
 			logger.error("exception : {}", e.getMessage());
 		}
 		return result;
+	}
+
+	public List<Employe> getUserList(Map<String, Object> params) {
+		logger.info("getUserList | IN | params: " + params);
+
+		List<Employe> result = new ArrayList<Employe>();
+		try {
+			result = sqlSession.selectList("Personal.getUserList", params);
+			if (result != null) {
+				logger.info("getUserList | OUT | Param : result=> {}", result.size());
+			}
+		} catch (Exception e) {
+			logger.error("exception : {}", e.getMessage());
+		}
+		return result;
+	}
+
+	public List<Employe> getUserList() {
+		return getUserList(new HashMap<>());
 	}
 
 	public boolean addUser(Employe employe) {

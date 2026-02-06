@@ -1,6 +1,7 @@
 package kr.co.kpcard.ktree.controller;
 
 import kr.co.kpcard.ktree.domain.Employe;
+import kr.co.kpcard.ktree.service.DivisionService;
 import kr.co.kpcard.ktree.service.EmployeService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -10,6 +11,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/employe")
 @RequiredArgsConstructor
@@ -17,6 +21,7 @@ public class EmployeController {
 
     private final Logger logger = LoggerFactory.getLogger(EmployeController.class);
     private final EmployeService employeService;
+    private final DivisionService divisionService;
 
     @GetMapping("/form")
     public String showEmployeForm(@RequestParam(value = "employeId", required = false) String employeId, Model model) {
@@ -63,10 +68,22 @@ public class EmployeController {
         return "redirect:/employe/list"; // Redirect to employee list page after save
     }
 
-    // Placeholder for a simple employee list page if it doesn't exist
     @GetMapping("/list")
-    public String employeList(Model model) {
-        model.addAttribute("message", "This is a placeholder for the employee list page.");
-        return "sub/employe/employeList"; // Assuming this view will be created or is a placeholder
+    public String employeList(@RequestParam(required = false) String employeId,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Integer divisionCode,
+            @RequestParam(required = false) String useYn,
+            Model model) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("employeId", employeId);
+        params.put("name", name);
+        params.put("divisionCode", divisionCode);
+        params.put("useYn", useYn);
+
+        model.addAttribute("employees", employeService.getEmployeList(params));
+        model.addAttribute("divisions", divisionService.getDivisionList());
+        model.addAttribute("param", params);
+        logger.info("employeList | OUT | params: {}", model.getAttribute("param"));
+        return "sub/employe/employeList";
     }
 }
