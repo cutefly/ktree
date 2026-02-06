@@ -51,6 +51,7 @@
                         <table class="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
+                                    <th>Seq</th>
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Auth Level</th>
@@ -62,6 +63,7 @@
                             </thead>
                             <tbody>
                                 <tr th:each="employee : ${employees}">
+                                    <td th:text="${employee.seq}"></td>
                                     <td th:text="${employee.employeId}"></td>
                                     <td th:text="${employee.name}"></td>
                                     <td th:text="${employee.authLevel}"></td>
@@ -69,7 +71,7 @@
                                     <td th:text="${employee.divisionCode}"></td>
                                     <td th:text="${employee.teamCode}"></td>
                                     <td>
-                                        <a th:href="@{/employe/form(employeId=${employee.employeId})}" class="btn btn-primary btn-xs">Modify</a>
+                                        <a th:href="@{/employe/form(seq=${employee.seq})}" class="btn btn-primary btn-xs">Modify</a>
                                         <a th:attr="onclick=|javascript:resetPassword('${employee.employeId}');|" class="btn btn-warning btn-xs">Reset Password</a>
                                     </td>
                                 </tr>

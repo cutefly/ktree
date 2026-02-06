@@ -26,14 +26,17 @@ public class EmployeService {
         logger.info("getEmployeList | OUT | " + employes.size());
         return employes;
     }
+    public List<Employe> getEmployeList() {
+        return getEmployeList(new java.util.HashMap<>());
+    }
 
-    public Employe getEmploye(String employeId) {
-        logger.info("getEmploye | IN | employeId: {}", employeId);
+    public Employe getEmploye(Long seq) {
+        logger.info("getEmploye | IN | seq: {}", seq);
         Employe employe = null;
         try {
-            employe = personalEvaluationDao.getUser(employeId);
+            employe = personalEvaluationDao.getUser(seq);
         } catch (Exception e) {
-            logger.error("Error retrieving employe with ID {}: {}", employeId, e.getMessage());
+            logger.error("Error retrieving employe with SEQ {}: {}", seq, e.getMessage());
         }
         logger.info("getEmploye | OUT | employe: {}", employe);
         return employe;

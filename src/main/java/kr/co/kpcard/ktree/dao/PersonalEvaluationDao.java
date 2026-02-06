@@ -96,6 +96,23 @@ public class PersonalEvaluationDao {
 		return result;
 	}
 
+	public Employe getUser(Long seq) {
+		logger.info("getUser | IN | Param : seq=> {}", seq);
+
+		Employe result = new Employe();
+		HashMap<String, Object> param = new HashMap<String, Object>();
+		try {
+			param.put("seq", seq);
+			result = sqlSession.selectOne("Personal.getUser", param);
+			if (result != null) {
+				logger.info("getUser | OUT | Param : result=> {}", result.getName());
+			}
+		} catch (Exception e) {
+			logger.error("exception : {}", e.getMessage());
+		}
+		return result;
+	}
+
 	public Employe getUser(String employeId) {
 		logger.info("getUser | IN | Param : employeId=> {}", employeId);
 

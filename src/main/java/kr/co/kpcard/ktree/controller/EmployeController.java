@@ -24,16 +24,16 @@ public class EmployeController {
     private final DivisionService divisionService;
 
     @GetMapping("/form")
-    public String showEmployeForm(@RequestParam(value = "employeId", required = false) String employeId, Model model) {
-        logger.info("showEmployeForm | IN | employeId: {}", employeId);
+    public String showEmployeForm(@RequestParam(value = "seq", required = false) Long seq, Model model) {
+        logger.info("showEmployeForm | IN | seq: {}", seq);
         Employe employe = new Employe();
         String mode = "add";
-        if (employeId != null && !employeId.isEmpty()) {
+        if (seq != null) {
             mode = "edit";
-            employe = employeService.getEmploye(employeId);
+            employe = employeService.getEmploye(seq);
             if (employe == null) {
                 // Handle case where employee is not found, e.g., redirect to error or list page
-                logger.warn("Employe with ID {} not found for editing.", employeId);
+                logger.warn("Employe with SEQ {} not found for editing.", seq);
                 return "redirect:/employe/list"; // Assuming an employe list page exists
             }
             logger.info("name : {}", employe.getName());

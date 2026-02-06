@@ -52,6 +52,7 @@
 		resultType="kr.co.kpcard.ktree.domain.Employe">
 		<![CDATA[
 		SELECT
+			SEQ as seq,
 			EMPLOYE_ID AS employeId,
 			NAME AS name,
 			PWD AS pwd,
@@ -64,14 +65,22 @@
 			CONFIRM1 AS confirm1,
 			CONFIRM2 AS confirm2
 		FROM KPC_EMPLOYE
-		WHERE EMPLOYE_ID = #{employeId}
 		]]>
+		<where>
+			<if test="employeId != null and employeId != ''">
+				AND EMPLOYE_ID = #{employeId}
+			</if>
+			<if test="seq != null and seq != ''">
+				AND SEQ = #{seq}
+			</if>
+		</where>
 	</select>
 
 	<select id="getUserList" parameterType="java.util.Map"
 		resultType="kr.co.kpcard.ktree.domain.Employe">
 		<![CDATA[
 		SELECT
+			SEQ as seq,
 			EMPLOYE_ID AS employeId,
 			NAME AS name,
 			PWD AS pwd,
@@ -99,32 +108,19 @@
 		]]>
 	</select>
 
-	<update id="updateUser" parameterType="kr.co.kpcard.ktree.domain.Employe"> 
-	<![CDATA[
-		UPDATE KPC_EMPLOYE 
-	]]>
+	<update id="updateUser" parameterType="kr.co.kpcard.ktree.domain.Employe">
+		UPDATE KPC_EMPLOYE
 		<set>
 			<if test="name != null">NAME = #{name},</if>
-			<!--<if
-			test="pwd != null">PWD = #{pwd},</if>-->
-			<if
-				test="useYn != null">USE_YN = #{useYn},</if>
-			<if
-				test="teamCode > 0">TEAM_CODE = #{teamCode},</if>
-			<if test="divisionCode > 0">DIVISION_CODE
-		= #{divisionCode},</if>
-			<if
-				test="authLevel > 0">AUTH_LEVEL = #{authLevel},</if>
-			<if test="position > 0">POSITION
-		= #{position},</if>
-			<if
-				test="confirm1 != null">CONFIRM1 = #{confirm1},</if>
-			<if
-				test="confirm2 != null">CONFIRM2 = #{confirm2},</if>
-		</set> 
-	<![CDATA[
-		WHERE EMPLOYE_ID = #{employeId}
-	]]>
+			<if test="useYn != null">USE_YN = #{useYn},</if>
+			<if test="teamCode > 0">TEAM_CODE = #{teamCode},</if>
+			<if test="divisionCode > 0">DIVISION_CODE = #{divisionCode},</if>
+			<if test="authLevel > 0">AUTH_LEVEL = #{authLevel},</if>
+			<if test="position > 0">POSITION = #{position},</if>
+			<if test="confirm1 != null">CONFIRM1 = #{confirm1},</if>
+			<if test="confirm2 != null">CONFIRM2 = #{confirm2},</if>
+		</set>
+		WHERE SEQ = #{seq}
 	</update>
 
 	<insert id="insertUser" parameterType="kr.co.kpcard.ktree.domain.Employe">
