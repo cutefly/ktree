@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: Ktree
+
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:orcl
+    username: kpc_backoffice
+    password: ${DB_PASSWORD}
+    driver-class-name: oracle.jdbc.driver.OracleDriver
+
+mybatis:
+  mapper-locations: classpath:mappers/*.xml,classpath:mappers/oracle/*.xml
+
+server:
+  port: 8080
