@@ -72,7 +72,7 @@
                                     <td th:text="${employee.useYn}"></td>
                                     <td>
                                         <a th:href="@{/employe/form(seq=${employee.seq})}" class="btn btn-primary btn-xs">Modify</a>
-                                        <a th:attr="onclick=|javascript:resetPassword('${employee.seq}');|" class="btn btn-warning btn-xs">Reset Password</a>
+                                        <a th:attr="onclick=|javascript:resetPassword('${employee.employeId}');|" class="btn btn-warning btn-xs">Reset Password</a>
                                     </td>
                                 </tr>
                             </tbody>

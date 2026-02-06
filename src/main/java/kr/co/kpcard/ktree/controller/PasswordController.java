@@ -73,10 +73,13 @@ public class PasswordController {
     public String resetPassword(@RequestParam("employeId") String employeId,
             jakarta.servlet.http.HttpSession session) {
         log.info("resetPassword | IN | employeId : {}", employeId);
+
+        final String DEFAULT_PASSWORD = "kpcard1@";
         String res = "F";
+
         try {
             if (session.getAttribute("employeId").equals("kpc_admin")) {
-                boolean result = userInfoService.resetPassword(employeId);
+                boolean result = userInfoService.resetPassword(employeId, DEFAULT_PASSWORD);
                 if (result) {
                     res = "S";
                 }
@@ -86,7 +89,7 @@ public class PasswordController {
         } catch (Exception e) {
             log.error("Error resetting password for employeId: {}", employeId, e);
         }
-        log.info("resetPassword | OUT | result : {}", res);
+        log.info("resetPassword | OUT | employeId : {}, result : {}", employeId, res);
         return res;
     }
 }

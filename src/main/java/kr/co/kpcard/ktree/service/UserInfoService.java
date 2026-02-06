@@ -35,13 +35,12 @@ public class UserInfoService {
         return false;
     }
 
-    public boolean resetPassword(String userId) {
-        final String DEFAULT_PASSWORD = "kpcard1@";
+    public boolean resetPassword(String userId, String password) {
         UserInfo userInfo = getUserByUserId(userId);
 
         if (userInfo != null) {
             // String encodedNewPassword = passwordEncoder.encode(newPassword);
-            userInfoDao.updatePassword(userId, DEFAULT_PASSWORD);
+            userInfoDao.updatePassword(userId, password);
             return true;
         }
         return false;
